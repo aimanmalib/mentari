@@ -1,0 +1,13 @@
+# Secret scan settings: the default gitleaks rules, minus folders that are vendored, generated or never committed.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "vendored, generated and git-ignored folders"
+paths = [
+  '''(^|/)node_modules/''',
+  '''^contracts/(lib|out|cache)/''',
+  '''^\.tools/''',
+  '''^dalaman/''',
+  '''^state/''',
+]

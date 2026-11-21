@@ -52,6 +52,26 @@ contract ReceiptNoteTest is Test {
         }
     }
 
+    function test_lonePlainQuoteIsRefused() public {
+        assertFalse(h.isValidMemo('a"b'));
+        vm.expectRevert(ReceiptNote.BadMemo.selector);
+        h.note(1, 1, HOLDER, 'a"b');
+    }
+
+    /// Every one of the 256 byte values, placed alone inside an otherwise valid memo, is accepted
+    /// exactly when it is in the published alphabet. The oracle is the literal list, not the library.
+    function test_everyByteValueMatchesTheAlphabet() public view {
+        bytes memory alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 .:/#-";
+        for (uint256 v; v < 256; ++v) {
+            bool listed;
+            for (uint256 j; j < alphabet.length; ++j) {
+                if (uint8(alphabet[j]) == v) listed = true;
+            }
+            bytes memory memo = abi.encodePacked("a", bytes1(uint8(v)), "b");
+            assertEq(h.isValidMemo(string(memo)), listed, string(abi.encodePacked("byte ", vm.toString(v))));
+        }
+    }
+
     function test_recordPayloadWrapsTheNote() public view {
         assertEq(h.recordPayload("MTR1 n=1"), bytes('{"record":{"note":"MTR1 n=1"}}'));
     }

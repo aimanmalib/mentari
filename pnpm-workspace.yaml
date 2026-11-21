@@ -1,0 +1,6 @@
+packages:
+  - scripts
+  - server
+  - web
+allowBuilds:
+  esbuild: true

@@ -1,0 +1,14 @@
+{
+  "name": "@mentari/scripts",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "keys": "tsx keys.ts",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@qorechain/sdk": "0.14.0",
+    "viem": "2.57.20"
+  }
+}

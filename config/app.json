@@ -1,0 +1,27 @@
+{
+  "network": {
+    "chainId": "qorechain-diana",
+    "evmChainId": 9800,
+    "evmRpc": "https://evm-testnet.qore.host",
+    "rest": "https://api-testnet.qore.host",
+    "rpc": "https://rpc-testnet.qore.host",
+    "evmDecimals": 18,
+    "symbol": "QOR"
+  },
+  "accounts": {
+    "0": "funder and deployer",
+    "1": "registrar",
+    "2": "meter A",
+    "3": "meter B",
+    "4": "meter C",
+    "5": "producer",
+    "6": "buyer",
+    "7": "demo sender",
+    "10": "reserved (second project) deployer",
+    "11": "reserved (second project) sample account"
+  },
+  "contracts": {
+    "mentari": "",
+    "atomicityProbe": ""
+  }
+}

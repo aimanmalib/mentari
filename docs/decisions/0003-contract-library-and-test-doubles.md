@@ -39,7 +39,8 @@ risky parts (building a JSON message, reading a JSON reply, trusting a post-quan
   `require-revert-in-loop` (the reply reader and memo check must stop at the first bad byte). The build runs with
   `--deny-warnings`.
 - **Test gate** (`scripts/gerbang-ujian.sh`): build, format check, tests, line coverage of `contracts/src` at least 90 % once
-  product contracts exist, TypeScript type check and tests, and a gitleaks scan of history and working tree. A test step fails
+  product contracts exist, TypeScript type check and tests, and a gitleaks scan of history and working tree with the default rules. The repo has no `.gitleaks.toml`: an allowlist is
+  a decision for the owner, so the working tree scan copies out only the files git would publish instead. A test step fails
   if no test ran or any test was skipped. CI runs the same script: `.github/workflows/ci.yml` on GitHub and
   `.depot/workflows/gerbang.yml` on Depot (generated from a shared template, comments removed so tracked files stay in English).
 

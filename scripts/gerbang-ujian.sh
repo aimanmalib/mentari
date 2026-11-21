@@ -104,7 +104,14 @@ fi
 
 step "secret scan"
 gitleaks git --redact --no-banner --log-level warn . || fail "gitleaks found a secret in the history"
-gitleaks dir --redact --no-banner --log-level warn . || fail "gitleaks found a secret in the working tree"
+# Working tree: only files git would publish (tracked or untracked but not ignored), without the vendored
+# submodule. Copying them out keeps node_modules, build output and git-ignored notes out of the scan
+# without an allowlist in the repo.
+mkdir -p "$tmp/scan"
+git ls-files -z --cached --others --exclude-standard \
+  | while IFS= read -r -d '' f; do [ -f "$f" ] && [ ! -L "$f" ] && printf '%s\0' "$f"; done \
+  | xargs -0 -r cp --parents -t "$tmp/scan"
+gitleaks dir --redact --no-banner --log-level warn "$tmp/scan" || fail "gitleaks found a secret in the working tree"
 
 echo
 echo "gate: OK in $(( $(date +%s) - started ))s"

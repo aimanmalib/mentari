@@ -16,6 +16,8 @@
 node_modules/
 dist/
 out/
+contracts/cache/
+lcov.info
 *.vsix
 coverage/
 .vscode-test/
@@ -27,3 +29,4 @@ deck/build/
 state/
 keystore/
 *.log
+.tools/

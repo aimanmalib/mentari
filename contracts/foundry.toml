@@ -1,0 +1,41 @@
+# Foundry settings for the Mentari contracts.
+# The compiler and forge-std versions are pinned so every machine builds the same bytecode.
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+test = "test"
+script = "script"
+cache_path = "cache"
+solc_version = "0.8.28"
+evm_version = "cancun"
+optimizer = true
+optimizer_runs = 200
+remappings = ["forge-std/=lib/forge-std/src/"]
+
+[fuzz]
+runs = 512
+seed = "0x6d656e74617269"
+
+[invariant]
+runs = 128
+depth = 64
+fail_on_revert = false
+
+[fmt]
+line_length = 120
+tab_width = 4
+bracket_spacing = false
+int_types = "long"
+quote_style = "double"
+number_underscore = "thousands"
+
+# Public QoreChain testnet EVM endpoint (chain id 9800), used by name: --rpc-url qorechain_testnet
+[rpc_endpoints]
+qorechain_testnet = "https://evm-testnet.qore.host"
+
+[lint]
+# Two style lints are turned off, everything else stays on:
+# - uninitialized-local: `uint256 i;` relying on the zero default is the usual Solidity idiom.
+# - require-revert-in-loop: the reply reader and memo checks must stop at the first bad byte.
+exclude_lints = ["uninitialized-local", "require-revert-in-loop"]

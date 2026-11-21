@@ -1,0 +1,27 @@
+# Test gate on Depot CI. Generated from a shared template; comments removed so tracked files stay in English.
+name: gerbang
+on: workflow_dispatch
+jobs:
+  gerbang:
+    runs-on: depot-ubuntu-24.04-4
+    timeout-minutes: 30
+    env:
+      NO_COLOR: "1"
+      CI: "1"
+      TERM: dumb
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm i -g pnpm@12.9.1 && cd . && pnpm install --frozen-lockfile
+      - name: Install Playwright browsers when the repo uses Playwright
+        run: |
+          if [ -x "./node_modules/.bin/playwright" ]; then
+            cd "." && pnpm exec playwright install --with-deps chromium webkit
+          elif [ -f package-lock.json ] && grep -q '"node_modules/playwright"' package-lock.json; then
+            npm ci && npx --no-install playwright install --with-deps chromium webkit
+          else
+            echo "Playwright not installed; skipping browser install"
+          fi
+      - run: bash scripts/gerbang-ujian.sh

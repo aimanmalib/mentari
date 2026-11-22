@@ -10,7 +10,10 @@
     "how": "How it works",
     "language": "Language",
     "en": "English",
-    "ms": "Bahasa Melayu"
+    "ms": "Bahasa Melayu",
+    "retirements": "Retirements",
+    "verify": "Verify",
+    "try": "Try it"
   },
   "data": {
     "sample": "Sample data. The contracts are not on testnet yet, so these numbers are examples, not measurements.",
@@ -94,6 +97,132 @@
     "limit3": "Other projects use the same receipts book, so its total count includes their receipts. Each Mentari retirement is checked by its own receipt id.",
     "limit4": "The page checks the latest {n} retirements on each visit, not the whole history.",
     "limit5": "The contracts cannot be upgraded. A fix means a new deployment at a new address."
+  },
+  "records": {
+    "retirement": "Retirement #{n}",
+    "holder": "Retired by",
+    "time": "Time",
+    "evmTx": "EVM transaction",
+    "txUnknown": "The EVM node did not return it",
+    "openAddress": "Open {address} in the explorer",
+    "openTx": "Open transaction {hash} in the explorer",
+    "openBlock": "Open block {height} in the explorer",
+    "match": "Match",
+    "mismatch": "No match",
+    "receipt": "Receipt #{id}",
+    "height": "Block",
+    "noReceipt": "The Native ledger has no receipt with this id.",
+    "verifyThis": "Check this one"
+  },
+  "retirements": {
+    "title": "Every retirement, on both ledgers",
+    "lede": "Each row is one transaction. The left side is what the Mentari contract stored on the EVM. The right side is the receipt the same transaction wrote on the Native ledger. The page reads both and compares them.",
+    "empty": "No retirements yet. The first one will show here with its receipt.",
+    "emptyAction": "Retire some watt-hours",
+    "listLabel": "Retirements, newest first",
+    "pagerLabel": "More retirements",
+    "showing": "Showing #{first} to #{last} of {total}",
+    "newest": "Newest",
+    "older": "Older",
+    "loading": "Reading both ledgers"
+  },
+  "verify": {
+    "title": "Check one retirement",
+    "lede": "Enter a retirement number or a receipt id. The page reads the EVM record and the Native receipt from testnet and checks that they point to each other. The address of this page is the result, so you can share it.",
+    "kindLabel": "Look up by",
+    "kindN": "Retirement number",
+    "kindReceipt": "Receipt id",
+    "inputN": "Retirement number",
+    "inputReceipt": "Receipt id",
+    "submit": "Check",
+    "invalid": "Enter a whole number from 1 up.",
+    "loading": "Reading both ledgers",
+    "askedN": "Retirement #{n}",
+    "askedReceipt": "Receipt #{id}",
+    "noRetirement": "The contract has no retirement with this number yet.",
+    "noReceipt": "The Native ledger has no receipt with this id.",
+    "orphan": "This receipt names retirement #{n}, but the contract has no such retirement.",
+    "notMentari": "This receipt exists, but the Mentari contract did not write it. It was sent by {sender}.",
+    "ok": "Both ledgers agree",
+    "bad": "The ledgers disagree",
+    "checksLabel": "Checks",
+    "check": {
+      "receiptExists": "The Native ledger has the receipt",
+      "sameId": "The EVM record and the receipt point to each other",
+      "sender": "The receipt was written by the Mentari contract",
+      "note": "The receipt note names this retirement, amount and holder"
+    },
+    "passed": "passed",
+    "failed": "failed",
+    "copy": "Copy link",
+    "copied": "Link copied"
+  },
+  "tryit": {
+    "title": "Try it on testnet",
+    "lede": "These buttons send real testnet transactions from a demo account. One succeeds and changes both ledgers. Three are built to fail and change neither.",
+    "guideTitle": "Check the claim in three steps",
+    "step1": "Press Retire now. One transaction burns {wh} Wh on the EVM and writes a receipt on the Native ledger. Both counts go up by one.",
+    "step2": "Press any of the three failure buttons. Each transaction reaches the Native side and then fails. Both counts stay the same.",
+    "step3": "Open the transaction in the explorer, or check the new retirement on the Verify page.",
+    "statusLoading": "Checking whether live sends are open.",
+    "statusOffline": "Live sends are not available right now. Each button shows the recorded testnet case instead.",
+    "statusDisabled": "Live sends are switched off. Each button shows the recorded testnet case instead.",
+    "statusLive": "Live sends are open. {today} left today, {you} left for you this hour.",
+    "controlsLabel": "Demo buttons",
+    "retireNow": "Retire now",
+    "retireNowSub": "Burn {wh} Wh and write one receipt",
+    "sending": "Sending…",
+    "failTitle": "Make it fail",
+    "failLede": "Each of these touches the Native ledger inside the transaction and then fails. If the chain is atomic, nothing is kept.",
+    "fail": {
+      "case-b": {
+        "label": "Write, then revert",
+        "what": "A receipt is written, then the EVM side reverts"
+      },
+      "case-c": {
+        "label": "Native side refuses",
+        "what": "The receipts book rejects the message"
+      },
+      "case-d": {
+        "label": "Call a blocked contract",
+        "what": "The target is not on the bridge allowlist"
+      }
+    },
+    "becomes": "becomes",
+    "unchanged": "Unchanged",
+    "changedBy": "Changed by {delta}",
+    "evmCount": "EVM retirements",
+    "nativeCount": "Native receipts",
+    "asExpected": "As expected",
+    "notExpected": "Not what was expected",
+    "expectSuccess": "Both ledgers should go up by one.",
+    "expectRevert": "Neither ledger should change.",
+    "txSuccess": "Transaction succeeded:",
+    "txReverted": "Transaction reverted:",
+    "seeRetirements": "See it in Retirements",
+    "reason": {
+      "disabled": "Live sends are switched off.",
+      "unavailable": "Live sends are not available right now.",
+      "low-funds": "The demo account is low on test tokens.",
+      "busy": "Another visitor's transaction is running.",
+      "daily-limit": "Today's live sends are used up.",
+      "ip-limit": "You have used this hour's live sends.",
+      "timeout": "The testnet did not confirm in time.",
+      "send-failed": "The transaction could not be sent.",
+      "unreachable": "The demo server did not answer."
+    },
+    "retryAfter": "Try again in about {minutes} min.",
+    "recordedIntro": "Here is recorded testnet case {id} instead:",
+    "recordedTx": "Recorded transaction:",
+    "recheck": {
+      "checking": "Checking the recorded transaction on testnet again.",
+      "confirmed": "Checked again just now: testnet shows the same result.",
+      "differs": "Checked again just now: testnet does not show the recorded result.",
+      "unreadable": "Could not reach testnet to check it again.",
+      "sample": "Sample case. There is no testnet transaction to check yet."
+    },
+    "noRecord": "No recorded case yet.",
+    "idle": "Results appear here. To look up any past retirement, use"
   },
   "footer": {
     "entry": "Mentari is an entry for QoreChain Developer Fest: Build Before Q-Day.",

@@ -28,8 +28,9 @@ function initialLocale(): string {
   });
 }
 
-export function I18nProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState(initialLocale);
+/** `locale` fixes the starting language (tests, server rendering); otherwise it comes from the URL, storage or browser. */
+export function I18nProvider({ children, locale: fixed }: { children: ReactNode; locale?: string }) {
+  const [locale, setLocaleState] = useState(() => fixed ?? initialLocale());
   const messages = catalogues[locale] ?? catalogues[siteConfig.defaultLocale]!;
 
   useEffect(() => {

@@ -1,23 +1,41 @@
 import { useEffect, useState, type AnchorHTMLAttributes, type MouseEvent } from "react";
 
 /** The site's pages. Paths live here once; links and the switch in App read them. */
-export const routes = { registry: "/", how: "/how-it-works" } as const;
+export const routes = {
+  registry: "/",
+  retirements: "/retirements",
+  verify: "/verify",
+  try: "/try",
+  how: "/how-it-works",
+} as const;
 
-export function usePath(): string {
-  const [path, setPath] = useState(location.pathname);
+function useLocationPart(read: () => string): string {
+  const [value, setValue] = useState(read);
   useEffect(() => {
-    const onPop = () => setPath(location.pathname);
+    const onPop = () => setValue(read());
     addEventListener("popstate", onPop);
     return () => removeEventListener("popstate", onPop);
-  }, []);
-  return path;
+  }, [read]);
+  return value;
 }
 
-export function navigate(to: string): void {
+const readPath = () => location.pathname;
+const readSearch = () => location.search;
+
+export function usePath(): string {
+  return useLocationPart(readPath);
+}
+
+/** The query string (`?n=3`), updated on navigation. Verify keeps its lookup here so the URL can be shared. */
+export function useSearch(): string {
+  return useLocationPart(readSearch);
+}
+
+export function navigate(to: string, opts: { keepScroll?: boolean } = {}): void {
   if (to === location.pathname + location.search) return;
   history.pushState(null, "", to);
   dispatchEvent(new PopStateEvent("popstate"));
-  scrollTo(0, 0);
+  if (!opts.keepScroll) scrollTo(0, 0);
 }
 
 /** An ordinary link that changes page without a reload; modified clicks open as usual. */

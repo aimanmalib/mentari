@@ -10,7 +10,10 @@
     "how": "Cara ia berfungsi",
     "language": "Bahasa",
     "en": "English",
-    "ms": "Bahasa Melayu"
+    "ms": "Bahasa Melayu",
+    "retirements": "Persaraan",
+    "verify": "Semak",
+    "try": "Cuba"
   },
   "data": {
     "sample": "Data contoh. Kontrak belum ada di testnet, jadi angka ini contoh, bukan ukuran.",
@@ -94,6 +97,132 @@
     "limit3": "Projek lain memakai buku resit yang sama, jadi jumlah kiraannya termasuk resit mereka. Setiap persaraan Mentari disemak dengan id resitnya sendiri.",
     "limit4": "Laman ini menyemak {n} persaraan terkini setiap lawatan, bukan seluruh sejarah.",
     "limit5": "Kontrak tidak boleh dinaik taraf. Pembaikan bermakna deploy baharu di alamat baharu."
+  },
+  "records": {
+    "retirement": "Persaraan #{n}",
+    "holder": "Dipersarakan oleh",
+    "time": "Masa",
+    "evmTx": "Transaksi EVM",
+    "txUnknown": "Nod EVM tidak memulangkannya",
+    "openAddress": "Buka {address} dalam penjelajah",
+    "openTx": "Buka transaksi {hash} dalam penjelajah",
+    "openBlock": "Buka blok {height} dalam penjelajah",
+    "match": "Sepadan",
+    "mismatch": "Tidak sepadan",
+    "receipt": "Resit #{id}",
+    "height": "Blok",
+    "noReceipt": "Lejar Native tiada resit dengan id ini.",
+    "verifyThis": "Semak yang ini"
+  },
+  "retirements": {
+    "title": "Setiap persaraan, di kedua-dua lejar",
+    "lede": "Setiap baris ialah satu transaksi. Sebelah kiri ialah apa yang kontrak Mentari simpan di EVM. Sebelah kanan ialah resit yang ditulis oleh transaksi yang sama di lejar Native. Laman ini membaca kedua-duanya dan membandingkannya.",
+    "empty": "Belum ada persaraan. Yang pertama akan muncul di sini bersama resitnya.",
+    "emptyAction": "Persarakan beberapa watt-jam",
+    "listLabel": "Persaraan, terbaharu dahulu",
+    "pagerLabel": "Persaraan lain",
+    "showing": "Memaparkan #{first} hingga #{last} daripada {total}",
+    "newest": "Terbaharu",
+    "older": "Lebih lama",
+    "loading": "Membaca kedua-dua lejar"
+  },
+  "verify": {
+    "title": "Semak satu persaraan",
+    "lede": "Masukkan nombor persaraan atau id resit. Laman ini membaca rekod EVM dan resit Native dari testnet, lalu menyemak bahawa kedua-duanya merujuk satu sama lain. Alamat halaman ini ialah hasilnya, jadi anda boleh berkongsinya.",
+    "kindLabel": "Cari ikut",
+    "kindN": "Nombor persaraan",
+    "kindReceipt": "Id resit",
+    "inputN": "Nombor persaraan",
+    "inputReceipt": "Id resit",
+    "submit": "Semak",
+    "invalid": "Masukkan nombor bulat dari 1 ke atas.",
+    "loading": "Membaca kedua-dua lejar",
+    "askedN": "Persaraan #{n}",
+    "askedReceipt": "Resit #{id}",
+    "noRetirement": "Kontrak belum ada persaraan dengan nombor ini.",
+    "noReceipt": "Lejar Native tiada resit dengan id ini.",
+    "orphan": "Resit ini menyebut persaraan #{n}, tetapi kontrak tiada persaraan itu.",
+    "notMentari": "Resit ini wujud, tetapi bukan ditulis oleh kontrak Mentari. Ia dihantar oleh {sender}.",
+    "ok": "Kedua-dua lejar sepakat",
+    "bad": "Kedua-dua lejar tidak sepakat",
+    "checksLabel": "Semakan",
+    "check": {
+      "receiptExists": "Lejar Native ada resit itu",
+      "sameId": "Rekod EVM dan resit merujuk satu sama lain",
+      "sender": "Resit ditulis oleh kontrak Mentari",
+      "note": "Nota resit menyebut persaraan, jumlah dan pemegang ini"
+    },
+    "passed": "lulus",
+    "failed": "gagal",
+    "copy": "Salin pautan",
+    "copied": "Pautan disalin"
+  },
+  "tryit": {
+    "title": "Cuba di testnet",
+    "lede": "Butang ini menghantar transaksi testnet sebenar dari akaun demo. Satu berjaya dan mengubah kedua-dua lejar. Tiga dibina untuk gagal dan tidak mengubah apa-apa.",
+    "guideTitle": "Semak dakwaan ini dalam tiga langkah",
+    "step1": "Tekan Persarakan sekarang. Satu transaksi membakar {wh} Wh di EVM dan menulis resit di lejar Native. Kedua-dua kiraan naik satu.",
+    "step2": "Tekan mana-mana daripada tiga butang kegagalan. Setiap transaksi sampai ke bahagian Native, kemudian gagal. Kedua-dua kiraan kekal sama.",
+    "step3": "Buka transaksi dalam penjelajah, atau semak persaraan baharu di halaman Semak.",
+    "statusLoading": "Menyemak sama ada hantaran langsung dibuka.",
+    "statusOffline": "Hantaran langsung tidak tersedia sekarang. Setiap butang memaparkan kes testnet yang dirakam.",
+    "statusDisabled": "Hantaran langsung dimatikan. Setiap butang memaparkan kes testnet yang dirakam.",
+    "statusLive": "Hantaran langsung dibuka. Baki {today} hari ini, {you} untuk anda jam ini.",
+    "controlsLabel": "Butang demo",
+    "retireNow": "Persarakan sekarang",
+    "retireNowSub": "Bakar {wh} Wh dan tulis satu resit",
+    "sending": "Menghantar…",
+    "failTitle": "Buat ia gagal",
+    "failLede": "Setiap butang ini menyentuh lejar Native di dalam transaksi, kemudian gagal. Jika rantaian atomik, tiada apa yang disimpan.",
+    "fail": {
+      "case-b": {
+        "label": "Tulis, kemudian batal",
+        "what": "Resit ditulis, kemudian bahagian EVM berbalik"
+      },
+      "case-c": {
+        "label": "Native menolak",
+        "what": "Buku resit menolak mesej itu"
+      },
+      "case-d": {
+        "label": "Panggil kontrak disekat",
+        "what": "Sasaran tiada dalam senarai dibenarkan jambatan"
+      }
+    },
+    "becomes": "menjadi",
+    "unchanged": "Tidak berubah",
+    "changedBy": "Berubah {delta}",
+    "evmCount": "Persaraan EVM",
+    "nativeCount": "Resit Native",
+    "asExpected": "Seperti dijangka",
+    "notExpected": "Bukan seperti dijangka",
+    "expectSuccess": "Kedua-dua lejar sepatutnya naik satu.",
+    "expectRevert": "Kedua-dua lejar sepatutnya tidak berubah.",
+    "txSuccess": "Transaksi berjaya:",
+    "txReverted": "Transaksi berbalik:",
+    "seeRetirements": "Lihat dalam Persaraan",
+    "reason": {
+      "disabled": "Hantaran langsung dimatikan.",
+      "unavailable": "Hantaran langsung tidak tersedia sekarang.",
+      "low-funds": "Akaun demo kekurangan token ujian.",
+      "busy": "Transaksi pelawat lain sedang berjalan.",
+      "daily-limit": "Hantaran langsung hari ini sudah habis.",
+      "ip-limit": "Anda sudah guna hantaran langsung jam ini.",
+      "timeout": "Testnet tidak mengesahkan dalam masa.",
+      "send-failed": "Transaksi tidak dapat dihantar.",
+      "unreachable": "Pelayan demo tidak menjawab."
+    },
+    "retryAfter": "Cuba lagi dalam kira-kira {minutes} min.",
+    "recordedIntro": "Ini kes testnet {id} yang dirakam:",
+    "recordedTx": "Transaksi dirakam:",
+    "recheck": {
+      "checking": "Menyemak semula transaksi dirakam di testnet.",
+      "confirmed": "Disemak semula tadi: testnet menunjukkan hasil yang sama.",
+      "differs": "Disemak semula tadi: testnet tidak menunjukkan hasil yang dirakam.",
+      "unreadable": "Tidak dapat menghubungi testnet untuk menyemak semula.",
+      "sample": "Kes contoh. Belum ada transaksi testnet untuk disemak."
+    },
+    "noRecord": "Belum ada kes dirakam.",
+    "idle": "Hasil muncul di sini. Untuk mencari persaraan lepas, guna"
   },
   "footer": {
     "entry": "Mentari ialah entri untuk QoreChain Developer Fest: Build Before Q-Day.",

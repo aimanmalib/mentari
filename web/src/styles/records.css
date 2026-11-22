@@ -1,0 +1,221 @@
+/* Retirements and Verify: each retirement is a narrow strip of the ledger seam, EVM | seal | Native. */
+.records-wrap,
+.verify {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-5);
+  min-width: 0;
+}
+
+.records-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 7.5rem minmax(0, 1fr);
+  color: var(--muted);
+  font-size: var(--step--1);
+  font-weight: 600;
+}
+
+.records-head span:last-child {
+  grid-column: 3;
+}
+
+.records {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 7.5rem minmax(0, 1fr);
+  min-width: 0;
+}
+
+.pair-evm,
+.pair-native {
+  display: grid;
+  align-content: start;
+  gap: var(--space-3);
+  min-width: 0;
+  padding: var(--space-5);
+}
+
+.pair-evm {
+  border-radius: var(--radius-lane) 0 0 var(--radius-lane);
+  color: var(--silicon-text);
+  background-color: var(--silicon);
+  background-image: repeating-linear-gradient(90deg, transparent 0 calc(25% - 1px), var(--busbar-on-silicon) calc(25% - 1px) 25%);
+}
+
+.pair-native {
+  border-radius: 0 var(--radius-lane) var(--radius-lane) 0;
+  background-color: var(--noon-wash);
+  background-image: repeating-linear-gradient(180deg, transparent 0 calc(1.75rem - 1px), rgb(107 72 0 / 0.12) calc(1.75rem - 1px) 1.75rem);
+}
+
+.pair-title {
+  font: 700 var(--step-1) / 1.1 var(--font-display);
+  font-stretch: 86%;
+}
+
+.pair-amount {
+  font: 700 var(--step-3) / 1 var(--font-display);
+  font-stretch: 80%;
+  letter-spacing: -0.01em;
+}
+
+.pair-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.pair-facts dt {
+  font-size: var(--step--1);
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+.pair-facts dd {
+  margin: 0;
+}
+
+.pair-native dt,
+.pair-native .pair-title {
+  color: var(--noon-ink);
+}
+
+.pair-note code {
+  display: block;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-small);
+  background: var(--paper);
+  border: 1px solid rgb(107 72 0 / 0.2);
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+.pair-seam {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-2);
+  background: var(--paper);
+  border-block: var(--rule);
+  text-align: center;
+}
+
+.seal.seal-small {
+  width: 3.25rem;
+  height: 3.25rem;
+  box-shadow: none;
+}
+
+.pair-verdict {
+  font-weight: 700;
+  font-size: var(--step--1);
+}
+
+.pair-ok .pair-verdict {
+  color: var(--agree);
+}
+
+.pair-bad .pair-verdict,
+.pair-problems {
+  color: var(--alarm);
+}
+
+.pair-problems {
+  font-size: var(--step--1);
+}
+
+.pair-missing {
+  font-style: italic;
+  opacity: 0.85;
+}
+
+.chain-link {
+  color: inherit;
+  text-decoration-thickness: 1px;
+}
+
+.pair-evm .chain-link:focus-visible {
+  outline-color: var(--noon);
+}
+
+.pair-verify {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--noon-ink);
+  font-weight: 600;
+}
+
+.records-pager {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-4);
+  color: var(--muted);
+}
+
+.records-pager p {
+  margin-right: auto;
+}
+
+.records-status,
+.records-empty {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  border: var(--rule);
+  border-radius: var(--radius-lane);
+  background: var(--paper);
+}
+
+@media (max-width: 52rem) {
+  .records-head {
+    display: none;
+  }
+
+  .pair {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .pair-evm {
+    border-radius: var(--radius-lane) var(--radius-lane) 0 0;
+  }
+
+  .pair-native {
+    border-radius: 0 0 var(--radius-lane) var(--radius-lane);
+  }
+
+  .pair-seam {
+    grid-template-columns: auto auto minmax(0, 1fr);
+    justify-items: start;
+    align-items: center;
+    column-gap: var(--space-3);
+    padding: var(--space-2) var(--space-4);
+    border-block: 0;
+    border-inline: var(--rule);
+    text-align: left;
+  }
+
+  .seal.seal-small {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+}
+
+@media (max-width: 22rem) {
+  .pair-evm,
+  .pair-native {
+    padding: var(--space-4);
+  }
+}

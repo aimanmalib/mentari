@@ -1,0 +1,295 @@
+/* Try it: a short guide, one sun-coloured button that succeeds, three that are built to fail. */
+.guide {
+  display: grid;
+  gap: var(--space-4);
+  max-width: var(--measure);
+  padding: var(--space-5) var(--space-6);
+  border-left: 4px solid var(--noon);
+  background: var(--paper);
+  border-radius: 0 var(--radius-lane) var(--radius-lane) 0;
+}
+
+.guide h2 {
+  font-size: var(--step-2);
+  font-stretch: 86%;
+}
+
+.guide-steps {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding-left: var(--space-5);
+}
+
+.guide-steps li::marker {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--silicon);
+}
+
+.demo-status {
+  font-size: var(--step--1);
+  color: var(--muted);
+}
+
+.demo-status-live {
+  color: var(--agree);
+  font-weight: 600;
+}
+
+.demo {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: var(--space-5);
+  align-items: stretch;
+}
+
+.demo-main {
+  display: grid;
+}
+
+.retire-now {
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: var(--space-2);
+  min-height: 12rem;
+  padding: var(--space-6);
+  border: 0;
+  border-radius: var(--radius-lane);
+  background: var(--noon);
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: inset 0 -6px 0 rgb(107 72 0 / 0.25);
+}
+
+.retire-now span {
+  font: 700 var(--step-4) / 1 var(--font-display);
+  font-stretch: 82%;
+  letter-spacing: -0.02em;
+}
+
+.retire-now small {
+  font-size: var(--step-0);
+  font-weight: 600;
+  color: var(--noon-ink);
+}
+
+.retire-now:hover:not(:disabled) {
+  box-shadow: inset 0 -10px 0 rgb(107 72 0 / 0.3);
+}
+
+.retire-now:disabled,
+.fail-button:disabled {
+  cursor: progress;
+  opacity: 0.7;
+}
+
+.demo-fails {
+  display: grid;
+  align-content: start;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  border: var(--rule);
+  border-radius: var(--radius-lane);
+  background: var(--paper);
+}
+
+.demo-fails h2 {
+  font-size: var(--step-2);
+  font-stretch: 86%;
+}
+
+.demo-fails p {
+  color: var(--muted);
+}
+
+.demo-fails ul {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fail-button {
+  display: grid;
+  gap: 2px;
+  width: 100%;
+  min-height: 44px;
+  padding: var(--space-3) var(--space-4);
+  border: 2px solid var(--busbar);
+  border-left: 6px solid var(--alarm);
+  border-radius: var(--radius-small);
+  background: var(--daylight);
+  color: var(--ink);
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+.fail-button span {
+  font-weight: 700;
+}
+
+.fail-button small {
+  color: var(--muted);
+  font-size: var(--step--1);
+}
+
+.fail-button:hover:not(:disabled) {
+  border-color: var(--alarm);
+  background: var(--alarm-wash);
+}
+
+.demo-out:focus {
+  outline: none;
+}
+
+.demo-idle {
+  color: var(--muted);
+}
+
+.demo-result {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border: var(--rule);
+  border-radius: var(--radius-lane);
+  background: var(--paper);
+}
+
+.demo-ok {
+  border-color: var(--agree);
+}
+
+.demo-bad {
+  border-color: var(--alarm);
+}
+
+.demo-fallback {
+  border-left: 4px solid var(--noon);
+}
+
+.demo-verdict {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.demo-title {
+  font: 700 var(--step-2) / 1.15 var(--font-display);
+  font-stretch: 86%;
+}
+
+.demo-ok .demo-title {
+  color: var(--agree);
+}
+
+.demo-bad .demo-title {
+  color: var(--alarm);
+}
+
+.counts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.count {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+  padding: var(--space-4) var(--space-5);
+}
+
+.count-evm {
+  border-radius: var(--radius-lane) 0 0 var(--radius-lane);
+  background: var(--silicon);
+  color: var(--silicon-text);
+}
+
+.count-native {
+  border-radius: 0 var(--radius-lane) var(--radius-lane) 0;
+  background: var(--noon-wash);
+}
+
+.count-label {
+  font-size: var(--step--1);
+  font-weight: 600;
+}
+
+.count-native .count-label,
+.count-native .count-delta {
+  color: var(--noon-ink);
+}
+
+.count-values {
+  font: 700 var(--step-3) / 1 var(--font-display);
+  font-stretch: 80%;
+}
+
+.count-values > span:first-child {
+  opacity: 0.7;
+}
+
+.count-values .count-arrow {
+  opacity: 0.6;
+}
+
+.count-delta {
+  font-size: var(--step--1);
+  font-weight: 600;
+}
+
+.demo-tx {
+  overflow-wrap: anywhere;
+}
+
+.recheck {
+  padding-left: var(--space-3);
+  border-left: 3px solid var(--busbar);
+  font-size: var(--step--1);
+}
+
+.recheck-confirmed {
+  border-left-color: var(--agree);
+  color: var(--agree);
+  font-weight: 600;
+}
+
+.recheck-differs,
+.recheck-unreadable {
+  border-left-color: var(--alarm);
+  color: var(--alarm);
+}
+
+@media (max-width: 52rem) {
+  .demo {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .retire-now {
+    min-height: 8rem;
+    padding: var(--space-5);
+  }
+
+  .guide {
+    padding: var(--space-4) var(--space-5);
+  }
+}
+
+@media (max-width: 30rem) {
+  .counts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .count-evm {
+    border-radius: var(--radius-lane) var(--radius-lane) 0 0;
+  }
+
+  .count-native {
+    border-radius: 0 0 var(--radius-lane) var(--radius-lane);
+  }
+}

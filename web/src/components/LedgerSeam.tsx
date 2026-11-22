@@ -12,9 +12,9 @@ function verdictOf(state: RegistryState): Verdict {
   return state.snapshot.agreement.state;
 }
 
-function Seal({ verdict }: { verdict: Verdict }) {
+export function Seal({ verdict, className = "" }: { verdict: Verdict; className?: string }) {
   return (
-    <svg className={`seal seal-${verdict}`} viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+    <svg className={`seal seal-${verdict} ${className}`.trim()} viewBox="0 0 64 64" aria-hidden="true" focusable="false">
       <circle cx="32" cy="32" r="29" className="seal-ring" />
       {verdict === "agree" && <path d="M19 33l9 9 17-19" className="seal-mark" />}
       {(verdict === "disagree" || verdict === "error") && <path d="M23 23l18 18M41 23L23 41" className="seal-mark" />}

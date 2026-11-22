@@ -17,6 +17,9 @@ export function Header({ path }: { path: string }) {
   const { t, locale, setLocale } = useI18n();
   const nav = [
     { href: routes.registry, label: t("nav.registry") },
+    { href: routes.retirements, label: t("nav.retirements") },
+    { href: routes.verify, label: t("nav.verify") },
+    { href: routes.try, label: t("nav.try") },
     { href: routes.how, label: t("nav.how") },
   ];
   return (

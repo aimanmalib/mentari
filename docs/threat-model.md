@@ -29,7 +29,7 @@ and the safety of the QoreChain chain itself.
 | T8 | An admin key is stolen | There is no admin: no owner, pause, upgrade, `approve` or `payable`. The registrar can only add systems, and only with an ML-DSA-87 signature. | constructor and interface tests |
 | T9 | The demo button is used to drain the demo account | One request at a time, 5 per IP per hour, 40 per day, a minimum balance and an off switch, all in `config/limits.json`. The IP comes from `cf-connecting-ip` only when the peer is a Cloudflare address. | `server/test/` (limits, switch, low balance, forged headers) |
 | T10 | The read proxy is used to reach other hosts or paths | Fixed upstream host; only the path prefixes in `config/limits.json`; GET only; dot segments, `//host` and `@host` refused. | `server/test/` (allowlist cases) |
-| T11 | The demo account's key leaks from the repository or image | The key is mounted read-only at run time from outside the image; the repository and its history are scanned for secrets in CI. | secret scan in `scripts/gerbang-ujian.sh` |
+| T11 | The demo account's key or a meter key leaks from the repository or image | The keys are mounted read-only at run time from outside the image; errors about the meter key file name the field, never the value; the repository and its history are scanned for secrets in CI. | secret scan in `scripts/gerbang-ujian.sh` |
 
 ## Why the receiver must already have a post-quantum key (T4)
 

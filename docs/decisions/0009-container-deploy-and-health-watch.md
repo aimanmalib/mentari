@@ -1,6 +1,6 @@
 # 0009. One container behind the reverse proxy, a read-only key folder, and a health watch
 
-Date: 2026-11-22. Status: accepted.
+Date: 2026-11-22. Status: accepted. The server build step is replaced by decision 0014 (esbuild bundle).
 
 ## Context
 

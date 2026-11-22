@@ -87,7 +87,7 @@ Foundry saves a failing sequence under `contracts/cache/` and replays it first o
 ## Server tests
 
 `server/test/` runs with vitest and no network: the upstream `fetch` is a fake and the config is a frozen fixture, so
-changing `config/` never breaks a test. `cd server && npx vitest run` reported 86 passed on 2026-11-22.
+changing `config/` never breaks a test. `cd server && npx vitest run` reported 103 passed on 2026-11-22.
 
 They cover the `/lcd` allowlist (other paths, other contracts, `//host`, `@host`, dot segments and `%2e` are refused
 without an upstream call), methods other than `GET` (405), the 5 second cache, joined concurrent requests, 502 on
@@ -97,6 +97,12 @@ they hold no key and touch no network. They cover one send at a time, the per-vi
 `retry-after`, the off switch, low funds, a missing sender, timeouts and failed sends, and the recorded case named in
 every refusal. The wallet grant (`/api/demo/grant/<address>`) is tested for the amount from config, the receiver rule
 checked before any quota is used, the shared hourly limit, a reverted transfer, and malformed addresses.
+
+The daily meter run (`server/src/meter/daily.ts`) is tested with a fake clock and a fake job: the `HH:MM` parsing, the
+next run time across a day and a year, the run at start, two daily runs, a retry after a failure that never goes past
+the next daily run, one run at a time, a run that ends after `stop()`, and the two off states. Six changes to the
+scheduler were each tried on purpose; four turned a test red at once. The two that did not were a missing stop check
+(a test for it was then added and goes red) and dropping `unref()` on the timer, which only affects how Node exits.
 
 Each guard was removed from a copy of the code to check that a test notices:
 

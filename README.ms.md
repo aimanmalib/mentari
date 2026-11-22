@@ -88,7 +88,7 @@ Dikira pada 22 November 2026 daripada larian tempatan, langkah yang sama dengan 
 | --- | --- |
 | Foundry, `contracts/test/` | 113 lulus: 96 ujian unit, 16 ujian fuzz (512 larian setiap satu) dan satu suite invarian yang memegang 4 invarian (forge mengira suite itu sekali, jadi 96 + 16 + 1 = 113); liputan baris `contracts/src` 99 % |
 | vitest, `server/test/` | 86 lulus |
-| vitest, `web/test/` | 133 lulus |
+| vitest, `web/test/` | 141 lulus |
 | vitest, `scripts/test/` | 20 lulus |
 | Playwright, `web/e2e/` | 10 lulus: laluan dompet dengan dompet tiruan QoreX, 5 kes dalam Chromium dan WebKit sebagai iPhone 13 |
 

@@ -115,7 +115,7 @@ Each guard was removed from a copy of the code to check that a test notices:
 
 ## Web tests
 
-`web/test/` runs with vitest in Node and no network. `cd web && npx vitest run` reported 133 passed on 2026-11-22.
+`web/test/` runs with vitest in Node and no network. `cd web && npx vitest run` reported 141 passed on 2026-11-22.
 
 They cover the check behind the "both ledgers agree" badge (sender, note, receipt id, nothing checked), the EVM to
 Native address encoding, the receipts book reader (a missing receipt is `null`, any other failure throws so the page

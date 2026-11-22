@@ -69,3 +69,44 @@ export const retiredEvent = {
     { name: "memo", type: "string", indexed: false },
   ],
 } as const;
+
+/** What the wallet path calls: the visitor's balance, the receiver rule and `retire`. Kept in sync by test. */
+export const mentariWalletAbi = [
+  {
+    type: "function",
+    name: "balanceOf",
+    stateMutability: "view",
+    inputs: [{ name: "", type: "address" }],
+    outputs: [{ name: "", type: "uint256" }],
+  },
+  {
+    type: "function",
+    name: "isQuantumReady",
+    stateMutability: "view",
+    inputs: [{ name: "account", type: "address" }],
+    outputs: [{ name: "", type: "bool" }],
+  },
+  {
+    type: "function",
+    name: "retire",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "wh", type: "uint256" },
+      { name: "memo", type: "string" },
+    ],
+    outputs: [
+      { name: "n", type: "uint256" },
+      { name: "receiptId", type: "uint64" },
+    ],
+  },
+  { type: "error", name: "ZeroAmount", inputs: [] },
+  {
+    type: "error",
+    name: "InsufficientBalance",
+    inputs: [
+      { name: "balance", type: "uint256" },
+      { name: "needed", type: "uint256" },
+    ],
+  },
+  { type: "error", name: "NotQuantumReady", inputs: [{ name: "account", type: "address" }] },
+] as const;

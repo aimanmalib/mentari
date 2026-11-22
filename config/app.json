@@ -23,5 +23,9 @@
   "contracts": {
     "mentari": "",
     "atomicityProbe": ""
+  },
+  "native": {
+    "receiptsBook": "qor1xjayq5ev55tkzpml9klxwyshr7gdrha0nurha9jhm0f0gdckksgs3gltw8",
+    "receiptsBookCodeId": 865
   }
 }

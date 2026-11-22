@@ -1,0 +1,17 @@
+{
+  "lcd": {
+    "allowedPrefixes": [
+      "/cosmwasm/wasm/v1/contract/{receiptsBook}/smart/",
+      "/qorechain/crossvm/v1/params",
+      "/cosmos/tx/v1beta1/txs/",
+      "/qorechain/pqc/v1/"
+    ],
+    "cacheSeconds": 5,
+    "cacheMaxEntries": 500,
+    "timeoutMs": 8000,
+    "maxBodyBytes": 1048576
+  },
+  "clientIp": {
+    "trustedProxies": ["127.0.0.0/8", "::1/128", "10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]
+  }
+}

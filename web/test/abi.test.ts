@@ -27,3 +27,15 @@ describe("the site's ABI matches contracts/src/Mentari.sol", () => {
     expect(out.components.map((c) => [c.name, c.type])).toEqual(structFields(struct));
   });
 });
+
+describe("the Retired event matches contracts/src/Mentari.sol", () => {
+  it("has the same fields, types and indexed flags", async () => {
+    const { retiredEvent } = await import("../src/data/abi.js");
+    const body = SOL.match(/event Retired\(([^)]*)\)/)?.[1] ?? "";
+    const fields = body.split(",").map((p) => {
+      const parts = p.trim().split(/\s+/);
+      return { name: parts.at(-1), type: parts[0], indexed: parts.includes("indexed") };
+    });
+    expect(retiredEvent.inputs.map((i) => ({ name: i.name, type: i.type, indexed: i.indexed }))).toEqual(fields);
+  });
+});

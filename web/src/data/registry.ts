@@ -8,6 +8,8 @@ export interface MentariReader {
   totals(): Promise<Totals>;
   retirementsCount(): Promise<number>;
   retirement(n: number): Promise<Retirement>;
+  /** EVM transaction hash of each retirement number found in the `Retired` events. Missing numbers are left out. */
+  retiredTxs(ns: number[]): Promise<Map<number, string>>;
   /** Null when the contract does not know this system yet. */
   system(id: number, label: string): Promise<SystemInfo | null>;
 }
@@ -57,13 +59,16 @@ export interface SampleData {
   contract: string;
   totals: { minted: string; retired: string; supply: string };
   systems: { id: number; meter: string; producer: string; capacityW: number; firstDay: number; maxWh: string }[];
-  retirements: { n: number; holder: string; wh: string; receiptId: number; timestamp: number }[];
+  retirements: { n: number; holder: string; wh: string; receiptId: number; timestamp: number; evmTx: string }[];
   receipts: Receipt[];
+  /** Recorded demo cases, shaped like `evidence/testnet.json`. */
+  cases: unknown[];
 }
 
 /** Turns sample data into the same readers the live page uses, so sample mode runs the real checks. */
 export function sampleReaders(sample: SampleData): { evm: MentariReader; book: Pick<ReceiptsBook, "receipt"> } {
-  const retirements = sample.retirements.map((r) => ({ ...r, wh: BigInt(r.wh) }));
+  const retirements = sample.retirements.map(({ evmTx: _tx, ...r }) => ({ ...r, wh: BigInt(r.wh) }));
+  const txs = new Map(sample.retirements.map((r) => [r.n, r.evmTx]));
   const evm: MentariReader = {
     totals: async () => ({
       minted: BigInt(sample.totals.minted),
@@ -76,6 +81,7 @@ export function sampleReaders(sample: SampleData): { evm: MentariReader; book: P
       if (!r) throw new Error(`no retirement ${n}`);
       return r;
     },
+    retiredTxs: async (ns) => new Map(ns.flatMap((n) => (txs.has(n) ? [[n, txs.get(n)!] as const] : []))),
     system: async (id, label) => {
       const s = sample.systems.find((x) => x.id === id);
       return s ? { ...s, label, maxWh: BigInt(s.maxWh) } : null;

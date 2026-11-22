@@ -38,21 +38,24 @@
       "holder": "0x6b0e000000000000000000000000000000000006",
       "wh": "500",
       "receiptId": 4,
-      "timestamp": 1795078800
+      "timestamp": 1795078800,
+      "evmTx": "0x5a3b1e00000000000000000000000000000000000000000000000000000000a1"
     },
     {
       "n": 2,
       "holder": "0x7d3c000000000000000000000000000000000007",
       "wh": "500",
       "receiptId": 5,
-      "timestamp": 1795165200
+      "timestamp": 1795165200,
+      "evmTx": "0x5a3b1e00000000000000000000000000000000000000000000000000000000a2"
     },
     {
       "n": 3,
       "holder": "0x7d3c000000000000000000000000000000000007",
       "wh": "500",
       "receiptId": 6,
-      "timestamp": 1795251600
+      "timestamp": 1795251600,
+      "evmTx": "0x5a3b1e00000000000000000000000000000000000000000000000000000000a3"
     }
   ],
   "receipts": [
@@ -73,6 +76,64 @@
       "sender": "qor1tcdqqqqqqqqqqqqqqqqqqqqqqqqqpsx755prn6",
       "note": "MTR1 n=3 wh=500 by=0x7d3c000000000000000000000000000000000007 m=demo",
       "height": 10503702
+    }
+  ],
+  "cases": [
+    {
+      "id": "A",
+      "expect": "success",
+      "evm_tx": "0x5a3b1e00000000000000000000000000000000000000000000000000000000a3",
+      "height": 10503702,
+      "receipts": {
+        "before": 5,
+        "after": 6
+      },
+      "retirements": {
+        "before": 2,
+        "after": 3
+      }
+    },
+    {
+      "id": "B",
+      "expect": "revert",
+      "evm_tx": "0x5a3b1e00000000000000000000000000000000000000000000000000000000b1",
+      "height": 10503710,
+      "receipts": {
+        "before": 6,
+        "after": 6
+      },
+      "retirements": {
+        "before": 3,
+        "after": 3
+      }
+    },
+    {
+      "id": "C",
+      "expect": "revert",
+      "evm_tx": "0x5a3b1e00000000000000000000000000000000000000000000000000000000c1",
+      "height": 10503718,
+      "receipts": {
+        "before": 6,
+        "after": 6
+      },
+      "retirements": {
+        "before": 3,
+        "after": 3
+      }
+    },
+    {
+      "id": "D",
+      "expect": "revert",
+      "evm_tx": "0x5a3b1e00000000000000000000000000000000000000000000000000000000d1",
+      "height": 10503726,
+      "receipts": {
+        "before": 6,
+        "after": 6
+      },
+      "retirements": {
+        "before": 3,
+        "after": 3
+      }
     }
   ]
 }

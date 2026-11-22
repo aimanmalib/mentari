@@ -1,14 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { siteConfig } from "../config.js";
-import { dataMode, loadRegistry } from "./load.js";
+import { loadRegistry } from "./load.js";
+import { siteMode as mode } from "./useReaders.js";
 import type { RegistrySnapshot } from "./types.js";
 
 export type RegistryState =
   | { status: "loading" }
   | { status: "ready"; snapshot: RegistrySnapshot; refreshing: boolean }
   | { status: "error"; snapshot: RegistrySnapshot | null };
-
-const mode = dataMode(siteConfig, import.meta.env.VITE_MENTARI_DATA);
 
 /** Reads the registry, then again every `refreshSeconds` while the tab is visible. */
 export function useRegistry(): { state: RegistryState; reload(): void } {

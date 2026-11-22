@@ -1,9 +1,11 @@
 # Sourced by scripts/gerbang-ujian.sh. Each function reads test runner output on stdin and prints "<passed> <skipped>".
 
 # vitest prints "Tests  N passed (N)" or "Tests  N passed | M skipped (T)". Under `pnpm -r` with more than one package,
-# every line is prefixed with "<package> test: ", so the summary is matched anywhere in the line.
+# every line is prefixed with "<package> test: ", so the summary is matched anywhere in the line. Colour codes (vitest
+# colours its output when CI is set, as on GitHub Actions) are removed first.
 count_vitest() {
-  grep -oE '(^|[^[:alnum:]])Tests +[0-9]+ passed[^(]*' |
+  sed -E $'s/\x1b\\[[0-9;]*m//g' |
+    grep -oE '(^|[^[:alnum:]])Tests +[0-9]+ passed[^(]*' |
     awk '{for (i = 1; i <= NF; i++) {if ($i == "Tests") p += $(i + 1); if ($i == "skipped" ) s += $(i - 1)}}
       END {print p + 0, s + 0}'
 }

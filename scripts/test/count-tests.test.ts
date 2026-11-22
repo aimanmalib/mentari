@@ -27,6 +27,15 @@ describe("count_vitest", () => {
     expect(count("count_vitest", "web test:       Tests  10 passed | 2 skipped (12)\n")).toBe("10 2");
   });
 
+  it("reads coloured summaries, as printed on GitHub Actions", () => {
+    const esc = "\u001b";
+    const out = [
+      `web test: ${esc}[2m      Tests ${esc}[22m ${esc}[1m${esc}[32m112 passed${esc}[39m${esc}[22m${esc}[90m (112)${esc}[39m`,
+      `server test: ${esc}[2m      Tests ${esc}[22m ${esc}[1m${esc}[32m77 passed${esc}[39m${esc}[22m${esc}[2m | ${esc}[22m${esc}[33m1 skipped${esc}[39m${esc}[90m (78)${esc}[39m`,
+    ].join("\n");
+    expect(count("count_vitest", out)).toBe("189 1");
+  });
+
   it("prints zero when no summary is present", () => {
     expect(count("count_vitest", "No test files found\n")).toBe("0 0");
   });

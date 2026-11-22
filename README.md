@@ -126,7 +126,7 @@ Counted on 22 November 2026 from a local run, the same steps CI runs on every pu
 
 | Suite | Result | What it covers |
 | --- | --- | --- |
-| Foundry, `contracts/test/` | 113 passed, 0 failed | 96 unit tests, 16 fuzz tests (512 runs each) and 4 invariants (128 sequences of 64 calls); line coverage of `contracts/src` 99 % |
+| Foundry, `contracts/test/` | 113 passed, 0 failed | 96 unit tests, 16 fuzz tests (512 runs each) and one invariant suite holding 4 invariants (128 sequences of 64 calls; forge counts the suite once, so 96 + 16 + 1 = 113); line coverage of `contracts/src` 99 % |
 | vitest, `server/test/` | 77 passed | the `/lcd` allowlist, client IP behind Cloudflare, demo rate limits, the off switch, fallbacks |
 | vitest, `web/test/` | 112 passed | the "both ledgers agree" check, address encoding, the receipts reader, both languages have the same keys |
 | vitest, `scripts/test/` | 16 passed | account derivation, balances, the health watch, the test counter |

@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
+import { parseRunAt, type DailySchedule } from "./meter/daily.js";
 
 /** Everything the server reads from `config/`. Code never holds these values. */
 export interface ServerConfig {
@@ -20,6 +21,8 @@ export interface ServerConfig {
     cloudflare: string[];
   };
   demo: DemoLimits;
+  /** The daily meter run (block `daily` of `config/meter.json`). */
+  meter: DailySchedule;
 }
 
 /** Limits and switches for `/api/demo` (block `demo` of `config/limits.json`). */
@@ -81,6 +84,21 @@ function demoLimits(v: unknown): DemoLimits {
   };
 }
 
+function dailySchedule(v: unknown): DailySchedule {
+  const d = obj(v, "config/meter.json daily");
+  let runAtMinute: number;
+  try {
+    runAtMinute = parseRunAt(str(d.runAtUtc, "daily.runAtUtc"));
+  } catch (err) {
+    throw new Error(`config/meter.json daily.runAtUtc: ${(err as Error).message}`);
+  }
+  return {
+    enabled: bool(d.enabled, "daily.enabled"),
+    runAtMinute,
+    retryMinutes: posInt(d.retryMinutes, "daily.retryMinutes"),
+  };
+}
+
 function strList(v: unknown, where: string): string[] {
   if (!Array.isArray(v) || v.length === 0) throw new Error(`${where}: expected a non-empty list`);
   return v.map((x, i) => str(x, `${where}[${i}]`));
@@ -103,6 +121,7 @@ export function loadServerConfig(dir: string = CONFIG_DIR): ServerConfig {
   const app = obj(readJson(dir, "app.json"), "config/app.json");
   const limits = obj(readJson(dir, "limits.json"), "config/limits.json");
   const cf = obj(readJson(dir, "cloudflare-ips.json"), "config/cloudflare-ips.json");
+  const meter = obj(readJson(dir, "meter.json"), "config/meter.json");
   const network = obj(app.network, "config/app.json network");
   const native = obj(app.native, "config/app.json native");
   const lcd = obj(limits.lcd, "config/limits.json lcd");
@@ -126,5 +145,6 @@ export function loadServerConfig(dir: string = CONFIG_DIR): ServerConfig {
       cloudflare: [...strList(cf.v4, "cloudflare-ips v4"), ...strList(cf.v6, "cloudflare-ips v6")],
     },
     demo: demoLimits(limits.demo),
+    meter: dailySchedule(meter.daily),
   };
 }

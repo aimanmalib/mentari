@@ -9,15 +9,19 @@ const REAL = fileURLToPath(new URL("../../config/", import.meta.url));
 const temps: string[] = [];
 afterEach(() => temps.splice(0).forEach((d) => rmSync(d, { recursive: true, force: true })));
 
-function copy(edit: (limits: Record<string, any>, app: Record<string, any>) => void): string {
+function copy(
+  edit: (limits: Record<string, any>, app: Record<string, any>, meter: Record<string, any>) => void,
+): string {
   const d = mkdtempSync(join(tmpdir(), "mentari-cfg-"));
   temps.push(d);
   cpSync(REAL, d, { recursive: true });
   const limits = JSON.parse(readFileSync(join(d, "limits.json"), "utf8"));
   const app = JSON.parse(readFileSync(join(d, "app.json"), "utf8"));
-  edit(limits, app);
+  const meter = JSON.parse(readFileSync(join(d, "meter.json"), "utf8"));
+  edit(limits, app, meter);
   writeFileSync(join(d, "limits.json"), JSON.stringify(limits));
   writeFileSync(join(d, "app.json"), JSON.stringify(app));
+  writeFileSync(join(d, "meter.json"), JSON.stringify(meter));
   return `${d}/`;
 }
 
@@ -39,6 +43,17 @@ describe("loadServerConfig", () => {
     expect(() => loadServerConfig(copy((l) => (l.demo.enabled = "yes")))).toThrow(/true or false/);
     expect(() => loadServerConfig(copy((l) => (l.demo.perDay = 0)))).toThrow(/demo.perDay/);
     expect(() => loadServerConfig(copy((l) => (l.demo.perIpPerHour = 1.5)))).toThrow(/demo.perIpPerHour/);
+  });
+
+  it("loads the daily meter run and refuses a bad time, switch or retry delay", () => {
+    const c = loadServerConfig();
+    expect(typeof c.meter.enabled).toBe("boolean");
+    expect(Number.isInteger(c.meter.runAtMinute) && c.meter.runAtMinute >= 0 && c.meter.runAtMinute < 1440).toBe(true);
+    expect(loadServerConfig(copy((_l, _a, m) => (m.daily.runAtUtc = "01:05"))).meter.runAtMinute).toBe(65);
+    expect(() => loadServerConfig(copy((_l, _a, m) => delete m.daily))).toThrow(/meter.json daily/);
+    expect(() => loadServerConfig(copy((_l, _a, m) => (m.daily.runAtUtc = "25:00")))).toThrow(/daily.runAtUtc.*HH:MM/);
+    expect(() => loadServerConfig(copy((_l, _a, m) => (m.daily.enabled = 1)))).toThrow(/daily.enabled/);
+    expect(() => loadServerConfig(copy((_l, _a, m) => (m.daily.retryMinutes = 0)))).toThrow(/daily.retryMinutes/);
   });
 
   it("fills the receipts book into the smart-query prefix", () => {

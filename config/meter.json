@@ -3,6 +3,12 @@
   "simulated": true,
   "maxSunHoursX10": 80,
   "backfillDays": 3,
+  "daily": {
+    "_comment": "The server attests every finished day it has not seen at this UTC time each day, and once at start. A failed run is tried again after retryMinutes.",
+    "enabled": true,
+    "runAtUtc": "00:20",
+    "retryMinutes": 30
+  },
   "model": {
     "_comment": "Daily sun hours = meanSunHours plus or minus spreadSunHours, picked from sha256(seed, id, day). Same inputs, same reading.",
     "seed": "mentari-simulated-meter-v1",

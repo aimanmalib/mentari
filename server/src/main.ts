@@ -5,6 +5,7 @@ import { loadServerConfig } from "./config.js";
 import { DemoApi } from "./demo/api.js";
 import { unconfiguredChain } from "./demo/chain.js";
 import { LcdProxy } from "./lcd.js";
+import { DailyMeter, unconfiguredMeter } from "./meter/daily.js";
 import { StaticSite } from "./static.js";
 
 const cfg = loadServerConfig();
@@ -20,6 +21,14 @@ server.listen(port, host, () => {
   console.log(`mentari server on http://${host}:${port} (site ${webDist})`);
 });
 
+// The live meter job replaces `unconfiguredMeter` once the contracts are deployed and the meter keys are mounted;
+// until then the daily run logs that it is off.
+const meter = new DailyMeter(unconfiguredMeter, cfg.meter);
+void meter.start();
+
 for (const signal of ["SIGTERM", "SIGINT"] as const) {
-  process.on(signal, () => server.close(() => process.exit(0)));
+  process.on(signal, () => {
+    meter.stop();
+    server.close(() => process.exit(0));
+  });
 }

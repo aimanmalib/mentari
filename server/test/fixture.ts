@@ -26,6 +26,7 @@ export function testConfig(over: Partial<ServerConfig["lcd"]> = {}): ServerConfi
       cloudflare: ["173.245.48.0/20", "2606:4700::/32"],
     },
     demo: demoLimits(),
+    meter: { enabled: true, runAtMinute: 20, retryMinutes: 30 },
   };
 }
 

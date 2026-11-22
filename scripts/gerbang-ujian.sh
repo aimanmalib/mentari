@@ -76,6 +76,7 @@ strict() {
   case $runner in
     forge) counts=$(count_forge <<<"$out" || true) ;;
     vitest) counts=$(count_vitest <<<"$out" || true) ;;
+    playwright) counts=$(count_playwright <<<"$out" || true) ;;
   esac
   read -r passed skipped <<<"${counts:-0 0}"
   [ "${passed:-0}" -ge 1 ] || fail "$label: no tests ran"
@@ -102,6 +103,8 @@ if [ -d node_modules ]; then
   step "typecheck"; pnpm -r --if-present typecheck
   step "unit tests"; strict vitest "vitest" pnpm -r --if-present test
   step "web build"; pnpm --filter @mentari/web build >"$tmp/web-build.log" 2>&1 || { tail -n 30 "$tmp/web-build.log"; fail "web build failed"; }
+  # Browser tests of the wallet path (Chromium and WebKit as on an iPhone 13). CI installs the browsers first.
+  step "browser tests"; strict playwright "playwright" pnpm exec playwright test
 fi
 
 step "secret scan"

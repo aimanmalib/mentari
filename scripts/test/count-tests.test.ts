@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 
 const LIB = fileURLToPath(new URL("../lib/count-tests.sh", import.meta.url));
 
-function count(fn: "count_vitest" | "count_forge", output: string): string {
+function count(fn: "count_vitest" | "count_forge" | "count_playwright", output: string): string {
   return execFileSync("bash", ["-c", `source "$1"; ${fn}`, "count", LIB], { input: output, encoding: "utf8" }).trim();
 }
 
@@ -45,5 +45,25 @@ describe("count_forge", () => {
   it("takes the last total line", () => {
     const out = "Suite result: ok. 4 passed\nRan 9 test suites: 113 tests passed, 0 failed, 0 skipped (113 total tests)\n";
     expect(count("count_forge", out)).toBe("113 0");
+  });
+});
+
+describe("count_playwright", () => {
+  it("reads the summary of the list reporter", () => {
+    const out = "Running 10 tests using 1 worker\n  \u2713   1 [chromium] \u203a a.e2e.ts:3:1 \u203a 2 passed tests (1.2s)\n\n  10 passed (3.2m)\n";
+    expect(count("count_playwright", out)).toBe("10 0");
+  });
+
+  it("counts skipped and flaky tests against the run", () => {
+    const out = "  1 flaky\n    [webkit] \u203a a.e2e.ts:3:1 \u203a x\n  2 skipped\n  7 passed (1.0m)\n";
+    expect(count("count_playwright", out)).toBe("7 3");
+  });
+
+  it("removes colour codes first", () => {
+    expect(count("count_playwright", "\u001b[32m  4 passed\u001b[39m\u001b[2m (9.1s)\u001b[22m\n")).toBe("4 0");
+  });
+
+  it("prints zero when no summary is present", () => {
+    expect(count("count_playwright", "Error: No tests found\n")).toBe("0 0");
   });
 });

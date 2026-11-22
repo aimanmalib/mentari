@@ -20,4 +20,5 @@ jobs:
         with:
           node-version-file: .nvmrc
       - run: npm i -g pnpm@12.9.1 && pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium webkit
       - run: bash scripts/gerbang-ujian.sh

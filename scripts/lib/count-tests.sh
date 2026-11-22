@@ -14,3 +14,11 @@ count_vitest() {
 count_forge() {
   grep -oE '[0-9]+ tests passed, [0-9]+ failed, [0-9]+ skipped' | tail -1 | awk '{print $1, $6}'
 }
+
+# Playwright's list reporter ends with "  N passed (12.3s)", and "  M skipped" or "  F flaky" lines when there are any.
+# A flaky test (passed only on retry) is counted with the skipped ones, so the gate refuses it too.
+count_playwright() {
+  sed -E $'s/\x1b\\[[0-9;]*m//g' |
+    grep -E '^ +[0-9]+ (passed|skipped|flaky)( |$)' |
+    awk '$2 == "passed" {p += $1} $2 == "skipped" || $2 == "flaky" {s += $1} END {print p + 0, s + 0}'
+}

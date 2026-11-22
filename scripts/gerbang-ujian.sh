@@ -14,7 +14,7 @@ FOUNDRY_VERSION=v1.8.7
 FOUNDRY_SHA256=ba470eb718e779e4b0e3f1520b5284231b1bf98e9a39de07fb8f77ed70525bcf
 GITLEAKS_VERSION=8.30.1
 GITLEAKS_SHA256=551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb
-# Line coverage required for contracts/src once there are product contracts (G1 asks for 90 %).
+# Line coverage required for contracts/src once there are product contracts (the test goal is 90 %).
 MIN_COVERAGE=90
 
 tmp=$(mktemp -d)

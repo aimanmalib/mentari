@@ -4,7 +4,7 @@ Date: 2026-11-22. Status: accepted.
 
 ## Context
 
-PRD section 4.7 asks for three more pages. Retirements lists each retirement as an EVM transaction next to its Native
+The design brief asks for three more pages. Retirements lists each retirement as an EVM transaction next to its Native
 receipt, with explorer links. Verify looks one retirement up by number or receipt id, at a URL that can be shared. Try
 it sends the demo transactions through `/api/demo` and shows the counts on both ledgers before and after. When a live
 send cannot run, the page must show the recorded testnet case and check it again live. The contract stores no

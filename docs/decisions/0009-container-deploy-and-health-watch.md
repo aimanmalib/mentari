@@ -4,7 +4,7 @@ Date: 2026-11-22. Status: accepted.
 
 ## Context
 
-PRD section 4.8 asks for a public demo at `https://mentari.sasateguh.com`: the Node server serves the built site,
+The design brief asks for a public demo at `https://mentari.sasateguh.com`: the Node server serves the built site,
 proxies `/lcd` and sends the demo transactions. The host already runs Traefik on a shared Docker network. The demo
 sender key must never enter the image or the repository. The contracts are not on the testnet yet, so the live chain
 adapter for the demo sender does not exist; the site runs in sample mode and the demo falls back to recorded cases.

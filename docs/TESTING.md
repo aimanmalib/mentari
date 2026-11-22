@@ -83,3 +83,22 @@ Each invariant was run against a deliberately broken copy of `Mentari.sol` (32 s
 
 Foundry saves a failing sequence under `contracts/cache/` and replays it first on the next run. Delete
 `contracts/cache/invariant` after such an experiment, or the replayed sequence hides what the next change does.
+
+## Server tests
+
+`server/test/` runs with vitest and no network: the upstream `fetch` is a fake and the config is a frozen fixture, so
+changing `config/` never breaks a test. `cd server && npx vitest run` reported 49 passed on 2026-11-22.
+
+They cover the `/lcd` allowlist (other paths, other contracts, `//host`, `@host`, dot segments and `%2e` are refused
+without an upstream call), methods other than `GET` (405), the 5 second cache, joined concurrent requests, 502 on
+failure or oversized replies, static files (no escape from the site folder, `no-transform` on HTML), and the client IP
+rules.
+
+Each guard was removed from a copy of the code to check that a test notices:
+
+| Change to the server | Tests that failed |
+|---|---|
+| `/lcd` forwards any path (allowlist check removed) | 3 |
+| origin and normalised-path check removed | 1 |
+| `cf-connecting-ip` believed from any peer | 3 |
+| first `x-forwarded-for` entry used instead of the last | 2 |

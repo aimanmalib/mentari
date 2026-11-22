@@ -79,6 +79,7 @@ a {
   color: var(--silicon);
   font: 600 var(--step-0) var(--font-body);
   text-decoration: none;
+  overflow-wrap: normal;
   cursor: pointer;
 }
 

@@ -84,6 +84,11 @@
   font: 600 var(--step-1) var(--font-mono);
 }
 
+.verify-row .button {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
 .verify-row input[aria-invalid="true"] {
   border-color: var(--alarm);
 }

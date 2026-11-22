@@ -87,12 +87,15 @@ Foundry saves a failing sequence under `contracts/cache/` and replays it first o
 ## Server tests
 
 `server/test/` runs with vitest and no network: the upstream `fetch` is a fake and the config is a frozen fixture, so
-changing `config/` never breaks a test. `cd server && npx vitest run` reported 49 passed on 2026-11-22.
+changing `config/` never breaks a test. `cd server && npx vitest run` reported 77 passed on 2026-11-22.
 
 They cover the `/lcd` allowlist (other paths, other contracts, `//host`, `@host`, dot segments and `%2e` are refused
 without an upstream call), methods other than `GET` (405), the 5 second cache, joined concurrent requests, 502 on
-failure or oversized replies, static files (no escape from the site folder, `no-transform` on HTML), and the client IP
-rules.
+failure or oversized replies, static files (no escape from the site folder, `no-transform` on HTML), the client IP
+rules, and the demo sender (`/api/demo/*`). The demo tests use a fake chain whose ledgers move like the contracts, so
+they hold no key and touch no network. They cover one send at a time, the per-visitor hour and the UTC day limits with
+`retry-after`, the off switch, low funds, a missing sender, timeouts and failed sends, and the recorded case named in
+every refusal.
 
 Each guard was removed from a copy of the code to check that a test notices:
 
@@ -102,3 +105,8 @@ Each guard was removed from a copy of the code to check that a test notices:
 | origin and normalised-path check removed | 1 |
 | `cf-connecting-ip` believed from any peer | 3 |
 | first `x-forwarded-for` entry used instead of the last | 2 |
+| demo accepts any content type | 2 |
+| demo counts a send before the balance check | 1 |
+| demo frees the slot on timeout instead of when the chain call ends | 1 |
+| per-visitor window shortened to half an hour | 1 |
+| demo off switch ignored | 2 |

@@ -6,7 +6,8 @@
     "rest": "https://api-testnet.qore.host",
     "rpc": "https://rpc-testnet.qore.host",
     "evmDecimals": 18,
-    "symbol": "QOR"
+    "symbol": "QOR",
+    "crossVmBridge": "0x0000000000000000000000000000000000000901"
   },
   "accounts": {
     "0": "funder and deployer",
@@ -27,5 +28,16 @@
   "native": {
     "receiptsBook": "qor1xjayq5ev55tkzpml9klxwyshr7gdrha0nurha9jhm0f0gdckksgs3gltw8",
     "receiptsBookCodeId": 865
+  },
+  "web": {
+    "refreshSeconds": 30,
+    "agreeCheckLatest": 10,
+    "lcdBase": "/lcd",
+    "nativeAddressPrefix": "qor",
+    "defaultLocale": "en",
+    "locales": [
+      "en",
+      "ms"
+    ]
   }
 }

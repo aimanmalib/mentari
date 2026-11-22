@@ -1,3 +1,4 @@
+import type { MeterConfig } from "../../scripts/src/meter.js";
 import type { DemoLimits, ServerConfig } from "../src/config.js";
 import type { DemoAction, DemoChain, LedgerCounts, SendResult } from "../src/demo/chain.js";
 
@@ -27,6 +28,21 @@ export function testConfig(over: Partial<ServerConfig["lcd"]> = {}): ServerConfi
     },
     demo: demoLimits(),
     meter: { enabled: true, runAtMinute: 20, retryMinutes: 30 },
+    meterJob: { model: meterModel(), windowDays: 1, chain: { evmRpc: "https://evm.example.test/", evmChainId: 9800, mentari: "" } },
+  };
+}
+
+/** Frozen simulated meter model, independent of `config/meter.json`. */
+export function meterModel(): MeterConfig {
+  return {
+    simulated: true,
+    maxSunHoursX10: 80,
+    backfillDays: 3,
+    model: { seed: "fixture-seed", meanSunHours: 4.6, spreadSunHours: 1.2 },
+    systems: [
+      { id: 1, label: "A", capacityW: 5000 },
+      { id: 2, label: "B", capacityW: 8200 },
+    ],
   };
 }
 

@@ -56,6 +56,25 @@ describe("loadServerConfig", () => {
     expect(() => loadServerConfig(copy((_l, _a, m) => (m.daily.retryMinutes = 0)))).toThrow(/daily.retryMinutes/);
   });
 
+  it("loads what the live meter job needs and refuses a bad window, contract or RPC", () => {
+    const c = loadServerConfig();
+    expect(c.meterJob.model.simulated).toBe(true);
+    expect(c.meterJob.windowDays).toBeGreaterThanOrEqual(1);
+    expect(c.meterJob.windowDays).toBeLessThanOrEqual(c.meterJob.model.backfillDays);
+    expect(c.meterJob.chain.evmRpc).toMatch(/^https:\/\//);
+    const at = "0x00000000000000000000000000000000000000c3";
+    const set = loadServerConfig(copy((_l, a, m) => ((a.contracts.mentari = at), (m.daily.windowDays = 2))));
+    expect(set.meterJob).toMatchObject({ windowDays: 2, chain: { mentari: at } });
+    expect(loadServerConfig(copy((_l, a) => (a.contracts.mentari = ""))).meterJob.chain.mentari).toBe("");
+    expect(() => loadServerConfig(copy((_l, _a, m) => (m.daily.windowDays = 0)))).toThrow(/daily.windowDays/);
+    expect(() => loadServerConfig(copy((_l, _a, m) => (m.daily.windowDays = m.backfillDays + 1)))).toThrow(
+      /daily.windowDays/,
+    );
+    expect(() => loadServerConfig(copy((_l, a) => (a.contracts.mentari = "0x12")))).toThrow(/contracts.mentari/);
+    expect(() => loadServerConfig(copy((_l, a) => (a.network.evmRpc = "http://x.test")))).toThrow(/evmRpc.*https/);
+    expect(() => loadServerConfig(copy((_l, _a, m) => (m.simulated = false)))).toThrow(/simulated must be true/);
+  });
+
   it("fills the receipts book into the smart-query prefix", () => {
     const c = loadServerConfig(copy((_l, app) => (app.native.receiptsBook = "qor1test")));
     expect(c.lcd.allowedPrefixes).toContain("/cosmwasm/wasm/v1/contract/qor1test/smart/");

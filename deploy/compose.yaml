@@ -8,7 +8,7 @@ services:
     restart: unless-stopped
     environment:
       TZ: UTC
-      # Folder for the demo sender key (one file, written outside the repository). The server only reads it.
+      # Folder for the demo sender key and the meter key file (written outside the repository). The server only reads it.
       MENTARI_SECRETS_DIR: /run/mentari
     volumes:
       - ${MENTARI_SECRETS_DIR:?set MENTARI_SECRETS_DIR in deploy/hos.env}:/run/mentari:ro

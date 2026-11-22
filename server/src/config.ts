@@ -1,6 +1,8 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
+import { validateMeterConfig, type MeterConfig } from "../../scripts/src/meter.js";
 import { parseRunAt, type DailySchedule } from "./meter/daily.js";
+import type { MeterChain } from "./meter/live.js";
 
 /** Everything the server reads from `config/`. Code never holds these values. */
 export interface ServerConfig {
@@ -23,6 +25,8 @@ export interface ServerConfig {
   demo: DemoLimits;
   /** The daily meter run (block `daily` of `config/meter.json`). */
   meter: DailySchedule;
+  /** What the live meter job needs: the simulated meter model, how far back it looks, and the contract. */
+  meterJob: { model: MeterConfig; windowDays: number; chain: MeterChain };
 }
 
 /** Limits and switches for `/api/demo` (block `demo` of `config/limits.json`). */
@@ -43,7 +47,7 @@ export interface DemoLimits {
   timeoutMs: number;
 }
 
-const CONFIG_DIR = fileURLToPath(new URL("../../config/", import.meta.url));
+export const CONFIG_DIR = fileURLToPath(new URL("../../config/", import.meta.url));
 
 function readJson(dir: string, name: string): unknown {
   return JSON.parse(readFileSync(`${dir}${name}`, "utf8"));
@@ -99,6 +103,23 @@ function dailySchedule(v: unknown): DailySchedule {
   };
 }
 
+function meterJob(meter: Record<string, unknown>, app: Record<string, unknown>, network: Record<string, unknown>) {
+  const model = meter as unknown as MeterConfig;
+  validateMeterConfig(model);
+  const windowDays = obj(meter.daily, "config/meter.json daily").windowDays;
+  if (!Number.isInteger(windowDays) || (windowDays as number) < 1 || (windowDays as number) > model.backfillDays) {
+    throw new Error("config/meter.json daily.windowDays: expected a whole number from 1 to backfillDays");
+  }
+  const mentari = obj(app.contracts, "config/app.json contracts").mentari;
+  if (typeof mentari !== "string" || (mentari !== "" && !/^0x[0-9a-fA-F]{40}$/.test(mentari))) {
+    throw new Error("config/app.json contracts.mentari: expected an EVM address or an empty string");
+  }
+  const evmRpc = new URL(str(network.evmRpc, "config/app.json network.evmRpc"));
+  if (evmRpc.protocol !== "https:") throw new Error("config/app.json network.evmRpc: must be https");
+  const chain = { evmRpc: evmRpc.href, evmChainId: posInt(network.evmChainId, "network.evmChainId"), mentari };
+  return { model, windowDays: windowDays as number, chain };
+}
+
 function strList(v: unknown, where: string): string[] {
   if (!Array.isArray(v) || v.length === 0) throw new Error(`${where}: expected a non-empty list`);
   return v.map((x, i) => str(x, `${where}[${i}]`));
@@ -146,5 +167,6 @@ export function loadServerConfig(dir: string = CONFIG_DIR): ServerConfig {
     },
     demo: demoLimits(limits.demo),
     meter: dailySchedule(meter.daily),
+    meterJob: meterJob(meter, app, network),
   };
 }

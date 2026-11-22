@@ -27,6 +27,7 @@
     "perDay": 40,
     "minSenderBalanceQor": 8,
     "retireWh": 500,
+    "grantWh": 500,
     "timeoutMs": 60000
   }
 }

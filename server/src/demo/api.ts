@@ -26,7 +26,7 @@ export interface DemoRequest {
   contentType?: string | undefined;
 }
 
-type FallbackReason = Refusal | "unavailable" | "low-funds" | "timeout" | "send-failed";
+type FallbackReason = Refusal | "unavailable" | "low-funds" | "timeout" | "send-failed" | "not-quantum-ready";
 
 const STATUS: Record<FallbackReason, number> = {
   disabled: 503,
@@ -37,15 +37,25 @@ const STATUS: Record<FallbackReason, number> = {
   "ip-limit": 429,
   timeout: 504,
   "send-failed": 502,
+  "not-quantum-ready": 409,
 };
 
 class TimedOut extends Error {}
 
-function fallback(route: Route, reason: FallbackReason, extra: { retryAfterSeconds?: number | undefined; evmTx?: string | undefined } = {}): Reply {
+interface RefusalExtra {
+  retryAfterSeconds?: number | undefined;
+  evmTx?: string | undefined;
+}
+
+/** A send that did not happen. `evidenceCase` names the recorded case the site shows instead, when there is one. */
+function refuse(reason: FallbackReason, extra: RefusalExtra = {}, evidenceCase?: string): Reply {
   const headers: Record<string, string> = {};
   if (extra.retryAfterSeconds !== undefined) headers["retry-after"] = String(extra.retryAfterSeconds);
-  return json(STATUS[reason], { ok: false, reason, ...extra, fallback: { evidenceCase: route.evidenceCase } }, headers);
+  const fallback = evidenceCase === undefined ? {} : { fallback: { evidenceCase } };
+  return json(STATUS[reason], { ok: false, reason, ...extra, ...fallback }, headers);
 }
+
+const GRANT_PATH = /^\/grant\/(0x[0-9a-fA-F]{40})$/;
 
 /** True when both ledgers moved the way the case says: one more of each on success, no change on revert. */
 export function asExpected(route: Pick<Route, "expect">, sent: SendResult, before: LedgerCounts, after: LedgerCounts): boolean {
@@ -60,8 +70,9 @@ function isJson(contentType: string | undefined): boolean {
 }
 
 /**
- * `/api/demo/*`: the "Retire now" button and the three failure buttons. One visitor request = one transaction from
- * the demo account, with the ledger counts read before and after. Every refusal names the recorded case to show instead.
+ * `/api/demo/*`: the "Retire now" button, the three failure buttons and the wallet grant. One visitor request = one
+ * transaction from the demo account. Ledger sends report the counts before and after, and every refusal of one names
+ * the recorded case to show instead.
  */
 export class DemoApi {
   readonly #limits: DemoLimits;
@@ -80,23 +91,53 @@ export class DemoApi {
     if (path === "/status") {
       return req.method === "GET" || req.method === "HEAD" ? this.#status(req.ip) : methodNotAllowed("GET, HEAD");
     }
+    const grantTo = GRANT_PATH.exec(path)?.[1];
     const route = Object.hasOwn(ROUTES, path) ? ROUTES[path] : undefined;
-    if (!route) return notFound();
+    if (!route && grantTo === undefined) return notFound();
     if (req.method !== "POST") return methodNotAllowed("POST");
     // A JSON body type makes a cross-site form or fetch preflight, which this server never answers.
     if (!isJson(req.contentType)) return json(415, { error: "send content-type: application/json" });
-    if (!this.#chain.ready()) return fallback(route, "unavailable");
+    return route ? this.#send(req.ip, route) : this.#grant(req.ip, grantTo!);
+  }
 
-    const start = this.#limiter.tryStart(req.ip);
-    if (!start.ok) return fallback(route, start.reason, { retryAfterSeconds: start.retryAfterSeconds });
+  /** One demo transaction: a ledger send (`route`) or a grant. Shares the limits, the funds check and the deadline. */
+  async #run(ip: string, evidenceCase: string | undefined, work: (commit: () => void, sent: (tx: string) => void) => Promise<Reply>): Promise<Reply> {
+    if (!this.#chain.ready()) return refuse("unavailable", {}, evidenceCase);
+    const start = this.#limiter.tryStart(ip);
+    if (!start.ok) return refuse(start.reason, { retryAfterSeconds: start.retryAfterSeconds }, evidenceCase);
     const { ticket } = start;
     let evmTx: string | undefined;
-    const work = (async (): Promise<Reply> => {
-      if ((await this.#chain.senderBalanceQor()) < this.#limits.minSenderBalanceQor) return fallback(route, "low-funds");
+    const running = (async (): Promise<Reply> => {
+      if ((await this.#chain.senderBalanceQor()) < this.#limits.minSenderBalanceQor) return refuse("low-funds", {}, evidenceCase);
+      return work(
+        () => ticket.commit(),
+        (tx) => {
+          evmTx = tx;
+        },
+      );
+    })().finally(() => ticket.release());
+
+    let timer: NodeJS.Timeout | undefined;
+    const deadline = new Promise<never>((_ok, fail) => {
+      timer = setTimeout(() => fail(new TimedOut()), this.#limits.timeoutMs);
+    });
+    try {
+      return await Promise.race([running, deadline]);
+    } catch (err) {
+      running.catch(() => undefined);
+      const reason = err instanceof TimedOut ? "timeout" : "send-failed";
+      return refuse(reason, evmTx === undefined ? {} : { evmTx }, evidenceCase);
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  #send(ip: string, route: Route): Promise<Reply> {
+    return this.#run(ip, route.evidenceCase, async (commit, sentTx) => {
       const before = await this.#chain.counts();
-      ticket.commit();
+      commit();
       const sent = await this.#chain.send(route.action, { retireWh: this.#limits.retireWh });
-      evmTx = sent.evmTx;
+      sentTx(sent.evmTx);
       const after = await this.#chain.counts();
       return json(200, {
         ok: true,
@@ -109,21 +150,22 @@ export class DemoApi {
         asExpected: asExpected(route, sent, before, after),
         evidenceCase: route.evidenceCase,
       });
-    })().finally(() => ticket.release());
-
-    let timer: NodeJS.Timeout | undefined;
-    const deadline = new Promise<never>((_ok, fail) => {
-      timer = setTimeout(() => fail(new TimedOut()), this.#limits.timeoutMs);
     });
-    try {
-      return await Promise.race([work, deadline]);
-    } catch (err) {
-      work.catch(() => undefined);
-      const reason = err instanceof TimedOut ? "timeout" : "send-failed";
-      return fallback(route, reason, evmTx === undefined ? {} : { evmTx });
-    } finally {
-      clearTimeout(timer);
-    }
+  }
+
+  /**
+   * `POST /api/demo/grant/<address>`: the demo account sends `grantWh` certificates to a visitor's wallet, so the
+   * visitor can retire from it. The contract only pays quantum-ready accounts; that is checked before any quota is used.
+   */
+  #grant(ip: string, to: string): Promise<Reply> {
+    return this.#run(ip, undefined, async (commit, sentTx) => {
+      if (!(await this.#chain.isQuantumReady(to))) return refuse("not-quantum-ready");
+      commit();
+      const sent = await this.#chain.grant(to, this.#limits.grantWh);
+      sentTx(sent.evmTx);
+      if (sent.status !== "success") return refuse("send-failed", { evmTx: sent.evmTx });
+      return json(200, { ok: true, action: "grant", to, wh: this.#limits.grantWh, evmTx: sent.evmTx });
+    });
   }
 
   #status(ip: string): Reply {

@@ -25,6 +25,10 @@ export interface DemoChain {
   senderBalanceQor(): Promise<number>;
   counts(): Promise<LedgerCounts>;
   send(action: DemoAction, opts: { retireWh: number }): Promise<SendResult>;
+  /** Whether `account` may receive certificates (`Mentari.isQuantumReady`: a registered ML-DSA-87 key). */
+  isQuantumReady(account: string): Promise<boolean>;
+  /** `Mentari.transfer(to, wh)` from the demo account, so a visitor can retire from their own wallet. */
+  grant(to: string, wh: number): Promise<SendResult>;
 }
 
 class NotConfigured extends Error {
@@ -39,4 +43,6 @@ export const unconfiguredChain: DemoChain = {
   senderBalanceQor: () => Promise.reject(new NotConfigured()),
   counts: () => Promise.reject(new NotConfigured()),
   send: () => Promise.reject(new NotConfigured()),
+  isQuantumReady: () => Promise.reject(new NotConfigured()),
+  grant: () => Promise.reject(new NotConfigured()),
 };

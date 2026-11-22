@@ -38,6 +38,7 @@ export function demoLimits(over: Partial<DemoLimits> = {}): DemoLimits {
     perDay: 3,
     minSenderBalanceQor: 8,
     retireWh: 500,
+    grantWh: 500,
     timeoutMs: 1000,
     ...over,
   };
@@ -52,6 +53,10 @@ export class FakeChain implements DemoChain {
   balance = 50;
   ledgers: LedgerCounts = { receipts: 10, retirements: 4 };
   sends: { action: DemoAction; retireWh: number }[] = [];
+  grants: { to: string; wh: number }[] = [];
+  /** Accounts with a registered ML-DSA-87 key, as `Mentari.isQuantumReady` would answer. */
+  quantumReady = new Set<string>();
+  onGrant: (to: string) => Promise<SendResult> = async () => ({ evmTx: `0x${"c".repeat(64)}`, status: "success" });
   /** Replace to make a send hang, throw or misbehave. */
   onSend: (action: DemoAction) => Promise<SendResult> = async (action) => {
     if (action !== "retire") return { evmTx: `0x${"b".repeat(64)}`, status: "reverted" };
@@ -74,6 +79,15 @@ export class FakeChain implements DemoChain {
   send(action: DemoAction, opts: { retireWh: number }): Promise<SendResult> {
     this.sends.push({ action, retireWh: opts.retireWh });
     return this.onSend(action);
+  }
+
+  async isQuantumReady(account: string): Promise<boolean> {
+    return this.quantumReady.has(account.toLowerCase());
+  }
+
+  grant(to: string, wh: number): Promise<SendResult> {
+    this.grants.push({ to, wh });
+    return this.onGrant(to);
   }
 }
 

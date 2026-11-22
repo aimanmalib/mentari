@@ -212,3 +212,68 @@ describe("asExpected", () => {
     expect(asExpected({ expect: "revert" }, rev, before, { receipts: 3, retirements: 4 })).toBe(false);
   });
 });
+
+describe("DemoApi grant to a visitor's wallet", () => {
+  const wallet = "0x9858EfFD232B4033E47d90003D41EC34EcaEda94";
+  const url = `/api/demo/grant/${wallet}`;
+
+  it("sends grantWh to a quantum-ready wallet", async () => {
+    const { api, chain } = setup(demoLimits({ perIpPerHour: 9, perDay: 9, grantWh: 700 }));
+    chain.quantumReady.add(wallet.toLowerCase());
+    const r = await api.handle(req(url));
+    expect(r.status).toBe(200);
+    expect(body(r)).toEqual({ ok: true, action: "grant", to: wallet, wh: 700, evmTx: `0x${"c".repeat(64)}` });
+    expect(chain.grants).toEqual([{ to: wallet, wh: 700 }]);
+    expect(chain.sends).toEqual([]);
+  });
+
+  it("refuses a wallet without a registered key and does not use the visitor's quota", async () => {
+    const { api, chain } = setup(demoLimits({ perIpPerHour: 1, perDay: 9 }));
+    const r = await api.handle(req(url));
+    expect(r.status).toBe(409);
+    expect(body(r)).toEqual({ ok: false, reason: "not-quantum-ready" });
+    expect(chain.grants).toEqual([]);
+    expect(body(await api.handle(req("/api/demo/status", { method: "GET" }))).remainingForYou).toBe(1);
+  });
+
+  it("counts a grant against the same hourly limit as the other buttons", async () => {
+    const { api, chain } = setup(demoLimits({ perIpPerHour: 1, perDay: 9 }));
+    chain.quantumReady.add(wallet.toLowerCase());
+    expect((await api.handle(req(url))).status).toBe(200);
+    const r = await api.handle(req("/api/demo/retire"));
+    expect(r.status).toBe(429);
+    expect(body(r).reason).toBe("ip-limit");
+  });
+
+  it("reports a reverted transfer as a failed send with its hash", async () => {
+    const { api, chain } = setup();
+    chain.quantumReady.add(wallet.toLowerCase());
+    chain.onGrant = async () => ({ evmTx: "0xdead", status: "reverted" });
+    const r = await api.handle(req(url));
+    expect(r.status).toBe(502);
+    expect(body(r)).toEqual({ ok: false, reason: "send-failed", evmTx: "0xdead" });
+  });
+
+  it("has no recorded case to fall back to when the sender is not configured", async () => {
+    const api = new DemoApi(demoLimits(), unconfiguredChain);
+    const r = await api.handle(req(url));
+    expect(r.status).toBe(503);
+    expect(body(r)).toEqual({ ok: false, reason: "unavailable" });
+  });
+
+  it.each([
+    ["/api/demo/grant/0x1234", 404],
+    [`/api/demo/grant/${wallet}/x`, 404],
+    ["/api/demo/grant/", 404],
+  ])("rejects %s", async (path, status) => {
+    const { api, chain } = setup();
+    expect((await api.handle(req(path))).status).toBe(status);
+    expect(chain.grants).toEqual([]);
+  });
+
+  it("only accepts POST with a JSON body type", async () => {
+    const { api } = setup();
+    expect((await api.handle(req(url, { method: "GET" }))).status).toBe(405);
+    expect((await api.handle(req(url, { contentType: "text/plain" }))).status).toBe(415);
+  });
+});

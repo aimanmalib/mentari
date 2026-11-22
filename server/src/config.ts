@@ -34,6 +34,8 @@ export interface DemoLimits {
   minSenderBalanceQor: number;
   /** Energy (Wh) one "Retire now" retires. */
   retireWh: number;
+  /** Certificates (Wh) the demo account sends to a visitor's own wallet on request. */
+  grantWh: number;
   /** Longest a visitor waits for one send; the slot stays taken until the chain call settles. */
   timeoutMs: number;
 }
@@ -74,6 +76,7 @@ function demoLimits(v: unknown): DemoLimits {
     perDay: n("perDay"),
     minSenderBalanceQor: n("minSenderBalanceQor"),
     retireWh: n("retireWh"),
+    grantWh: n("grantWh"),
     timeoutMs: n("timeoutMs"),
   };
 }

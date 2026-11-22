@@ -166,7 +166,7 @@ contract errors), and that the wallet ABI and its errors match `contracts/src/Me
 
 ## Script tests
 
-`scripts/test/` runs with vitest and no network beyond a local anvil node. `cd scripts && npx vitest run` reported 60
+`scripts/test/` runs with vitest and no network beyond a local anvil node. `cd scripts && npx vitest run` reported 86
 passed on 2026-11-22.
 
 `scripts/src/meter.ts` makes the simulated meter readings and the bytes a meter or the registrar signs. The meter tests
@@ -190,10 +190,26 @@ no code, only one address, or no deploy block, that writing the addresses keeps 
 and that the meter keys file is mode 600, is read back by the server's parser, and is refused inside the repository.
 Removing the no-code check or the one-address check each turned one test red.
 
+`scripts/src/native.ts` gets the accounts ready on the Native lane (ADR 0016). Its tests run against an in-memory
+lane that applies bank sends, key registrations and windows, and refuses a hybrid transaction from an account with no
+key or a classical transaction that is not a key registration. They check that a top-up sends only what is short, in
+one transaction after the funder's key, and nothing on a second run; that the funder's reserve is kept; that a proof of
+possession verifies for this account and chain only; that a different registered key, or a key left unproven, stops
+the run; and that an unscoped window wide enough is kept while a scoped one is replaced. `scripts/src/lane.ts` is
+tested with a fake `fetch`, and the eth-native signer offline with the SDK (the hybrid transaction is at least 4,627
+bytes longer than the classical one). The settings are a frozen fixture; one test only checks that every role in
+`config/app.json` maps to one account and every amount reads as QOR.
+
 Changes checked to fail:
 
 | Change | Tests that failed |
 |---|---|
+| the funder reserve check removed from `fundAccounts` | the reserve test |
+| the different-key check removed from `registerKey` | the different-key test |
+| the proven check after registering removed | the unproven-key test |
+| key registration signed hybrid | eight `native` tests |
+| every account topped up, short or not | the top-up test |
+| a scoped window treated as unscoped | the scoped-window test |
 | `wh` packed as `uint64` in place of `day` as `uint32` | the attest message vector |
 | meter and producer swapped in the register message | the register message vector |
 | the config check ignores the spread when comparing with the chain's cap | the over-the-cap config test |

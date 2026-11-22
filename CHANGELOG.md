@@ -22,6 +22,9 @@ contract is a new deployment, listed here with its new address.
 - Container image, deploy script with rollback, health watch, and CI on GitHub Actions.
 - `pnpm testnet`: one command deploys the contracts when the config names none, registers the simulated meters,
   backfills their readings, and writes the addresses and the meter keys file (outside the repository).
+- `pnpm native`: gets the accounts ready on the Native lane before any EVM transaction. It tops each account up to
+  its target from the funder in one transaction, registers each account's ML-DSA-87 key with a proof of possession,
+  opens or closes the EVM window named in `config/app.json`, and reports balances, keys and windows (ADR 0016).
 - "Retire from your own wallet" on the Try it page: connect QoreX with `@qorechain/qorex-rainbowkit`, ask the demo
   account for 500 Wh (`POST /api/demo/grant/<address>`), and retire from the wallet. QoreX does not sign EVM
   transactions yet, and the page says so. Browser tests with `@qorechain/qorex-wallet-mock` in Chromium and WebKit.

@@ -101,6 +101,7 @@ cd "$root"
 if [ -d node_modules ]; then
   step "typecheck"; pnpm -r --if-present typecheck
   step "unit tests"; strict vitest "vitest" pnpm -r --if-present test
+  step "web build"; pnpm --filter @mentari/web build >"$tmp/web-build.log" 2>&1 || { tail -n 30 "$tmp/web-build.log"; fail "web build failed"; }
 fi
 
 step "secret scan"

@@ -29,7 +29,7 @@ afterAll(() => {
 beforeEach(() => {
   if (dir) rmSync(dir, { recursive: true, force: true });
   dir = mkdtempSync(join(tmpdir(), "mentari-uptime-"));
-  const notify = join(dir, "notify.sh");
+  const notify = join(dir, "alert.sh");
   writeFileSync(notify, `#!/usr/bin/env bash\nprintf '%s|%s\\n' "$2" "$1" >> "${join(dir, "sent.log")}"\n`);
   chmodSync(notify, 0o755);
   status = 200;
@@ -45,7 +45,7 @@ async function check(): Promise<string[]> {
       PATH: process.env.PATH ?? "/usr/bin:/bin",
       UPTIME_URL: url,
       UPTIME_STATE: join(dir, "state"),
-      UPTIME_NOTIFY: join(dir, "notify.sh"),
+      UPTIME_NOTIFY: join(dir, "alert.sh"),
     },
   });
   const log = join(dir, "sent.log");

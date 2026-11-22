@@ -20,6 +20,10 @@ export interface SiteConfig {
   demoApi: string;
   /** Watt-hours the "Retire now" button retires (config/limits.json `demo.retireWh`). */
   demoRetireWh: number;
+  /** Watt-hours the demo account sends to a visitor's wallet (config/limits.json `demo.grantWh`). */
+  demoGrantWh: number;
+  /** Wallet path: memo on wallet retirements, and the wallet dialog's locale for each site locale. */
+  wallet: { memo: string; modalLocales: Record<string, string> };
   explorer: { tx: string; block: string; address: string };
   defaultLocale: string;
   locales: string[];
@@ -42,6 +46,8 @@ export const siteConfig: SiteConfig = {
   retirementsPageSize: app.web.retirementsPageSize,
   demoApi: app.web.demoApi,
   demoRetireWh: limits.demo.retireWh,
+  demoGrantWh: limits.demo.grantWh,
+  wallet: app.web.wallet,
   explorer: app.web.explorer,
   defaultLocale: app.web.defaultLocale,
   locales: app.web.locales,

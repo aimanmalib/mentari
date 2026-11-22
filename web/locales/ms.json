@@ -224,6 +224,41 @@
     "noRecord": "Belum ada kes dirakam.",
     "idle": "Hasil muncul di sini. Untuk mencari persaraan lepas, guna"
   },
+  "wallet": {
+    "title": "Bersarakan dari dompet anda sendiri",
+    "lede": "Sambung QoreX, minta {wh} Wh sijil daripada akaun demo, kemudian bersarakan sendiri. Transaksi anda menulis resit ke lejar Native, sama seperti Persarakan sekarang.",
+    "honest": "QoreX menandatangani transaksi Native hari ini. Ia belum menandatangani transaksi EVM, jadi ia mungkin menolak langkah terakhir. Persarakan sekarang di atas tidak memerlukan dompet.",
+    "group": "Dompet QoreChain",
+    "connect": "Sambung QoreX",
+    "connecting": "Menyambung…",
+    "disconnect": "Putuskan",
+    "wrongNetwork": "Dompet anda di rangkaian lain. Tukar QoreX ke testnet QoreChain.",
+    "switch": "Tukar ke testnet",
+    "factsLabel": "Akaun anda",
+    "evmAddress": "Alamat EVM",
+    "nativeAddress": "Alamat Native",
+    "ready": "Sedia kuantum",
+    "readyYes": "Ya. Kunci ML-DSA-87 sudah didaftarkan.",
+    "readyNo": "Belum ada kunci ML-DSA-87. Daftarkan satu dalam QoreX dahulu.",
+    "balance": "Sijil anda",
+    "loading": "Membaca…",
+    "unknown": "Belum diketahui",
+    "notDeployed": "Kontrak belum berada di testnet, jadi langkah ini ditutup. Sambungan dompet berfungsi.",
+    "grant": "Dapatkan {wh} Wh",
+    "grantSending": "Meminta daripada akaun demo…",
+    "grantSent": "Akaun demo menghantar {wh} Wh kepada anda:",
+    "retire": "Bersarakan {wh} Wh",
+    "retireSending": "Menunggu dompet anda…",
+    "retired": "Dibersarakan dari dompet anda:",
+    "retiredN": "Persaraan {n}",
+    "problem": {
+      "declined": "Anda menolak permintaan dalam dompet. Tiada apa yang dihantar.",
+      "unsupported": "QoreX enggan menandatangani transaksi EVM ini. Ia belum menandatangani transaksi EVM. Tiada apa yang dihantar.",
+      "not-quantum-ready": "Kontrak hanya membayar akaun yang mempunyai kunci ML-DSA-87 berdaftar. Daftarkan satu dalam QoreX, kemudian cuba lagi.",
+      "insufficient": "Dompet anda memegang sijil kurang daripada jumlah ini. Dapatkan {wh} Wh dahulu.",
+      "failed": "Transaksi tidak berjaya. Tiada apa yang disimpan."
+    }
+  },
   "footer": {
     "entry": "Mentari ialah entri untuk QoreChain Developer Fest: Build Before Q-Day.",
     "testnet": "Testnet sahaja. Apache-2.0."

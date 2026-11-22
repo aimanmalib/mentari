@@ -46,6 +46,13 @@
       "tx": "https://explore.qore.network/tx/{hash}",
       "block": "https://explore.qore.network/block/{height}",
       "address": "https://explore.qore.network/address/{address}"
+    },
+    "wallet": {
+      "memo": "from QoreX",
+      "modalLocales": {
+        "en": "en-US",
+        "ms": "ms-MY"
+      }
     }
   }
 }

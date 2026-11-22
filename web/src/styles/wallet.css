@@ -1,0 +1,141 @@
+/* Try it, wallet path: the visitor's own account on the left lane colours, the two steps under it. */
+.wallet {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: var(--space-5);
+  padding: var(--space-5);
+  border: var(--rule);
+  border-radius: var(--radius-lane);
+  background: var(--paper);
+}
+
+.wallet-head {
+  display: grid;
+  align-content: start;
+  gap: var(--space-3);
+}
+
+.wallet-head h2 {
+  font-size: var(--step-2);
+  font-stretch: 86%;
+}
+
+.wallet-note {
+  font-size: var(--step--1);
+  color: var(--muted);
+}
+
+.wallet-body {
+  display: grid;
+  align-content: start;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.wallet-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
+  border-radius: var(--radius-lane);
+  overflow: hidden;
+}
+
+.wallet-facts > div {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+  padding: var(--space-3) var(--space-4);
+}
+
+.wallet-facts > div:nth-child(-n + 2) {
+  background: var(--silicon);
+  color: var(--silicon-text);
+}
+
+.wallet-facts > div:nth-child(n + 3) {
+  background: var(--noon-wash);
+  color: var(--noon-ink);
+}
+
+.wallet-facts dt {
+  font-size: var(--step--1);
+  font-weight: 600;
+}
+
+.wallet-facts dd {
+  margin: 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.wallet-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.wallet .button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.wallet .button:disabled:hover {
+  background: var(--paper);
+  color: var(--silicon);
+}
+
+.wallet .button-solid,
+.wallet .button-solid:disabled:hover {
+  background: var(--silicon);
+  color: var(--silicon-text);
+}
+
+.wallet .button-solid:hover:not(:disabled) {
+  background: var(--silicon-deep);
+}
+
+.wallet-disconnect {
+  min-height: 44px;
+  padding: 0 var(--space-2);
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.wallet-out:empty {
+  display: none;
+}
+
+.wallet-ok,
+.wallet-problem {
+  padding: var(--space-3) var(--space-4);
+  border-left: 4px solid var(--agree);
+  border-radius: 0 var(--radius-small) var(--radius-small) 0;
+  background: var(--agree-wash);
+  overflow-wrap: anywhere;
+}
+
+.wallet-problem {
+  border-left-color: var(--alarm);
+  background: var(--alarm-wash);
+}
+
+.wallet-actions .wallet-problem {
+  flex: 1 1 100%;
+}
+
+@media (max-width: 52rem) {
+  .wallet {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 30rem) {
+  .wallet-facts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

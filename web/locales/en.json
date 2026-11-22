@@ -224,6 +224,41 @@
     "noRecord": "No recorded case yet.",
     "idle": "Results appear here. To look up any past retirement, use"
   },
+  "wallet": {
+    "title": "Retire from your own wallet",
+    "lede": "Connect QoreX, ask the demo account for {wh} Wh of certificates, then retire them yourself. Your transaction writes the receipt to the Native ledger, the same way Retire now does.",
+    "honest": "QoreX signs Native transactions today. It does not sign EVM transactions yet, so it may refuse the last step. Retire now above needs no wallet.",
+    "group": "QoreChain wallets",
+    "connect": "Connect QoreX",
+    "connecting": "Connecting…",
+    "disconnect": "Disconnect",
+    "wrongNetwork": "Your wallet is on another network. Switch QoreX to the QoreChain testnet.",
+    "switch": "Switch to testnet",
+    "factsLabel": "Your account",
+    "evmAddress": "EVM address",
+    "nativeAddress": "Native address",
+    "ready": "Quantum ready",
+    "readyYes": "Yes. An ML-DSA-87 key is registered.",
+    "readyNo": "No ML-DSA-87 key yet. Register one in QoreX first.",
+    "balance": "Your certificates",
+    "loading": "Reading…",
+    "unknown": "Not known yet",
+    "notDeployed": "The contract is not on the testnet yet, so these steps are closed. Connecting works.",
+    "grant": "Get {wh} Wh",
+    "grantSending": "Asking the demo account…",
+    "grantSent": "The demo account sent you {wh} Wh:",
+    "retire": "Retire {wh} Wh",
+    "retireSending": "Waiting for your wallet…",
+    "retired": "Retired from your wallet:",
+    "retiredN": "Retirement {n}",
+    "problem": {
+      "declined": "You declined the request in your wallet. Nothing was sent.",
+      "unsupported": "QoreX refused to sign this EVM transaction. It does not sign EVM transactions yet. Nothing was sent.",
+      "not-quantum-ready": "The contract only pays accounts with a registered ML-DSA-87 key. Register one in QoreX, then try again.",
+      "insufficient": "Your wallet holds fewer certificates than this retires. Get {wh} Wh first.",
+      "failed": "The transaction did not go through. Nothing was kept."
+    }
+  },
   "footer": {
     "entry": "Mentari is an entry for QoreChain Developer Fest: Build Before Q-Day.",
     "testnet": "Testnet only. Apache-2.0."

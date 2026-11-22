@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { DemoResult } from "../components/DemoResult.js";
 import { siteConfig } from "../config.js";
 import { DEMO_ACTIONS, knownFallback, readStatus, runDemo, type DemoAction, type DemoOutcome, type DemoStatus } from "../data/demo.js";
@@ -7,6 +7,9 @@ import { evidenceCases } from "../data/evidenceSource.js";
 import { getReaders, siteMode } from "../data/useReaders.js";
 import { useI18n } from "../i18n/I18n.js";
 import { Link, routes } from "../router.js";
+
+// wagmi and RainbowKit load only when the page is shown, so the rest of the site stays light.
+const WalletPanel = lazy(() => import("../wallet/WalletPanel.js"));
 
 const FAILURES = DEMO_ACTIONS.filter((a) => a.expect === "revert");
 const cases = evidenceCases(siteMode);
@@ -111,6 +114,10 @@ export function TryIt() {
           </p>
         )}
       </div>
+
+      <Suspense fallback={null}>
+        <WalletPanel />
+      </Suspense>
     </>
   );
 }

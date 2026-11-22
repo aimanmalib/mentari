@@ -30,4 +30,7 @@ contract is a new deployment, listed here with its new address.
   first so a second run sends nothing, and simulating each call before sending it (ADR 0012).
 - A daily meter run in the server: once at start, then each day at the UTC time in `config/meter.json`, with a retry
   after a failure and an off switch. It stays off until the contracts and meter keys are configured (ADR 0013).
+- The live job behind that run: it reads each system's meter from the chain, signs yesterday's reading with that
+  meter's ML-DSA-87 key from a key file in the read-only key folder, and sends what is missing. The server is now
+  bundled with esbuild into one file, so the image still has no `node_modules` (ADR 0014).
 - Eight slides in `deck/` (HTML source and PDF), linked from the README and the site footer.

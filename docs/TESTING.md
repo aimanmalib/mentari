@@ -86,8 +86,9 @@ Foundry saves a failing sequence under `contracts/cache/` and replays it first o
 
 ## Server tests
 
-`server/test/` runs with vitest and no network: the upstream `fetch` is a fake and the config is a frozen fixture, so
-changing `config/` never breaks a test. `cd server && npx vitest run` reported 103 passed on 2026-11-22.
+`server/test/` runs with vitest and no internet: the upstream `fetch` is a fake, the config is a frozen fixture, so
+changing `config/` never breaks a test, and the live meter job talks only to a local anvil node (as in the chain driver
+tests). `cd server && npx vitest run` reported 125 passed on 2026-11-22.
 
 They cover the `/lcd` allowlist (other paths, other contracts, `//host`, `@host`, dot segments and `%2e` are refused
 without an upstream call), methods other than `GET` (405), the 5 second cache, joined concurrent requests, 502 on
@@ -103,6 +104,15 @@ next run time across a day and a year, the run at start, two daily runs, a retry
 the next daily run, one run at a time, a run that ends after `stop()`, and the two off states. Six changes to the
 scheduler were each tried on purpose; four turned a test red at once. The two that did not were a missing stop check
 (a test for it was then added and goes red) and dropping `unref()` on the timer, which only affects how Node exits.
+
+The live meter job (`server/src/meter/live.ts`, decision 0014) runs on a local anvil node with the test precompile. The
+tests deploy `Mentari`, register two systems and drive the job through the server's ABI subset: it attests yesterday
+for each system and sends nothing on a second run, reads each meter from the chain, stops before any send when a
+registered meter has no key, and fails on a system the chain does not know. The meter signer is checked with a real
+ML-DSA-87 key and `pqcVerify`. The key file loader refuses a bad sender, address or key length and a meter listed twice,
+and its errors never contain a key. `server/test/meter-abi.test.ts` compares the ABI subset with the Foundry build
+output, struct field names included. Five changes were tried on purpose (no key check before sending, a wrong sent
+count, a wrong argument type, a renamed struct field, a missing error); each turned a test red.
 
 Each guard was removed from a copy of the code to check that a test notices:
 

@@ -113,12 +113,20 @@ Each guard was removed from a copy of the code to check that a test notices:
 
 ## Web tests
 
-`web/test/` runs with vitest in Node and no network. `cd web && npx vitest run` reported 54 passed on 2026-11-22.
+`web/test/` runs with vitest in Node and no network. `cd web && npx vitest run` reported 109 passed on 2026-11-22.
 
 They cover the check behind the "both ledgers agree" badge (sender, note, receipt id, nothing checked), the EVM to
 Native address encoding, the receipts book reader (a missing receipt is `null`, any other failure throws so the page
 says it could not check), the registry read over the sample data, locale parity (same keys, same placeholders, no
-empty values, every key the code asks for exists), and that the site's ABI matches `contracts/src/Mentari.sol`.
+empty values, every key the code asks for exists), and that the site's ABI and the `Retired` event match
+`contracts/src/Mentari.sol`.
+
+The Retirements, Verify and Try it pages add tests for: paging newest first, rows kept when the node refuses the event
+search, lookup by retirement number or receipt id (not found, a receipt from another sender, a receipt naming a
+retirement the contract does not have, ids that do not point to each other, a wrong note), the demo client (request
+shape, strict reading of the server's answer, every failure becomes the recorded case, the four routes match
+`server/src/demo/api.ts`), recorded cases and their live re-check, explorer links, and rendered components in both
+languages through `react-dom/server`.
 
 | Change to the web data layer | Tests that failed |
 |---|---|
@@ -126,3 +134,8 @@ empty values, every key the code asks for exists), and that the site's ABI match
 | note prefix without the trailing ` m=` (so `n=70` passes for `n=7`) | 2 |
 | "agree" when retirements exist but none was checked | 1 |
 | every receipts book error treated as "not found" | 1 |
+| Verify accepts a receipt whose retirement points to another receipt | 1 |
+| Verify skips the receipt sender check | 1 |
+| demo result "as expected" read loosely (any truthy value) | 1 |
+| Try it sends even when the status says the chain is not ready | 1 |
+| re-check calls an unknown transaction "confirmed" | 1 |

@@ -1,0 +1,106 @@
+{
+  "meta": {
+    "title": "Mentari: sijil solar di dua lejar",
+    "description": "Sijil watt-jam solar di testnet QoreChain. Setiap persaraan dibakar di EVM dan menulis resit Native dalam transaksi yang sama."
+  },
+  "nav": {
+    "label": "Utama",
+    "skip": "Langkau ke kandungan",
+    "registry": "Daftar",
+    "how": "Cara ia berfungsi",
+    "language": "Bahasa",
+    "en": "English",
+    "ms": "Bahasa Melayu"
+  },
+  "data": {
+    "sample": "Data contoh. Kontrak belum ada di testnet, jadi angka ini contoh, bukan ukuran.",
+    "live": "Dibaca dari testnet QoreChain pada {time}.",
+    "simulated": "Meter simulasi"
+  },
+  "registry": {
+    "title": "Watt-jam solar, direkod di dua lejar serentak",
+    "lede": "Setiap sijil Mentari ialah satu watt-jam dari meter solar. Membersarakan sijil membakarnya di EVM dan menulis resit di lejar Native dalam transaksi yang sama. Jika satu pihak gagal, kedua-duanya tidak berubah.",
+    "evm": "Lejar EVM",
+    "evmSub": "Kontrak Mentari",
+    "native": "Lejar Native",
+    "nativeSub": "Buku resit",
+    "minted": "Dicetak",
+    "retired": "Dibersara",
+    "supply": "Dalam edaran",
+    "retirements": "Persaraan",
+    "matched": "Resit sepadan",
+    "latestReceipt": "Resit terkini",
+    "sender": "Pengirim",
+    "none": "Belum ada",
+    "agree": "Kedua-dua lejar sepakat",
+    "agreeDetail": "{checked} daripada {total} persaraan terkini masing-masing ada resit yang sepadan.",
+    "disagree": "Lejar tidak sepakat",
+    "disagreeDetail": "{failed} daripada {checked} persaraan terkini tiada resit yang sepadan.",
+    "empty": "Belum ada persaraan",
+    "emptyDetail": "Persaraan pertama akan dipapar di sini bersama resitnya.",
+    "checking": "Menyemak kedua-dua lejar",
+    "error": "Lejar tidak dapat dibaca",
+    "errorDetail": "Testnet tidak menjawab. Laman ini mencuba lagi dalam {seconds} saat.",
+    "retry": "Cuba lagi",
+    "problem": {
+      "missing-receipt": "tiada resit",
+      "wrong-sender": "resit dari pengirim lain",
+      "wrong-note": "nota tidak sepadan"
+    }
+  },
+  "systems": {
+    "title": "Sistem solar",
+    "note": "Meter ini simulasi. Bacaan datang dari model berbenih, ditandatangani dengan kunci ML-DSA-87 dan disemak oleh kontrak seperti bacaan sebenar.",
+    "name": "Meter {label}",
+    "capacity": "Kapasiti",
+    "dailyCap": "Had harian",
+    "meter": "Kunci meter",
+    "since": "Sejak",
+    "empty": "Belum ada sistem berdaftar."
+  },
+  "unit": {
+    "wh": "{value} Wh",
+    "w": "{value} W"
+  },
+  "how": {
+    "title": "Satu transaksi, dua mesin maya",
+    "lede": "Mentari menyimpan sijil di EVM dan resit di lejar Native. Membersarakan sijil menyentuh kedua-duanya, dan rantai menganggapnya satu transaksi.",
+    "stepsTitle": "Apa berlaku bila anda membersarakan sijil",
+    "step1": "Anda memanggil retire pada kontrak Mentari dengan jumlah dan memo pendek.",
+    "step2": "Kontrak membakar sijil anda dahulu.",
+    "step3": "Ia memanggil jambatan Cross-VM di {bridge} dengan mesej record.",
+    "step4": "Buku resit Native menyimpan nota dan memulangkan id resit.",
+    "step5": "Kontrak menyemak id itu lebih baharu daripada yang terakhir, kemudian menyimpan persaraan.",
+    "fail": "Jika mana-mana langkah gagal, seluruh transaksi berbalik. Tiada bakar, tiada resit.",
+    "diagramLabel": "Rajah satu persaraan yang menyeberang dari EVM ke lejar Native dan kembali.",
+    "diagram": {
+      "tx": "Satu transaksi",
+      "evm": "EVM",
+      "native": "Native",
+      "contract": "Kontrak Mentari",
+      "bridge": "Jambatan Cross-VM",
+      "book": "Buku resit",
+      "burn": "bakar",
+      "record": "rekod",
+      "reply": "id resit"
+    },
+    "noteTitle": "Apa yang tertulis pada resit",
+    "noteBody": "Kontrak membina nota sendiri daripada medan bertaip. Memo dihadkan kepada huruf, digit, ruang dan . : / # -, jadi memo tidak boleh mengubah mesej.",
+    "keysTitle": "Tandatangan pasca-kuantum",
+    "keysBody": "Bacaan meter ditandatangani dengan ML-DSA-87 dan disemak di rantai oleh precompile pqcVerify. Sijil hanya boleh berpindah ke akaun yang ada kunci ML-DSA-87 berdaftar.",
+    "limitsTitle": "Had",
+    "limit1": "Meter ini simulasi. Tiada apa di sini datang dari panel solar sebenar.",
+    "limit2": "Ini berjalan di testnet QoreChain. Sijil tiada nilai.",
+    "limit3": "Projek lain memakai buku resit yang sama, jadi jumlah kiraannya termasuk resit mereka. Setiap persaraan Mentari disemak dengan id resitnya sendiri.",
+    "limit4": "Laman ini menyemak {n} persaraan terkini setiap lawatan, bukan seluruh sejarah.",
+    "limit5": "Kontrak tidak boleh dinaik taraf. Pembaikan bermakna deploy baharu di alamat baharu."
+  },
+  "footer": {
+    "entry": "Mentari ialah entri untuk QoreChain Developer Fest: Build Before Q-Day.",
+    "testnet": "Testnet sahaja. Apache-2.0."
+  },
+  "notFound": {
+    "title": "Halaman ini tidak wujud",
+    "back": "Pergi ke daftar"
+  }
+}

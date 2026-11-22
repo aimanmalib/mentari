@@ -1,0 +1,78 @@
+{
+  "_comment": "Sample data for development and for the page before the contracts are on testnet. Not measured. Shaped like the testnet evidence.",
+  "contract": "0x5e1a00000000000000000000000000000000c0de",
+  "totals": {
+    "minted": "25310",
+    "retired": "1500",
+    "supply": "23810"
+  },
+  "systems": [
+    {
+      "id": 1,
+      "meter": "0x00000000000000000000000000000000000000a1",
+      "producer": "0x6b0e000000000000000000000000000000000006",
+      "capacityW": 4200,
+      "firstDay": 20775,
+      "maxWh": "33600"
+    },
+    {
+      "id": 2,
+      "meter": "0x00000000000000000000000000000000000000a2",
+      "producer": "0x6b0e000000000000000000000000000000000006",
+      "capacityW": 6100,
+      "firstDay": 20775,
+      "maxWh": "48800"
+    },
+    {
+      "id": 3,
+      "meter": "0x00000000000000000000000000000000000000a3",
+      "producer": "0x6b0e000000000000000000000000000000000006",
+      "capacityW": 9800,
+      "firstDay": 20775,
+      "maxWh": "78400"
+    }
+  ],
+  "retirements": [
+    {
+      "n": 1,
+      "holder": "0x6b0e000000000000000000000000000000000006",
+      "wh": "500",
+      "receiptId": 4,
+      "timestamp": 1795078800
+    },
+    {
+      "n": 2,
+      "holder": "0x7d3c000000000000000000000000000000000007",
+      "wh": "500",
+      "receiptId": 5,
+      "timestamp": 1795165200
+    },
+    {
+      "n": 3,
+      "holder": "0x7d3c000000000000000000000000000000000007",
+      "wh": "500",
+      "receiptId": 6,
+      "timestamp": 1795251600
+    }
+  ],
+  "receipts": [
+    {
+      "id": 4,
+      "sender": "qor1tcdqqqqqqqqqqqqqqqqqqqqqqqqqpsx755prn6",
+      "note": "MTR1 n=1 wh=500 by=0x6b0e000000000000000000000000000000000006 m=pilot",
+      "height": 10501234
+    },
+    {
+      "id": 5,
+      "sender": "qor1tcdqqqqqqqqqqqqqqqqqqqqqqqqqpsx755prn6",
+      "note": "MTR1 n=2 wh=500 by=0x7d3c000000000000000000000000000000000007 m=demo",
+      "height": 10502468
+    },
+    {
+      "id": 6,
+      "sender": "qor1tcdqqqqqqqqqqqqqqqqqqqqqqqqqpsx755prn6",
+      "note": "MTR1 n=3 wh=500 by=0x7d3c000000000000000000000000000000000007 m=demo",
+      "height": 10503702
+    }
+  ]
+}

@@ -1,0 +1,106 @@
+{
+  "meta": {
+    "title": "Mentari: solar certificates on two ledgers",
+    "description": "Solar watt-hour certificates on QoreChain testnet. Each retirement burns on the EVM and writes a Native receipt in the same transaction."
+  },
+  "nav": {
+    "label": "Main",
+    "skip": "Skip to content",
+    "registry": "Registry",
+    "how": "How it works",
+    "language": "Language",
+    "en": "English",
+    "ms": "Bahasa Melayu"
+  },
+  "data": {
+    "sample": "Sample data. The contracts are not on testnet yet, so these numbers are examples, not measurements.",
+    "live": "Read from QoreChain testnet at {time}.",
+    "simulated": "Simulated meter"
+  },
+  "registry": {
+    "title": "Solar watt-hours, recorded on two ledgers at once",
+    "lede": "Each Mentari certificate is one watt-hour from a solar meter. Retiring one burns it on the EVM and writes a receipt on the Native ledger in the same transaction. If either side fails, neither changes.",
+    "evm": "EVM ledger",
+    "evmSub": "Mentari contract",
+    "native": "Native ledger",
+    "nativeSub": "Receipts book",
+    "minted": "Minted",
+    "retired": "Retired",
+    "supply": "In circulation",
+    "retirements": "Retirements",
+    "matched": "Receipts matched",
+    "latestReceipt": "Latest receipt",
+    "sender": "Sender",
+    "none": "None yet",
+    "agree": "Both ledgers agree",
+    "agreeDetail": "The latest {checked} of {total} retirements each have a matching receipt.",
+    "disagree": "The ledgers disagree",
+    "disagreeDetail": "{failed} of the latest {checked} retirements have no matching receipt.",
+    "empty": "No retirements yet",
+    "emptyDetail": "The first retirement will show here with its receipt.",
+    "checking": "Checking both ledgers",
+    "error": "Could not read the ledgers",
+    "errorDetail": "The testnet did not answer. The page tries again in {seconds} seconds.",
+    "retry": "Try again",
+    "problem": {
+      "missing-receipt": "no receipt",
+      "wrong-sender": "receipt from another sender",
+      "wrong-note": "note does not match"
+    }
+  },
+  "systems": {
+    "title": "Solar systems",
+    "note": "These meters are simulated. Readings come from a seeded model, are signed with ML-DSA-87 keys and are checked by the contract like real readings.",
+    "name": "Meter {label}",
+    "capacity": "Capacity",
+    "dailyCap": "Daily cap",
+    "meter": "Meter key",
+    "since": "Since",
+    "empty": "No systems registered yet."
+  },
+  "unit": {
+    "wh": "{value} Wh",
+    "w": "{value} W"
+  },
+  "how": {
+    "title": "One transaction, two virtual machines",
+    "lede": "Mentari keeps its certificates on the EVM and its receipts on the Native ledger. Retiring a certificate touches both, and the chain treats it as one transaction.",
+    "stepsTitle": "What happens when you retire",
+    "step1": "You call retire on the Mentari contract with an amount and a short memo.",
+    "step2": "The contract burns your certificates first.",
+    "step3": "It calls the Cross-VM bridge at {bridge} with a record message.",
+    "step4": "The Native receipts book stores the note and returns a receipt id.",
+    "step5": "The contract checks that the id is newer than the last one, then stores the retirement.",
+    "fail": "If any step fails, the whole transaction reverts. No burn, no receipt.",
+    "diagramLabel": "Diagram of one retirement crossing from the EVM to the Native ledger and back.",
+    "diagram": {
+      "tx": "One transaction",
+      "evm": "EVM",
+      "native": "Native",
+      "contract": "Mentari contract",
+      "bridge": "Cross-VM bridge",
+      "book": "Receipts book",
+      "burn": "burn",
+      "record": "record",
+      "reply": "receipt id"
+    },
+    "noteTitle": "What the receipt says",
+    "noteBody": "The contract builds the note itself from typed fields. The memo is limited to letters, digits, spaces and . : / # -, so a memo cannot change the message.",
+    "keysTitle": "Post-quantum signatures",
+    "keysBody": "Meter readings are signed with ML-DSA-87 and checked on chain by the pqcVerify precompile. Certificates can only move to accounts that have a registered ML-DSA-87 key.",
+    "limitsTitle": "Limits",
+    "limit1": "The meters are simulated. Nothing here comes from a real solar panel.",
+    "limit2": "This runs on QoreChain testnet. Certificates have no value.",
+    "limit3": "Other projects use the same receipts book, so its total count includes their receipts. Each Mentari retirement is checked by its own receipt id.",
+    "limit4": "The page checks the latest {n} retirements on each visit, not the whole history.",
+    "limit5": "The contracts cannot be upgraded. A fix means a new deployment at a new address."
+  },
+  "footer": {
+    "entry": "Mentari is an entry for QoreChain Developer Fest: Build Before Q-Day.",
+    "testnet": "Testnet only. Apache-2.0."
+  },
+  "notFound": {
+    "title": "This page does not exist",
+    "back": "Go to the registry"
+  }
+}

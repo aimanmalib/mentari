@@ -75,6 +75,7 @@ Perlu Node.js 22, pnpm 12.9.1 dan git. Skrip ujian memasang Foundry yang dipin j
 git clone --recurse-submodules https://github.com/aimanmalib/mentari.git
 cd mentari
 pnpm install --frozen-lockfile
+pnpm exec playwright install chromium webkit
 bash scripts/gerbang-ujian.sh   # sama seperti CI
 pnpm build && pnpm start        # laman di http://localhost:8080, data sampel
 ```
@@ -86,9 +87,10 @@ Dikira pada 22 November 2026 daripada larian tempatan, langkah yang sama dengan 
 | Suite | Hasil |
 | --- | --- |
 | Foundry, `contracts/test/` | 113 lulus: 96 ujian unit, 16 ujian fuzz (512 larian setiap satu) dan satu suite invarian yang memegang 4 invarian (forge mengira suite itu sekali, jadi 96 + 16 + 1 = 113); liputan baris `contracts/src` 99 % |
-| vitest, `server/test/` | 77 lulus |
-| vitest, `web/test/` | 112 lulus |
-| vitest, `scripts/test/` | 16 lulus |
+| vitest, `server/test/` | 86 lulus |
+| vitest, `web/test/` | 133 lulus |
+| vitest, `scripts/test/` | 20 lulus |
+| Playwright, `web/e2e/` | 10 lulus: laluan dompet dengan dompet tiruan QoreX, 5 kes dalam Chromium dan WebKit sebagai iPhone 13 |
 
 Empat invarian: dicetak tolak dibersara sama dengan bekalan; bilangan persaraan sama dengan bilangan resit yang jambatan
 terima daripada kontrak; id resit setiap persaraan unik dan menaik; tiada baki pada alamat tanpa kunci pasca-kuantum.
@@ -117,7 +119,11 @@ Versi penuh dengan sumber (dalam bahasa Inggeris): [`docs/threat-model.md`](docs
   ditunjukkan, dan laman memakai data sampel.
 - **Pihak Native merekod, bukan menguatkuasa.** `qday-receipts` ialah buku resit kongsi dari bengkel. Sesiapa boleh
   menulis kepadanya; resit Mentari ialah yang pengirimnya kontrak Mentari.
-- **Belum ada aliran dompet.** "Retire now" memakai akaun demo di pelayan, jadi juri tidak perlu dompet.
+- **Laluan dompet diuji dengan dompet tiruan sahaja.** "Bersarakan dari dompet anda sendiri" menyambung QoreX, meminta
+  500 Wh daripada akaun demo dan bersara dari dompet. QoreX belum menandatangani transaksi EVM, jadi hari ini ia menolak
+  langkah terakhir itu, dan laman menyatakannya. Ujian pelayar memakai dompet tiruan QoreX: profil `current` ditolak,
+  profil `planned` menghantar `retire` ke kontrak. Saya belum mencubanya dengan sambungan sebenar
+  ([ADR 0010](docs/decisions/0010-qorex-wallet-path.md)). "Retire now" tidak memerlukan dompet.
 - **Tiada audit.** Kontrak ada ujian, fuzz dan invarian, bukan audit profesional.
 
 ## Pendedahan AI
@@ -132,7 +138,8 @@ sebelum setiap komit diterima. [`AI_USAGE.md`](AI_USAGE.md) menerangkan aliran k
   (Apache-2.0): `workshop-2/01-qday-vault` untuk corak `pqcVerify` dan `pqcKeyStatus`, dan `workshop-3/02-cross-vm` untuk
   panggilan jambatan dan buku resit. Lihat [NOTICE](NOTICE).
 - `@qorechain/sdk`, [Foundry](https://github.com/foundry-rs/foundry) dan forge-std, [Vite](https://vite.dev),
-  [React](https://react.dev), [vitest](https://vitest.dev), TypeScript dan tsx.
+  [React](https://react.dev), [wagmi](https://wagmi.sh), [RainbowKit](https://rainbowkit.com),
+  [vitest](https://vitest.dev), [Playwright](https://playwright.dev), TypeScript dan tsx.
 
 ## Lesen
 

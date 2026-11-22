@@ -89,6 +89,8 @@ One Node 22 process, one container image:
   and the receipt counts before and after. Limits (one at a time, per IP per hour, per day, the off switch, the minimum
   balance) are in `config/limits.json`. When a limit is reached or the account is low, the page shows the recorded
   evidence and checks it again live.
+- `POST /api/demo/grant/<address>` makes the demo account transfer `demo.grantWh` certificates to a visitor's wallet,
+  under the same limits. It first checks `Mentari.isQuantumReady`, because `transfer` refuses accounts without a key.
 - The client IP for rate limits is `cf-connecting-ip` only when the connection comes from a Cloudflare address
   (`config/cloudflare-ips.json`), so the header cannot be forged from outside.
 - `GET /healthz` for the health watch.
@@ -106,6 +108,11 @@ says "could not check", never "disagree".
 Until `contracts.mentari` is set in [`config/app.json`](../config/app.json), the site runs the same checks over
 `web/fixtures/sample.json` and says on every page that the numbers are examples. All text is in `web/locales/en.json`
 and `web/locales/ms.json`.
+
+The Try it page also has a wallet path, loaded only on that page: QoreX through `@qorechain/qorex-rainbowkit` and
+wagmi, the account's key status and balance, the grant above, and `retire` signed by the wallet. QoreX does not sign
+EVM transactions yet, so today the last step is refused
+([ADR 0010](decisions/0010-qorex-wallet-path.md)).
 
 ## Configuration
 

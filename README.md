@@ -95,6 +95,8 @@ uses today.
 | `pqcVerify` precompile (ML-DSA-87) | `0x0000000000000000000000000000000000000a01` | [`contracts/src/lib/Pqc.sol`](contracts/src/lib/Pqc.sol) |
 | `pqcKeyStatus` precompile | `0x0000000000000000000000000000000000000a02` | [`contracts/src/lib/Pqc.sol`](contracts/src/lib/Pqc.sol) |
 | `qday-receipts` Native contract | code id 865 | the target of every retirement |
+| `@qorechain/qorex-rainbowkit` | 0.1.0 (pinned) | [`web/src/wallet/setup.ts`](web/src/wallet/setup.ts): QoreX as the wallet on the Try it page |
+| `@qorechain/qorex-wallet-mock` | 0.1.0 (pinned, tests only) | [`web/e2e/wallet.e2e.ts`](web/e2e/wallet.e2e.ts): QoreX in the browser tests |
 
 ## Run it
 
@@ -104,7 +106,8 @@ You need Node.js 22, pnpm 12.9.1 and git. The test script installs a pinned Foun
 git clone --recurse-submodules https://github.com/aimanmalib/mentari.git
 cd mentari
 pnpm install --frozen-lockfile
-bash scripts/gerbang-ujian.sh   # what CI runs: forge build, test, fmt and coverage, vitest, web build, secret scan
+pnpm exec playwright install chromium webkit
+bash scripts/gerbang-ujian.sh   # what CI runs: forge build, test, fmt and coverage, vitest, web build, browser tests, secret scan
 ```
 
 The site on your machine, on sample data:
@@ -127,9 +130,10 @@ Counted on 22 November 2026 from a local run, the same steps CI runs on every pu
 | Suite | Result | What it covers |
 | --- | --- | --- |
 | Foundry, `contracts/test/` | 113 passed, 0 failed | 96 unit tests, 16 fuzz tests (512 runs each) and one invariant suite holding 4 invariants (128 sequences of 64 calls; forge counts the suite once, so 96 + 16 + 1 = 113); line coverage of `contracts/src` 99 % |
-| vitest, `server/test/` | 77 passed | the `/lcd` allowlist, client IP behind Cloudflare, demo rate limits, the off switch, fallbacks |
-| vitest, `web/test/` | 112 passed | the "both ledgers agree" check, address encoding, the receipts reader, both languages have the same keys |
-| vitest, `scripts/test/` | 16 passed | account derivation, balances, the health watch, the test counter |
+| vitest, `server/test/` | 86 passed | the `/lcd` allowlist, client IP behind Cloudflare, demo rate limits, the off switch, fallbacks, the wallet grant |
+| vitest, `web/test/` | 133 passed | the "both ledgers agree" check, address encoding, the receipts reader, both languages have the same keys, wallet errors |
+| vitest, `scripts/test/` | 20 passed | account derivation, balances, the health watch, the test counter |
+| Playwright, `web/e2e/` | 10 passed | the wallet path with the QoreX wallet mock, 5 cases in Chromium and in WebKit as an iPhone 13 |
 
 The four invariants hold after every random call:
 
@@ -166,7 +170,11 @@ Full version with sources: [`docs/threat-model.md`](docs/threat-model.md).
   and the site runs on sample data.
 - **The Native side records, it does not enforce.** `qday-receipts` is the shared receipt book from the workshop. Anyone
   can write to it; Mentari's receipts are the ones whose sender is the Mentari contract.
-- **No wallet flow yet.** "Retire now" uses a demo account on the server, so a judge needs no wallet.
+- **The wallet path is tested with a mock only.** "Retire from your own wallet" connects QoreX, asks the demo account
+  for 500 Wh and retires from the wallet. QoreX does not sign EVM transactions yet, so today it refuses that last step,
+  and the page says so. The browser tests use the QoreX wallet mock: its `current` profile is refused, its `planned`
+  profile sends `retire` to the contract. I have not tried it with the real extension
+  ([ADR 0010](docs/decisions/0010-qorex-wallet-path.md)). "Retire now" needs no wallet.
 - **No audit.** The contracts have tests, fuzzing and invariants, not a professional audit.
 
 ## AI disclosure
@@ -182,7 +190,8 @@ and my contribution.
   (Apache-2.0): `workshop-2/01-qday-vault` for the `pqcVerify` and `pqcKeyStatus` pattern, and `workshop-3/02-cross-vm`
   for the bridge call and the receipts book. See [NOTICE](NOTICE).
 - `@qorechain/sdk`, [Foundry](https://github.com/foundry-rs/foundry) and forge-std, [Vite](https://vite.dev),
-  [React](https://react.dev), [vitest](https://vitest.dev), TypeScript and tsx. Versions are pinned in `package.json`,
+  [React](https://react.dev), [wagmi](https://wagmi.sh), [RainbowKit](https://rainbowkit.com),
+  [vitest](https://vitest.dev), [Playwright](https://playwright.dev), TypeScript and tsx. Versions are pinned in `package.json`,
   `pnpm-lock.yaml` and `.gitmodules`.
 
 ## Contributing

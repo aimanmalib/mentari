@@ -20,4 +20,7 @@ contract is a new deployment, listed here with its new address.
 - Site in English and Bahasa Melayu: Registry, Retirements, Verify, Try it and How it works, on labelled sample data
   until the contracts are deployed.
 - Container image, deploy script with rollback, health watch, and CI on GitHub Actions.
+- "Retire from your own wallet" on the Try it page: connect QoreX with `@qorechain/qorex-rainbowkit`, ask the demo
+  account for 500 Wh (`POST /api/demo/grant/<address>`), and retire from the wallet. QoreX does not sign EVM
+  transactions yet, and the page says so. Browser tests with `@qorechain/qorex-wallet-mock` in Chromium and WebKit.
 - README in English and Bahasa Melayu, `AI_USAGE.md`, architecture, threat model and community files.

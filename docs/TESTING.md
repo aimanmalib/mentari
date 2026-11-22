@@ -87,7 +87,7 @@ Foundry saves a failing sequence under `contracts/cache/` and replays it first o
 ## Server tests
 
 `server/test/` runs with vitest and no network: the upstream `fetch` is a fake and the config is a frozen fixture, so
-changing `config/` never breaks a test. `cd server && npx vitest run` reported 77 passed on 2026-11-22.
+changing `config/` never breaks a test. `cd server && npx vitest run` reported 86 passed on 2026-11-22.
 
 They cover the `/lcd` allowlist (other paths, other contracts, `//host`, `@host`, dot segments and `%2e` are refused
 without an upstream call), methods other than `GET` (405), the 5 second cache, joined concurrent requests, 502 on
@@ -95,7 +95,8 @@ failure or oversized replies, static files (no escape from the site folder, `no-
 rules, and the demo sender (`/api/demo/*`). The demo tests use a fake chain whose ledgers move like the contracts, so
 they hold no key and touch no network. They cover one send at a time, the per-visitor hour and the UTC day limits with
 `retry-after`, the off switch, low funds, a missing sender, timeouts and failed sends, and the recorded case named in
-every refusal.
+every refusal. The wallet grant (`/api/demo/grant/<address>`) is tested for the amount from config, the receiver rule
+checked before any quota is used, the shared hourly limit, a reverted transfer, and malformed addresses.
 
 Each guard was removed from a copy of the code to check that a test notices:
 
@@ -110,10 +111,11 @@ Each guard was removed from a copy of the code to check that a test notices:
 | demo frees the slot on timeout instead of when the chain call ends | 1 |
 | per-visitor window shortened to half an hour | 1 |
 | demo off switch ignored | 2 |
+| grant skips the quantum-ready check | 1 |
 
 ## Web tests
 
-`web/test/` runs with vitest in Node and no network. `cd web && npx vitest run` reported 109 passed on 2026-11-22.
+`web/test/` runs with vitest in Node and no network. `cd web && npx vitest run` reported 133 passed on 2026-11-22.
 
 They cover the check behind the "both ledgers agree" badge (sender, note, receipt id, nothing checked), the EVM to
 Native address encoding, the receipts book reader (a missing receipt is `null`, any other failure throws so the page
@@ -141,3 +143,31 @@ languages through `react-dom/server`.
 | re-check calls an unknown transaction "confirmed" | 1 |
 | Verify by number marks the sender check as passed whatever the receipt sender | 1 |
 | demo result accepts any `0x` string as the transaction hash | 1 |
+
+The wallet path adds tests for the grant client (request shape, refusals, a malformed address is never sent), the
+reading of wallet errors (QoreX's "not yet supported" and "signature rejected" wording, codes 4001 and 4200, the
+contract errors), and that the wallet ABI and its errors match `contracts/src/Mentari.sol`.
+
+## Browser tests
+
+`web/e2e/` runs with Playwright in Chromium and in WebKit as an iPhone 13 (`playwright.config.ts`). The site is built
+with `vite build --mode e2e`, which only sets a test contract address, and served by `vite preview`.
+`@qorechain/qorex-wallet-mock` 0.1.0 is injected into the page, and a fake EVM node inside the test answers the chain
+calls (`web/e2e/fake-chain.ts`); nothing reaches the testnet. `pnpm exec playwright test` reported 10 passed (5 cases in
+2 browsers) on 2026-11-22.
+
+| Case | What it checks |
+|---|---|
+| QoreX today (`current` profile) | connect, the account's addresses and key status, get 500 Wh, then the wallet refuses `eth_sendTransaction` and the page says nothing was sent; the fake node received no transaction |
+| QoreX as announced (`planned` profile) | the wallet signs and sends one transaction to the contract, decoded as `retire(500, "from QoreX")`, and the page links retirement 7 |
+| declined in the wallet | nothing is sent and the page says so |
+| no ML-DSA-87 key | the page says so and "Get 500 Wh" is disabled |
+| Bahasa Melayu | the Malay text, no sideways scroll, and no backdrop filter anywhere in the wallet dialog |
+
+Changes checked to fail:
+
+| Change | Tests that failed |
+|---|---|
+| wallet errors read with the earlier pattern, which missed QoreX's "signature rejected" | the declined case (both browsers) and its unit test |
+| the wallet dialog keeps RainbowKit's default overlay blur | the Bahasa Melayu case (WebKit run) |
+

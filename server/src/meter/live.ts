@@ -1,24 +1,14 @@
-import {
-  createPublicClient,
-  createWalletClient,
-  defineChain,
-  getAddress,
-  http,
-  isAddress,
-  type Address,
-  type PublicClient,
-} from "viem";
-import { privateKeyToAccount } from "viem/accounts";
+import { getAddress, isAddress, type Address } from "viem";
 import {
   attestDays,
   readSystem,
   type MeterRun,
   type PqcSigner,
   type SystemPlan,
-  type Wallet,
 } from "../../../scripts/src/chain.js";
 import { signMessage, type MeterConfig } from "../../../scripts/src/meter.js";
-import { mentariMeterAbi } from "./abi.js";
+import { mentariMeterAbi } from "../abi.js";
+import { evmClients } from "../evm.js";
 import { unconfiguredMeter, type DailyJob } from "./daily.js";
 import { readMeterKeys, type MeterKeys } from "./keys.js";
 
@@ -107,15 +97,7 @@ export function liveMeterJob(opts: {
   }
   if (!keys) return unconfiguredMeter;
 
-  const chain = defineChain({
-    id: opts.chain.evmChainId,
-    name: "qorechain",
-    nativeCurrency: { name: "QOR", symbol: "QOR", decimals: 18 },
-    rpcUrls: { default: { http: [opts.chain.evmRpc] } },
-  });
-  const transport = http(opts.chain.evmRpc);
-  const pub = createPublicClient({ chain, transport }) as PublicClient;
-  const wallet = createWalletClient({ chain, transport, account: privateKeyToAccount(keys.sender) }) as Wallet;
+  const { pub, wallet } = evmClients(opts.chain.evmRpc, opts.chain.evmChainId, keys.sender);
   const run: MeterRun = {
     pub,
     wallet,

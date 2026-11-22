@@ -14,7 +14,7 @@ import {
 } from "../../scripts/src/chain.js";
 import { attestMessage } from "../../scripts/src/meter.js";
 import { startAnvil, type LocalChain } from "../../scripts/test/lib/anvil.js";
-import { mentariMeterAbi } from "../src/meter/abi.js";
+import { mentariMeterAbi } from "../src/abi.js";
 import { METER_KEYS_FILE } from "../src/meter/keys.js";
 import { chainMeterJob, liveMeterJob, meterSigner, plansFromChain } from "../src/meter/live.js";
 import { meterModel } from "./fixture.js";

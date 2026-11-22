@@ -60,7 +60,13 @@ describe("runDemo", () => {
   });
 
   it("treats a malformed success as unavailable instead of showing bad numbers", async () => {
-    const out = await runDemo(fakeFetch(200, { ok: true, evmTx: "0x12", evmStatus: "success", receipts: {}, retirements: {} }), "/api/demo", "retire");
+    const out = await runDemo(fakeFetch(200, { ok: true, evmTx: HASH, evmStatus: "success", receipts: {}, retirements: {} }), "/api/demo", "retire");
+    expect(out).toMatchObject({ kind: "fallback", reason: "unavailable" });
+  });
+
+  it("treats a short transaction hash as unavailable even when the counts are valid", async () => {
+    const counts = { receipts: { before: 1, after: 2 }, retirements: { before: 1, after: 2 } };
+    const out = await runDemo(fakeFetch(200, { ok: true, evmTx: "0x12", evmStatus: "success", ...counts }), "/api/demo", "retire");
     expect(out).toMatchObject({ kind: "fallback", reason: "unavailable" });
   });
 

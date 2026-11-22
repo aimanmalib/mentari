@@ -139,3 +139,5 @@ languages through `react-dom/server`.
 | demo result "as expected" read loosely (any truthy value) | 1 |
 | Try it sends even when the status says the chain is not ready | 1 |
 | re-check calls an unknown transaction "confirmed" | 1 |
+| Verify by number marks the sender check as passed whatever the receipt sender | 1 |
+| demo result accepts any `0x` string as the transaction hash | 1 |

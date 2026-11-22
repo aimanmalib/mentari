@@ -153,4 +153,14 @@ describe("verify", () => {
     const report = await verify(evm, book, { kind: "n", value: 2 }, opts(d));
     expect(report.state === "checked" && report.checks.filter((c) => !c.ok).map((c) => c.code)).toEqual(["note"]);
   });
+
+  it("fails only the sender check when looked up by number and the receipt was written by someone else", async () => {
+    const d = many(2);
+    d.receipts[1]!.sender = "qor1someoneelse";
+    const { evm, book } = sampleReaders(d);
+    const report = await verify(evm, book, { kind: "n", value: 2 }, opts(d));
+    expect(report.state).toBe("checked");
+    expect(report.state === "checked" && report.ok).toBe(false);
+    expect(report.state === "checked" && report.checks.filter((c) => !c.ok).map((c) => c.code)).toEqual(["sender"]);
+  });
 });

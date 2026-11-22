@@ -32,6 +32,9 @@
   padding: 0;
   list-style: none;
   border-top: 2px solid var(--ink);
+  /* Rules separate rows only: the last row's rules sit outside the list and are clipped, so the
+     table does not end on a rule just above the footer's own. Works for any number of columns. */
+  overflow: hidden;
 }
 
 .system {
@@ -39,6 +42,7 @@
   gap: var(--space-3);
   padding: var(--space-5) var(--space-5) var(--space-5) 0;
   border-bottom: var(--rule);
+  margin-bottom: -1px;
 }
 
 .system h3 {

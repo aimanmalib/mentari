@@ -1,4 +1,5 @@
-import type { ServerConfig } from "../src/config.js";
+import type { DemoLimits, ServerConfig } from "../src/config.js";
+import type { DemoAction, DemoChain, LedgerCounts, SendResult } from "../src/demo/chain.js";
 
 export const ORIGIN = "https://rest.example.test";
 export const BOOK = "qor1book";
@@ -24,7 +25,56 @@ export function testConfig(over: Partial<ServerConfig["lcd"]> = {}): ServerConfi
       trustedProxies: ["127.0.0.0/8", "::1/128", "172.16.0.0/12"],
       cloudflare: ["173.245.48.0/20", "2606:4700::/32"],
     },
+    demo: demoLimits(),
   };
+}
+
+/** Frozen demo limits for tests, independent of `config/limits.json`. */
+export function demoLimits(over: Partial<DemoLimits> = {}): DemoLimits {
+  return {
+    enabled: true,
+    maxConcurrent: 1,
+    perIpPerHour: 2,
+    perDay: 3,
+    minSenderBalanceQor: 8,
+    retireWh: 500,
+    timeoutMs: 1000,
+    ...over,
+  };
+}
+
+/**
+ * A chain double with ledgers that move like the real contracts: `retire` adds one receipt and one retirement,
+ * every failure case reverts and changes nothing. No key, no network.
+ */
+export class FakeChain implements DemoChain {
+  isReady = true;
+  balance = 50;
+  ledgers: LedgerCounts = { receipts: 10, retirements: 4 };
+  sends: { action: DemoAction; retireWh: number }[] = [];
+  /** Replace to make a send hang, throw or misbehave. */
+  onSend: (action: DemoAction) => Promise<SendResult> = async (action) => {
+    if (action !== "retire") return { evmTx: `0x${"b".repeat(64)}`, status: "reverted" };
+    this.ledgers = { receipts: this.ledgers.receipts + 1, retirements: this.ledgers.retirements + 1 };
+    return { evmTx: `0x${"a".repeat(64)}`, status: "success" };
+  };
+
+  ready(): boolean {
+    return this.isReady;
+  }
+
+  async senderBalanceQor(): Promise<number> {
+    return this.balance;
+  }
+
+  async counts(): Promise<LedgerCounts> {
+    return { ...this.ledgers };
+  }
+
+  send(action: DemoAction, opts: { retireWh: number }): Promise<SendResult> {
+    this.sends.push({ action, retireWh: opts.retireWh });
+    return this.onSend(action);
+  }
 }
 
 export interface FakeFetch {

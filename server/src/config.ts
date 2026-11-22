@@ -19,6 +19,23 @@ export interface ServerConfig {
     /** Cloudflare edge ranges; only these may set `cf-connecting-ip`. */
     cloudflare: string[];
   };
+  demo: DemoLimits;
+}
+
+/** Limits and switches for `/api/demo` (block `demo` of `config/limits.json`). */
+export interface DemoLimits {
+  /** Kill switch: `false` closes every demo send; the site then shows the recorded evidence. */
+  enabled: boolean;
+  maxConcurrent: number;
+  perIpPerHour: number;
+  /** Sends per UTC calendar day across all visitors. */
+  perDay: number;
+  /** Below this sender balance (whole QOR) the demo stops sending. */
+  minSenderBalanceQor: number;
+  /** Energy (Wh) one "Retire now" retires. */
+  retireWh: number;
+  /** Longest a visitor waits for one send; the slot stays taken until the chain call settles. */
+  timeoutMs: number;
 }
 
 const CONFIG_DIR = fileURLToPath(new URL("../../config/", import.meta.url));
@@ -40,6 +57,25 @@ function str(v: unknown, where: string): string {
 function posInt(v: unknown, where: string): number {
   if (typeof v !== "number" || !Number.isInteger(v) || v <= 0) throw new Error(`${where}: expected a positive integer`);
   return v;
+}
+
+function bool(v: unknown, where: string): boolean {
+  if (typeof v !== "boolean") throw new Error(`${where}: expected true or false`);
+  return v;
+}
+
+function demoLimits(v: unknown): DemoLimits {
+  const d = obj(v, "config/limits.json demo");
+  const n = (k: string) => posInt(d[k], `demo.${k}`);
+  return {
+    enabled: bool(d.enabled, "demo.enabled"),
+    maxConcurrent: n("maxConcurrent"),
+    perIpPerHour: n("perIpPerHour"),
+    perDay: n("perDay"),
+    minSenderBalanceQor: n("minSenderBalanceQor"),
+    retireWh: n("retireWh"),
+    timeoutMs: n("timeoutMs"),
+  };
 }
 
 function strList(v: unknown, where: string): string[] {
@@ -86,5 +122,6 @@ export function loadServerConfig(dir: string = CONFIG_DIR): ServerConfig {
       trustedProxies: strList(clientIp.trustedProxies, "clientIp.trustedProxies"),
       cloudflare: [...strList(cf.v4, "cloudflare-ips v4"), ...strList(cf.v6, "cloudflare-ips v6")],
     },
+    demo: demoLimits(limits.demo),
   };
 }

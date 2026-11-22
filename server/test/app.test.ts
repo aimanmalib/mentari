@@ -5,9 +5,10 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { createHandler } from "../src/app.js";
+import { DemoApi } from "../src/demo/api.js";
 import { LcdProxy } from "../src/lcd.js";
 import { StaticSite } from "../src/static.js";
-import { fakeFetch, ORIGIN, testConfig } from "./fixture.js";
+import { fakeFetch, FakeChain, ORIGIN, testConfig } from "./fixture.js";
 
 let dir: string;
 let server: Server;
@@ -22,7 +23,8 @@ beforeAll(async () => {
   writeFileSync(join(dir, "robots.txt"), "User-agent: *");
   writeFileSync(join(tmpdir(), "mentari-outside.txt"), "secret");
   const cfg = testConfig();
-  server = createServer(createHandler({ cfg, lcd: new LcdProxy(cfg, upstream.fn), site: new StaticSite(dir) }));
+  const demo = new DemoApi(cfg.demo, new FakeChain());
+  server = createServer(createHandler({ cfg, lcd: new LcdProxy(cfg, upstream.fn), demo, site: new StaticSite(dir) }));
   await new Promise<void>((ok) => server.listen(0, "127.0.0.1", ok));
   base = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
 });
@@ -88,5 +90,15 @@ describe("server", () => {
   it("does not treat /lcdx as the proxy and keeps /api closed", async () => {
     expect((await fetch(`${base}/lcdx`)).headers.get("content-type")).toMatch(/^text\/html/);
     expect((await fetch(`${base}/api/anything`)).status).toBe(404);
+  });
+
+  it("routes /api/demo through the real socket with the content-type header", async () => {
+    const post = (type: string) => fetch(`${base}/api/demo/retire`, { method: "POST", headers: { "content-type": type }, body: "{}" });
+    expect((await post("text/plain")).status).toBe(415);
+    const ok = await post("application/json");
+    expect(ok.status).toBe(200);
+    expect(await ok.json()).toMatchObject({ ok: true, asExpected: true });
+    expect((await fetch(`${base}/api/demo/status`)).status).toBe(200);
+    expect((await fetch(`${base}/api/demox`)).status).toBe(404);
   });
 });

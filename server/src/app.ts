@@ -1,5 +1,6 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
 import type { ServerConfig } from "./config.js";
+import { DEMO_MOUNT, type DemoApi } from "./demo/api.js";
 import { json, methodNotAllowed, notFound, type Reply } from "./http.js";
 import { CidrSet, clientIp, type ClientIpRules } from "./ip.js";
 import { LCD_MOUNT, type LcdProxy } from "./lcd.js";
@@ -14,6 +15,7 @@ const SECURITY_HEADERS: Record<string, string> = {
 export interface AppParts {
   cfg: ServerConfig;
   lcd: LcdProxy;
+  demo: DemoApi;
   site: StaticSite;
 }
 
@@ -22,6 +24,7 @@ export interface RequestInfo {
   method: string;
   url: string;
   ip: string;
+  contentType?: string | undefined;
 }
 
 function isMount(url: string, mount: string): boolean {
@@ -34,6 +37,7 @@ export async function route(info: RequestInfo, parts: AppParts): Promise<Reply> 
     return method === "GET" || method === "HEAD" ? json(200, { ok: true }) : methodNotAllowed("GET, HEAD");
   }
   if (isMount(url, LCD_MOUNT)) return parts.lcd.handle(method, url);
+  if (isMount(url, DEMO_MOUNT)) return parts.demo.handle(info);
   if (isMount(url, "/api")) return notFound();
   return parts.site.handle(method, url);
 }
@@ -50,6 +54,7 @@ export function createHandler(parts: AppParts): (req: IncomingMessage, res: Serv
       method: req.method ?? "GET",
       url: req.url ?? "/",
       ip: clientIp(req.socket.remoteAddress, req.headers, rules),
+      contentType: req.headers["content-type"],
     };
     route(info, parts)
       .catch(() => json(500, { error: "internal error" }))

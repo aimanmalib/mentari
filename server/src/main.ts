@@ -2,6 +2,8 @@ import { createServer } from "node:http";
 import { fileURLToPath } from "node:url";
 import { createHandler } from "./app.js";
 import { loadServerConfig } from "./config.js";
+import { DemoApi } from "./demo/api.js";
+import { unconfiguredChain } from "./demo/chain.js";
 import { LcdProxy } from "./lcd.js";
 import { StaticSite } from "./static.js";
 
@@ -10,7 +12,10 @@ const webDist = process.env.MENTARI_WEB_DIST ?? fileURLToPath(new URL("../../web
 const port = Number(process.env.PORT ?? "8080");
 const host = process.env.HOST ?? "0.0.0.0";
 
-const server = createServer(createHandler({ cfg, lcd: new LcdProxy(cfg), site: new StaticSite(webDist) }));
+// The live chain adapter replaces `unconfiguredChain` once the contracts are deployed; until then every demo
+// request answers with the recorded case to show.
+const demo = new DemoApi(cfg.demo, unconfiguredChain);
+const server = createServer(createHandler({ cfg, lcd: new LcdProxy(cfg), demo, site: new StaticSite(webDist) }));
 server.listen(port, host, () => {
   console.log(`mentari server on http://${host}:${port} (site ${webDist})`);
 });

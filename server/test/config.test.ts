@@ -28,6 +28,17 @@ describe("loadServerConfig", () => {
     expect(c.lcd.allowedPrefixes.length).toBeGreaterThan(0);
     for (const p of c.lcd.allowedPrefixes) expect(p).toMatch(/^\/[^{}]*$/);
     expect(c.clientIp.cloudflare.length).toBeGreaterThan(0);
+    expect(typeof c.demo.enabled).toBe("boolean");
+    for (const k of ["maxConcurrent", "perIpPerHour", "perDay", "minSenderBalanceQor", "retireWh", "timeoutMs"] as const) {
+      expect(Number.isInteger(c.demo[k]) && c.demo[k] > 0).toBe(true);
+    }
+  });
+
+  it("refuses a missing demo block, a non-boolean switch and bad demo numbers", () => {
+    expect(() => loadServerConfig(copy((l) => delete l.demo))).toThrow(/demo/);
+    expect(() => loadServerConfig(copy((l) => (l.demo.enabled = "yes")))).toThrow(/true or false/);
+    expect(() => loadServerConfig(copy((l) => (l.demo.perDay = 0)))).toThrow(/demo.perDay/);
+    expect(() => loadServerConfig(copy((l) => (l.demo.perIpPerHour = 1.5)))).toThrow(/demo.perIpPerHour/);
   });
 
   it("fills the receipts book into the smart-query prefix", () => {

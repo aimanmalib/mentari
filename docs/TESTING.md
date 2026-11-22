@@ -110,3 +110,19 @@ Each guard was removed from a copy of the code to check that a test notices:
 | demo frees the slot on timeout instead of when the chain call ends | 1 |
 | per-visitor window shortened to half an hour | 1 |
 | demo off switch ignored | 2 |
+
+## Web tests
+
+`web/test/` runs with vitest in Node and no network. `cd web && npx vitest run` reported 54 passed on 2026-11-22.
+
+They cover the check behind the "both ledgers agree" badge (sender, note, receipt id, nothing checked), the EVM to
+Native address encoding, the receipts book reader (a missing receipt is `null`, any other failure throws so the page
+says it could not check), the registry read over the sample data, locale parity (same keys, same placeholders, no
+empty values, every key the code asks for exists), and that the site's ABI matches `contracts/src/Mentari.sol`.
+
+| Change to the web data layer | Tests that failed |
+|---|---|
+| sender of the receipt not compared | 2 |
+| note prefix without the trailing ` m=` (so `n=70` passes for `n=7`) | 2 |
+| "agree" when retirements exist but none was checked | 1 |
+| every receipts book error treated as "not found" | 1 |

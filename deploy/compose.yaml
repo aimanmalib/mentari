@@ -1,0 +1,24 @@
+# Mentari: one container (static site, /lcd proxy, demo sender) behind the host's reverse proxy. No published port.
+# Run through deploy/deploy.sh, which sources deploy/hos.env (host values, not tracked) first.
+name: mentari
+services:
+  mentari:
+    image: mentari:${MENTARI_TAG:-latest}
+    container_name: mentari
+    restart: unless-stopped
+    environment:
+      TZ: UTC
+      # Folder for the demo sender key (one file, written outside the repository). The server only reads it.
+      MENTARI_SECRETS_DIR: /run/mentari
+    volumes:
+      - ${MENTARI_SECRETS_DIR:?set MENTARI_SECRETS_DIR in deploy/hos.env}:/run/mentari:ro
+    read_only: true
+    tmpfs: [/tmp]
+    cpus: 0.5
+    mem_limit: 256m
+    networks: [proxy]
+
+networks:
+  proxy:
+    name: ${MENTARI_NETWORK:?set MENTARI_NETWORK in deploy/hos.env}
+    external: true

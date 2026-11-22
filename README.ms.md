@@ -56,6 +56,17 @@ pertama ialah [`6012d2b`](https://github.com/aimanmalib/mentari/commit/6012d2b) 
 Butiran lanjut (dalam bahasa Inggeris): [`docs/architecture.md`](docs/architecture.md), [`docs/threat-model.md`](docs/threat-model.md)
 dan rekod keputusan dalam [`docs/decisions/`](docs/decisions/).
 
+## Keperluan trek Cross-VM, dan di mana ia dipenuhi
+
+| Keperluan (teks rasmi) | Di mana ia dipenuhi | Status |
+| --- | --- | --- |
+| "Build an application where an EVM contract atomically calls an approved Native contract." | [`Mentari.retire`](contracts/src/Mentari.sol) memanggil jambatan dengan mesej `record` untuk `qday-receipts`, yang ada dalam senarai dibenarkan testnet (cadangan tadbir urus 40, id kod 865) | Dalam kod dan ujian; kes testnet A selepas deploy |
+| "A working EVM-to-Native call to an approved Native contract" | Kes A: satu persaraan yang menambah satu resit dengan pengirim alamat `qor1…` kontrak | Direkod dalam `evidence/` selepas deploy |
+| "with atomic execution shown on testnet" | Kes B, C, D melalui [`AtomicityProbe`](contracts/src/AtomicityProbe.sol): kiraan resit sama sebelum dan selepas setiap kes | Diuji dengan jambatan tiruan; testnet selepas deploy |
+| Repo awam, lesen, README | Repo ini, [Apache-2.0](LICENSE), fail ini | Siap |
+| Alamat testnet | Buku resit `qor1xjayq5ev55tkzpml9klxwyshr7gdrha0nurha9jhm0f0gdckksgs3gltw8`; alamat Mentari dan AtomicityProbe masuk ke [`config/app.json`](config/app.json) | Alamat kontrak selepas deploy |
+| "An AI_USAGE.md file documenting the workflow, the generated work and the human contribution" | [`AI_USAGE.md`](AI_USAGE.md) | Siap |
+
 ## Jalankan
 
 Perlu Node.js 22, pnpm 12.9.1 dan git. Skrip ujian memasang Foundry yang dipin jika `forge` tiada.
@@ -74,13 +85,28 @@ Dikira pada 22 November 2026 daripada larian tempatan, langkah yang sama dengan 
 
 | Suite | Hasil |
 | --- | --- |
-| Foundry, `contracts/test/` | 113 lulus: 96 ujian unit, 16 ujian fuzz (512 larian setiap satu), 4 invarian; liputan baris `contracts/src` 99 % |
+| Foundry, `contracts/test/` | 113 lulus: 96 ujian unit, 16 ujian fuzz (512 larian setiap satu) dan satu suite invarian yang memegang 4 invarian (forge mengira suite itu sekali, jadi 96 + 16 + 1 = 113); liputan baris `contracts/src` 99 % |
 | vitest, `server/test/` | 77 lulus |
 | vitest, `web/test/` | 112 lulus |
 | vitest, `scripts/test/` | 16 lulus |
 
 Empat invarian: dicetak tolak dibersara sama dengan bekalan; bilangan persaraan sama dengan bilangan resit yang jambatan
 terima daripada kontrak; id resit setiap persaraan unik dan menaik; tiada baki pada alamat tanpa kunci pasca-kuantum.
+
+## Model ancaman, ringkas
+
+- **Kunci klasik yang bocor.** Cetakan perlu tandatangan ML-DSA-87 meter, disemak dalam rantai. Kunci klasik sahaja
+  tidak mencetak apa-apa.
+- **Penerima tanpa kunci pasca-kuantum.** Akaun tanpa kunci berdaftar boleh dituntut oleh sesiapa yang memecahkan kunci
+  klasiknya dahulu. Jadi `transfer` menolak akaun begitu.
+- **Suntikan JSON melalui memo.** Memo dihadkan kepada 40 aksara daripada `[A-Za-z0-9 .:/#-]` dan nota dibina daripada
+  medan bertaip, jadi memo tidak boleh mengubah mesej yang dihantar kepada kontrak Native.
+- **Jambatan yang gagal atau senyap.** Balasan kosong atau tidak boleh dibaca, atau id resit yang tidak baharu,
+  membalikkan persaraan.
+- **Penyalahgunaan butang demo.** Satu permintaan pada satu masa, 5 setiap IP sejam, 40 sehari, dan suis henti, semuanya
+  dalam [`config/limits.json`](config/limits.json).
+
+Versi penuh dengan sumber (dalam bahasa Inggeris): [`docs/threat-model.md`](docs/threat-model.md).
 
 ## Had
 

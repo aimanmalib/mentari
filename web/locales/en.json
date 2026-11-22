@@ -1,7 +1,8 @@
 {
   "meta": {
     "title": "Mentari: solar certificates on two ledgers",
-    "description": "Solar watt-hour certificates on QoreChain testnet. Each retirement burns on the EVM and writes a Native receipt in the same transaction."
+    "description": "Solar watt-hour certificates on QoreChain testnet. Each retirement burns on the EVM and writes a Native receipt in the same transaction.",
+    "imageAlt": "Mentari: a yellow sun rising over the horizon, with the site title and summary."
   },
   "nav": {
     "label": "Main",

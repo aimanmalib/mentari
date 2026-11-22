@@ -7,5 +7,5 @@
     "jsx": "react-jsx",
     "types": ["vite/client"]
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "test/**/*.ts", "test/**/*.tsx", "e2e/**/*.ts", "vite.config.ts"]
+  "include": ["src/**/*.ts", "src/**/*.tsx", "test/**/*.ts", "test/**/*.tsx", "e2e/**/*.ts", "vite.config.ts", "share-meta.ts"]
 }

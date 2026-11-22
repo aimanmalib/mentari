@@ -141,7 +141,7 @@ Each guard was removed from a copy of the code to check that a test notices:
 
 ## Web tests
 
-`web/test/` runs with vitest in Node and no network. `cd web && npx vitest run` reported 141 passed on 2026-11-22.
+`web/test/` runs with vitest in Node and no network. `cd web && npx vitest run` reported 149 passed on 2026-11-22.
 
 They cover the check behind the "both ledgers agree" badge (sender, note, receipt id, nothing checked), the EVM to
 Native address encoding, the receipts book reader (a missing receipt is `null`, any other failure throws so the page
@@ -173,6 +173,11 @@ languages through `react-dom/server`.
 The wallet path adds tests for the grant client (request shape, refusals, a malformed address is never sent), the
 reading of wallet errors (QoreX's "not yet supported" and "signature rejected" wording, codes 4001 and 4200, the
 contract errors), and that the wallet ABI and its errors match `contracts/src/Mentari.sol`.
+
+The link preview adds tests for `web/share-meta.ts` over a frozen config: every Open Graph and X card tag is present
+once, the image address is absolute https, values come from config and the default locale, `& < > "` are escaped, a
+missing `web.share` block or locale key stops the build, and `web/index.html` carries no title, description or preview
+tag of its own. Removing `meta.imageAlt` from `web/locales/ms.json` fails 3 tests.
 
 ## Script tests
 

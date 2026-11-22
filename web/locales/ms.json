@@ -1,7 +1,8 @@
 {
   "meta": {
     "title": "Mentari: sijil solar di dua lejar",
-    "description": "Sijil watt-jam solar di testnet QoreChain. Setiap persaraan dibakar di EVM dan menulis resit Native dalam transaksi yang sama."
+    "description": "Sijil watt-jam solar di testnet QoreChain. Setiap persaraan dibakar di EVM dan menulis resit Native dalam transaksi yang sama.",
+    "imageAlt": "Mentari: matahari kuning terbit di ufuk, dengan tajuk dan ringkasan laman."
   },
   "nav": {
     "label": "Utama",

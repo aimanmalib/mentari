@@ -94,6 +94,20 @@
         "ms": "ms-MY"
       }
     },
+    "share": {
+      "siteUrl": "https://mentari.sasateguh.com",
+      "siteName": "Mentari",
+      "image": "/og.png",
+      "imageWidth": 1200,
+      "imageHeight": 630,
+      "imageMaxKb": 300,
+      "twitterCard": "summary_large_image",
+      "appleTouchIcon": "/apple-touch-icon.png",
+      "ogLocales": {
+        "en": "en_US",
+        "ms": "ms_MY"
+      }
+    },
     "links": {
       "source": "https://github.com/aimanmalib/mentari",
       "slides": "https://github.com/aimanmalib/mentari/blob/main/deck/mentari-slides.pdf"

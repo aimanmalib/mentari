@@ -1,6 +1,10 @@
 import react from "@vitejs/plugin-react";
 import { defineConfig, type Plugin } from "vite";
+import app from "../config/app.json" with { type: "json" };
 import e2e from "./e2e/fixture.json" with { type: "json" };
+import en from "./locales/en.json" with { type: "json" };
+import ms from "./locales/ms.json" with { type: "json" };
+import { shareMeta } from "./share-meta.js";
 
 // The dev server forwards the same paths the Node server answers in production.
 const api = process.env.MENTARI_SERVER ?? "http://127.0.0.1:8080";
@@ -20,7 +24,7 @@ function e2eContract(): Plugin {
 }
 
 export default defineConfig(({ mode }) => ({
-  plugins: [react(), ...(mode === "e2e" ? [e2eContract()] : [])],
+  plugins: [react(), shareMeta(app.web, { en, ms }), ...(mode === "e2e" ? [e2eContract()] : [])],
   build: { outDir: "dist", emptyOutDir: true, sourcemap: false, assetsInlineLimit: 0 },
   server: { proxy: { "/lcd": api, "/api": api, "/healthz": api } },
 }));

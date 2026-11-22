@@ -3,10 +3,17 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build": "esbuild src/main.ts --bundle --platform=node --format=esm --target=node22 --outfile=dist/main.js --log-level=warning --banner:js=\"import { createRequire as mentariRequire } from 'node:module'; const require = mentariRequire(import.meta.url);\"",
     "start": "tsx src/main.ts",
     "start:dist": "node dist/main.js",
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@qorechain/sdk": "0.14.0",
+    "viem": "2.57.20"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2"
   }
 }

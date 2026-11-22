@@ -191,7 +191,18 @@ importers:
         specifier: 2.57.20
         version: 2.57.20(bufferutil@4.2.0)(typescript@7.0.2)(utf-8-validate@5.0.10)(zod@4.6.7)
 
-  server: {}
+  server:
+    dependencies:
+      '@qorechain/sdk':
+        specifier: 0.14.0
+        version: 0.14.0(bufferutil@4.2.0)(utf-8-validate@5.0.10)(viem@2.57.20(bufferutil@4.2.0)(typescript@7.0.2)(utf-8-validate@5.0.10)(zod@4.6.7))
+      viem:
+        specifier: 2.57.20
+        version: 2.57.20(bufferutil@4.2.0)(typescript@7.0.2)(utf-8-validate@5.0.10)(zod@4.6.7)
+    devDependencies:
+      esbuild:
+        specifier: 0.28.2
+        version: 0.28.2
 
   web:
     dependencies:

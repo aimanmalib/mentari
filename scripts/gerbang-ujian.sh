@@ -103,6 +103,8 @@ if [ -d node_modules ]; then
   step "typecheck"; pnpm -r --if-present typecheck
   step "unit tests"; strict vitest "vitest" pnpm -r --if-present test
   step "web build"; pnpm --filter @mentari/web build >"$tmp/web-build.log" 2>&1 || { tail -n 30 "$tmp/web-build.log"; fail "web build failed"; }
+  # The image runs the server bundle with no node_modules; a package that cannot be bundled fails here, not on deploy.
+  step "server build"; pnpm --filter @mentari/server build >"$tmp/server-build.log" 2>&1 || { tail -n 30 "$tmp/server-build.log"; fail "server build failed"; }
   # Browser tests of the wallet path (Chromium and WebKit as on an iPhone 13). CI installs the browsers first.
   step "browser tests"; strict playwright "playwright" pnpm exec playwright test
 fi

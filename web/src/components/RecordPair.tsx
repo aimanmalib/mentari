@@ -19,8 +19,9 @@ export function ChainLink({ href, children, label }: { href: string; children: s
 
 /** One retirement as a strip of the ledger seam: the EVM record on the left, its Native receipt on the right. */
 export function RecordPair({ record, showVerify = true }: { record: RetirementRecord; showVerify?: boolean }) {
-  const { t, num, dateTime } = useI18n();
+  const { t, num, dateParts } = useI18n();
   const { retirement: r, receipt, evmTx, check } = record;
+  const when = dateParts(r.timestamp * 1000);
   const titleId = `pair-${r.n}`;
   return (
     <article className={`pair ${check.ok ? "pair-ok" : "pair-bad"}`} aria-labelledby={titleId}>
@@ -40,7 +41,11 @@ export function RecordPair({ record, showVerify = true }: { record: RetirementRe
           </div>
           <div>
             <dt>{t("records.time")}</dt>
-            <dd>{dateTime(r.timestamp * 1000)}</dd>
+            <dd>
+              <time className="pair-time" dateTime={new Date(r.timestamp * 1000).toISOString()}>
+                <span>{when.date}</span> <span>{when.time}</span>
+              </time>
+            </dd>
           </div>
           <div>
             <dt>{t("records.evmTx")}</dt>

@@ -10,6 +10,8 @@ interface I18nValue {
   t(key: string, vars?: Vars): string;
   num(value: bigint | number): string;
   dateTime(ms: number): string;
+  /** Date and time apart, so a layout can keep each piece whole and break only between them. */
+  dateParts(ms: number): { date: string; time: string };
 }
 
 const I18nContext = createContext<I18nValue | null>(null);
@@ -58,12 +60,15 @@ export function I18nProvider({ children, locale: fixed }: { children: ReactNode;
     const tag = formatTags[locale] ?? locale;
     const numbers = new Intl.NumberFormat(tag);
     const dates = new Intl.DateTimeFormat(tag, { dateStyle: "medium", timeStyle: "short" });
+    const dayOnly = new Intl.DateTimeFormat(tag, { dateStyle: "medium" });
+    const timeOnly = new Intl.DateTimeFormat(tag, { timeStyle: "short" });
     return {
       locale,
       setLocale,
       t: (key, vars) => translate(messages, key, vars),
       num: (v) => numbers.format(v),
       dateTime: (ms) => dates.format(ms),
+      dateParts: (ms) => ({ date: dayOnly.format(ms), time: timeOnly.format(ms) }),
     };
   }, [locale, messages, setLocale]);
 

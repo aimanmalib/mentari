@@ -83,6 +83,11 @@
   margin: 0;
 }
 
+/* Date and time each stay whole; a narrow column breaks between them, never inside "9:00 PG". */
+.pair-time span {
+  white-space: nowrap;
+}
+
 .pair-native dt,
 .pair-native .pair-title {
   color: var(--noon-ink);

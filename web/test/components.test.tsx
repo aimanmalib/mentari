@@ -1,4 +1,6 @@
 import type { ReactElement } from "react";
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { DemoResult, CountsBoard } from "../src/components/DemoResult.js";
@@ -59,6 +61,19 @@ describe("RecordPair", () => {
 
   it("renders in Bahasa Melayu", () => {
     expect(text(render(<RecordPair record={RECORD} />, "ms"))).toContain("Persaraan #7");
+  });
+
+  it("keeps the date and the time whole, so a narrow column never leaves the hour marker alone on a line", () => {
+    const css = readFileSync(fileURLToPath(new URL("../src/styles/records.css", import.meta.url)), "utf8");
+    expect(css).toMatch(/\.pair-time span\s*\{[^}]*white-space:\s*nowrap/);
+    for (const locale of ["en", "ms"]) {
+      const html = render(<RecordPair record={RECORD} />, locale);
+      const time = html.match(/<time class="pair-time" dateTime="([^"]+)"><span>([^<]+)<\/span> <span>([^<]+)<\/span><\/time>/);
+      expect(time, locale).not.toBeNull();
+      expect(time![1]).toBe(new Date(RECORD.retirement.timestamp * 1000).toISOString());
+      expect(time![2]).toMatch(/2026/);
+      expect(time![3]).toMatch(/\d{1,2}[:.]\d{2}/);
+    }
   });
 });
 

@@ -63,6 +63,9 @@ if [ ! -f contracts/lib/forge-std/src/Test.sol ]; then
   git submodule update --init --depth 1 contracts/lib/forge-std
 fi
 
+# shellcheck source=scripts/lib/count-tests.sh
+source "$root/scripts/lib/count-tests.sh"
+
 # strict <runner> <label> <command…>: run a test command and fail unless tests really ran and none was skipped.
 strict() {
   local runner=$1 label=$2 out rc=0 counts
@@ -71,10 +74,8 @@ strict() {
   printf '%s\n' "$out" | tail -n 12
   [ "$rc" -eq 0 ] || fail "$label failed (exit $rc)"
   case $runner in
-    forge) counts=$(grep -oE '[0-9]+ tests passed, [0-9]+ failed, [0-9]+ skipped' <<<"$out" | tail -1 |
-      awk '{print $1, $6}') ;;
-    vitest) counts=$(grep -E '^ *Tests +[0-9]+ passed' <<<"$out" |
-      awk '{p += $2; if (match($0, /[0-9]+ skipped/)) s += substr($0, RSTART, RLENGTH) + 0} END {print p + 0, s + 0}') ;;
+    forge) counts=$(count_forge <<<"$out" || true) ;;
+    vitest) counts=$(count_vitest <<<"$out" || true) ;;
   esac
   read -r passed skipped <<<"${counts:-0 0}"
   [ "${passed:-0}" -ge 1 ] || fail "$label: no tests ran"

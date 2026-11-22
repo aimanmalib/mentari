@@ -5,6 +5,7 @@
   "scripts": {
     "keys": "tsx keys.ts",
     "testnet": "tsx testnet.ts",
+    "native": "tsx native.ts",
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json"
   },

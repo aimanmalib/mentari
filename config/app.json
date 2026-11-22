@@ -30,6 +30,45 @@
     "receiptsBook": "qor1xjayq5ev55tkzpml9klxwyshr7gdrha0nurha9jhm0f0gdckksgs3gltw8",
     "receiptsBookCodeId": 865
   },
+  "nativeLane": {
+    "denom": "uqor",
+    "decimals": 6,
+    "gasPriceUqor": "0.15",
+    "gas": {
+      "send": 400000,
+      "registerKey": 500000,
+      "openWindow": 400000,
+      "closeWindow": 300000
+    },
+    "waitSeconds": 90,
+    "pollSeconds": 2
+  },
+  "funding": {
+    "funder": "funder and deployer",
+    "keepOnFunderQor": "20",
+    "lowBalanceQor": "8",
+    "lowBalanceRoles": [
+      "funder and deployer",
+      "demo sender"
+    ],
+    "targetsQor": {
+      "registrar": "6",
+      "meter A": "1",
+      "meter B": "1",
+      "meter C": "1",
+      "producer": "2",
+      "buyer": "3",
+      "demo sender": "15"
+    }
+  },
+  "windows": {
+    "deploy": {
+      "role": "funder and deployer",
+      "blocks": 3600,
+      "maxTxs": 30,
+      "maxValueQor": "8"
+    }
+  },
   "web": {
     "refreshSeconds": 30,
     "agreeCheckLatest": 10,

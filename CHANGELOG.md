@@ -38,4 +38,7 @@ contract is a new deployment, listed here with its new address.
 - The live job behind that run: it reads each system's meter from the chain, signs yesterday's reading with that
   meter's ML-DSA-87 key from a key file in the read-only key folder, and sends what is missing. The server is now
   bundled with esbuild into one file, so the image still has no `node_modules` (ADR 0014).
+- The live demo sender: once both contracts and the demo account's key file are in place, "Retire now" and the three
+  failure buttons send real testnet transactions from the demo account and wait for them to be mined. `pnpm testnet`
+  writes that key file beside the meter keys (ADR 0017).
 - Eight slides in `deck/` (HTML source and PDF), linked from the README and the site footer.

@@ -88,7 +88,7 @@ Foundry saves a failing sequence under `contracts/cache/` and replays it first o
 
 `server/test/` runs with vitest and no internet: the upstream `fetch` is a fake, the config is a frozen fixture, so
 changing `config/` never breaks a test, and the live meter job talks only to a local anvil node (as in the chain driver
-tests). `cd server && npx vitest run` reported 125 passed on 2026-11-22.
+tests). `cd server && npx vitest run` reported 152 passed on 2026-11-22.
 
 They cover the `/lcd` allowlist (other paths, other contracts, `//host`, `@host`, dot segments and `%2e` are refused
 without an upstream call), methods other than `GET` (405), the 5 second cache, joined concurrent requests, 502 on
@@ -110,9 +110,19 @@ tests deploy `Mentari`, register two systems and drive the job through the serve
 for each system and sends nothing on a second run, reads each meter from the chain, stops before any send when a
 registered meter has no key, and fails on a system the chain does not know. The meter signer is checked with a real
 ML-DSA-87 key and `pqcVerify`. The key file loader refuses a bad sender, address or key length and a meter listed twice,
-and its errors never contain a key. `server/test/meter-abi.test.ts` compares the ABI subset with the Foundry build
-output, struct field names included. Five changes were tried on purpose (no key check before sending, a wrong sent
+and its errors never contain a key. `server/test/abi.test.ts` compares each ABI subset the server keeps (meter run,
+demo sender, probe) with the Foundry build output, struct field names included. Five changes were tried on purpose (no key check before sending, a wrong sent
 count, a wrong argument type, a renamed struct field, a missing error); each turned a test red.
+
+The live demo sender (`server/src/demo/live.ts`, decision 0017) runs on a local anvil node with the bridge mock at
+`0x…0901` and the receipts book on its allowlist. It signs locally with anvil's public development keys, as the server
+does on the testnet, so viem estimates gas the same way. "Retire now" adds one receipt and one retirement; cases B, C
+and D are mined as reverted and neither ledger moves; case D with no target, and a retirement or grant from an account
+without enough certificates, send nothing (the nonce does not change); the grant pays a quantum-ready wallet. The
+adapter stays on the recorded cases until both contracts and the key file exist, and logs a broken key file without
+its contents. The REST count reader is tested with a fake `fetch`. Five changes were tried on purpose (no fixed gas on
+the failure cases, no certificate check, no case D target check, a wrong count query, every send reported as a
+success); each turned a test red.
 
 Each guard was removed from a copy of the code to check that a test notices:
 
@@ -166,7 +176,7 @@ contract errors), and that the wallet ABI and its errors match `contracts/src/Me
 
 ## Script tests
 
-`scripts/test/` runs with vitest and no network beyond a local anvil node. `cd scripts && npx vitest run` reported 86
+`scripts/test/` runs with vitest and no network beyond a local anvil node. `cd scripts && npx vitest run` reported 89
 passed on 2026-11-22.
 
 `scripts/src/meter.ts` makes the simulated meter readings and the bytes a meter or the registrar signs. The meter tests
@@ -187,7 +197,8 @@ removed once, and each time one test went red. The suite needs `anvil` and `forg
 `scripts/src/setup.ts` ties the driver to one testnet setup run (ADR 0015). Its tests deploy, register and backfill on
 the same local node and check that a second run sends nothing, that the config is refused when it names an address with
 no code, only one address, or no deploy block, that writing the addresses keeps every other key of `config/app.json`,
-and that the meter keys file is mode 600, is read back by the server's parser, and is refused inside the repository.
+and that the meter keys and demo sender key files are mode 600, are read back by the server's parsers under the
+file names the server looks for, and are refused inside the repository.
 Removing the no-code check or the one-address check each turned one test red.
 
 `scripts/src/native.ts` gets the accounts ready on the Native lane (ADR 0016). Its tests run against an in-memory

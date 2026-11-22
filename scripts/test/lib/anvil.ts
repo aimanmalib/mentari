@@ -99,10 +99,12 @@ export async function startAnvil(chainId = 9800): Promise<LocalChain> {
     rpcUrls: { default: { http: [`http://127.0.0.1:${port}`] } },
   });
   const transport = http(`http://127.0.0.1:${port}`);
-  const pub = createPublicClient({ chain, transport }) as PublicClient;
+  // anvil mines at once; viem would otherwise wait 4 s between receipt polls.
+  const pollingInterval = 50;
+  const pub = createPublicClient({ chain, transport, pollingInterval }) as PublicClient;
   const test = createTestClient({ chain, transport, mode: "anvil" });
   const accounts = (await createWalletClient({ chain, transport }).getAddresses()).map((a) => getAddress(a));
-  const wallet = (account: Address) => createWalletClient({ chain, transport, account }) as Wallet;
+  const wallet = (account: Address) => createWalletClient({ chain, transport, account, pollingInterval }) as Wallet;
 
   const mock = loadArtifact("MockPqc");
   const runtime = (await deployedCode(pub, wallet(accounts[0]!), mock)) as Hex;

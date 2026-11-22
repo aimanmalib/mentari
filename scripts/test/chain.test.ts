@@ -1,5 +1,5 @@
 import type { Address, PublicClient } from "viem";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import {
   attestDays,
   chainDay,
@@ -27,6 +27,9 @@ const CFG: MeterConfig = {
   ],
 };
 const BOOK = "qor1fixturebook";
+
+// Each test sends real transactions to a local node; shared CI machines can be slow.
+vi.setConfig({ testTimeout: 60_000 });
 
 const mentariArt = loadArtifact("Mentari");
 let chain: LocalChain;
@@ -98,7 +101,7 @@ describe("register and backfill", () => {
     for (const s of [...daily, ...backfill]) expect(s.wh).toBe(simulatedWh(CFG, plans[s.id - 1]!, s.day));
     expect(await read(run, "totals")).toEqual([expected, 0n, expected]);
     expect(await read(run, "balanceOf", [producer])).toBe(expected);
-  }, 60_000);
+  });
 
   it("logs public data only, one line per transaction", async () => {
     const lines: string[] = [];
@@ -108,7 +111,7 @@ describe("register and backfill", () => {
     expect(lines).toHaveLength(2);
     expect(lines[0]).toMatch(/^register system 1 \(A\) first day \d+: 0x[0-9a-f]{64}$/);
     expect(lines[1]).toMatch(/^attest system 1 \(A\) day \d+ \d+ Wh: 0x[0-9a-f]{64}$/);
-  }, 60_000);
+  });
 });
 
 describe("refusals cost nothing", () => {

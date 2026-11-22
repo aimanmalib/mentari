@@ -1,7 +1,7 @@
 // Scales the 1920 x 1080 stage to the window and moves between slides with the arrow keys, space or a swipe.
 // window.presentation.goToSlide(n) lets an export script show one slide at a time.
 (() => {
-  const stage = document.querySelector(".stage");
+  const stage = document.querySelector(".deck-stage");
   const slides = [...document.querySelectorAll(".slide")];
   const nav = document.createElement("div");
   nav.className = "deck-controls";

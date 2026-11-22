@@ -1,18 +1,29 @@
 {
   "_comment": "Simulated meters. Readings are generated, not measured from real panels. Ids match registerSystem on testnet.",
   "simulated": true,
+  "maxSunHoursX10": 80,
+  "backfillDays": 3,
+  "model": {
+    "_comment": "Daily sun hours = meanSunHours plus or minus spreadSunHours, picked from sha256(seed, id, day). Same inputs, same reading.",
+    "seed": "mentari-simulated-meter-v1",
+    "meanSunHours": 4.6,
+    "spreadSunHours": 1.2
+  },
   "systems": [
     {
       "id": 1,
-      "label": "A"
+      "label": "A",
+      "capacityW": 5000
     },
     {
       "id": 2,
-      "label": "B"
+      "label": "B",
+      "capacityW": 8200
     },
     {
       "id": 3,
-      "label": "C"
+      "label": "C",
+      "capacityW": 12000
     }
   ]
 }

@@ -1,0 +1,23 @@
+# Changelog
+
+All notable changes to this project are documented here. The format follows
+[Keep a Changelog](https://keepachangelog.com/en/1.1.0/). The testnet contracts cannot be upgraded: a fix to a deployed
+contract is a new deployment, listed here with its new address.
+
+## [Unreleased]
+
+### Added
+
+- `Mentari` contract: systems registered with an ML-DSA-87 signature, daily meter readings checked with `pqcVerify`,
+  transfers only to accounts with a registered post-quantum key, and `retire`, which burns and writes a receipt into
+  the Native `qday-receipts` contract through the Cross-VM bridge in one transaction.
+- `AtomicityProbe` demo contract for the three failure cases.
+- Contract libraries for the bridge call, the receipt note, the reply reader and the post-quantum precompiles, with
+  mocks of the bridge and the precompiles for tests.
+- 113 Foundry tests: unit, 16 fuzz tests and 4 invariants; line coverage of `contracts/src` 99 %.
+- Node server: the site, a read-only `/lcd` proxy with an allowlist, the demo sender with rate limits and an off switch,
+  client IP from Cloudflare only, `/healthz`.
+- Site in English and Bahasa Melayu: Registry, Retirements, Verify, Try it and How it works, on labelled sample data
+  until the contracts are deployed.
+- Container image, deploy script with rollback, health watch, and CI on GitHub Actions.
+- README in English and Bahasa Melayu, `AI_USAGE.md`, architecture, threat model and community files.

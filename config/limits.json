@@ -28,6 +28,9 @@
     "minSenderBalanceQor": 8,
     "retireWh": 500,
     "grantWh": 500,
-    "timeoutMs": 60000
+    "timeoutMs": 60000,
+    "retireMemo": "Try it demo",
+    "probeNote": "Try it demo",
+    "revertCaseGas": 3000000
   }
 }

@@ -3,7 +3,7 @@ import { fileURLToPath } from "node:url";
 import { createHandler } from "./app.js";
 import { loadServerConfig } from "./config.js";
 import { DemoApi } from "./demo/api.js";
-import { unconfiguredChain } from "./demo/chain.js";
+import { liveDemoChain } from "./demo/live.js";
 import { LcdProxy } from "./lcd.js";
 import { DailyMeter } from "./meter/daily.js";
 import { liveMeterJob } from "./meter/live.js";
@@ -14,9 +14,9 @@ const webDist = process.env.MENTARI_WEB_DIST ?? fileURLToPath(new URL("../../web
 const port = Number(process.env.PORT ?? "8080");
 const host = process.env.HOST ?? "0.0.0.0";
 
-// The live chain adapter replaces `unconfiguredChain` once the contracts are deployed; until then every demo
-// request answers with the recorded case to show.
-const demo = new DemoApi(cfg.demo, unconfiguredChain);
+// The demo sends live once both contract addresses are set and the demo sender's key file is in the read-only key
+// folder; until then every demo request answers with the recorded case to show.
+const demo = new DemoApi(cfg.demo, liveDemoChain({ chain: cfg.demoChain, keysDir: process.env.MENTARI_SECRETS_DIR }));
 const server = createServer(createHandler({ cfg, lcd: new LcdProxy(cfg), demo, site: new StaticSite(webDist) }));
 server.listen(port, host, () => {
   console.log(`mentari server on http://${host}:${port} (site ${webDist})`);

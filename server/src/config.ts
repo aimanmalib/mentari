@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { validateMeterConfig, type MeterConfig } from "../../scripts/src/meter.js";
 import { parseRunAt, type DailySchedule } from "./meter/daily.js";
+import type { DemoChainConfig } from "./demo/live.js";
 import type { MeterChain } from "./meter/live.js";
 
 /** Everything the server reads from `config/`. Code never holds these values. */
@@ -23,6 +24,8 @@ export interface ServerConfig {
     cloudflare: string[];
   };
   demo: DemoLimits;
+  /** Where the demo sender sends and what (contracts, memo, case D target). */
+  demoChain: DemoChainConfig;
   /** The daily meter run (block `daily` of `config/meter.json`). */
   meter: DailySchedule;
   /** What the live meter job needs: the simulated meter model, how far back it looks, and the contract. */
@@ -103,6 +106,48 @@ function dailySchedule(v: unknown): DailySchedule {
   };
 }
 
+/** Same rule as `ReceiptNote.isValidMemo`: what the contracts accept as a memo or a probe note. */
+const MEMO = /^[A-Za-z0-9 .:/#-]{0,40}$/;
+
+function memo(v: unknown, where: string): string {
+  if (typeof v !== "string" || !MEMO.test(v)) throw new Error(`${where}: expected up to 40 characters from [A-Za-z0-9 .:/#-]`);
+  return v;
+}
+
+/** An EVM address, or "" while the contract is not deployed. */
+function contractAddress(v: unknown, where: string): string {
+  if (typeof v !== "string" || (v !== "" && !/^0x[0-9a-fA-F]{40}$/.test(v))) {
+    throw new Error(`${where}: expected an EVM address or an empty string`);
+  }
+  return v;
+}
+
+function demoChain(
+  meterChain: MeterChain,
+  app: Record<string, unknown>,
+  native: Record<string, unknown>,
+  limitsDemo: unknown,
+  restOrigin: string,
+  restTimeoutMs: number,
+): DemoChainConfig {
+  const d = obj(limitsDemo, "config/limits.json demo");
+  const target = native.notAllowlistedTarget;
+  if (typeof target !== "string") throw new Error("config/app.json native.notAllowlistedTarget: expected a string");
+  return {
+    evmRpc: meterChain.evmRpc,
+    evmChainId: meterChain.evmChainId,
+    rest: restOrigin,
+    receiptsBook: str(native.receiptsBook, "config/app.json native.receiptsBook"),
+    mentari: meterChain.mentari,
+    atomicityProbe: contractAddress(obj(app.contracts, "config/app.json contracts").atomicityProbe, "config/app.json contracts.atomicityProbe"),
+    restTimeoutMs,
+    retireMemo: memo(d.retireMemo, "demo.retireMemo"),
+    probeNote: memo(d.probeNote, "demo.probeNote"),
+    revertCaseGas: posInt(d.revertCaseGas, "demo.revertCaseGas"),
+    caseDTarget: target,
+  };
+}
+
 function meterJob(meter: Record<string, unknown>, app: Record<string, unknown>, network: Record<string, unknown>) {
   const model = meter as unknown as MeterConfig;
   validateMeterConfig(model);
@@ -110,10 +155,7 @@ function meterJob(meter: Record<string, unknown>, app: Record<string, unknown>, 
   if (!Number.isInteger(windowDays) || (windowDays as number) < 1 || (windowDays as number) > model.backfillDays) {
     throw new Error("config/meter.json daily.windowDays: expected a whole number from 1 to backfillDays");
   }
-  const mentari = obj(app.contracts, "config/app.json contracts").mentari;
-  if (typeof mentari !== "string" || (mentari !== "" && !/^0x[0-9a-fA-F]{40}$/.test(mentari))) {
-    throw new Error("config/app.json contracts.mentari: expected an EVM address or an empty string");
-  }
+  const mentari = contractAddress(obj(app.contracts, "config/app.json contracts").mentari, "config/app.json contracts.mentari");
   const evmRpc = new URL(str(network.evmRpc, "config/app.json network.evmRpc"));
   if (evmRpc.protocol !== "https:") throw new Error("config/app.json network.evmRpc: must be https");
   const chain = { evmRpc: evmRpc.href, evmChainId: posInt(network.evmChainId, "network.evmChainId"), mentari };
@@ -152,13 +194,15 @@ export function loadServerConfig(dir: string = CONFIG_DIR): ServerConfig {
   if (rest.protocol !== "https:") throw new Error("config/app.json network.rest: must be https");
   const vars = { receiptsBook: str(native.receiptsBook, "config/app.json native.receiptsBook") };
 
+  const lcdTimeoutMs = posInt(lcd.timeoutMs, "lcd.timeoutMs");
+  const job = meterJob(meter, app, network);
   return {
     restOrigin: rest.origin,
     lcd: {
       allowedPrefixes: strList(lcd.allowedPrefixes, "lcd.allowedPrefixes").map((p) => resolvePrefix(p, vars)),
       cacheSeconds: posInt(lcd.cacheSeconds, "lcd.cacheSeconds"),
       cacheMaxEntries: posInt(lcd.cacheMaxEntries, "lcd.cacheMaxEntries"),
-      timeoutMs: posInt(lcd.timeoutMs, "lcd.timeoutMs"),
+      timeoutMs: lcdTimeoutMs,
       maxBodyBytes: posInt(lcd.maxBodyBytes, "lcd.maxBodyBytes"),
     },
     clientIp: {
@@ -166,7 +210,8 @@ export function loadServerConfig(dir: string = CONFIG_DIR): ServerConfig {
       cloudflare: [...strList(cf.v4, "cloudflare-ips v4"), ...strList(cf.v6, "cloudflare-ips v6")],
     },
     demo: demoLimits(limits.demo),
+    demoChain: demoChain(job.chain, app, native, limits.demo, rest.origin, lcdTimeoutMs),
     meter: dailySchedule(meter.daily),
-    meterJob: meterJob(meter, app, network),
+    meterJob: job,
   };
 }

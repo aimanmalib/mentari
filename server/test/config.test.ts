@@ -75,6 +75,24 @@ describe("loadServerConfig", () => {
     expect(() => loadServerConfig(copy((_l, _a, m) => (m.simulated = false)))).toThrow(/simulated must be true/);
   });
 
+  it("loads what the demo sender needs and refuses a bad memo, gas limit, probe or case D target", () => {
+    const c = loadServerConfig();
+    expect(c.demoChain.rest).toBe(c.restOrigin);
+    expect(c.demoChain.evmRpc).toBe(c.meterJob.chain.evmRpc);
+    expect(c.demoChain.restTimeoutMs).toBe(c.lcd.timeoutMs);
+    expect(Number.isInteger(c.demoChain.revertCaseGas) && c.demoChain.revertCaseGas > 0).toBe(true);
+    const probe = "0x00000000000000000000000000000000000000d4";
+    const set = loadServerConfig(
+      copy((_l, a) => ((a.contracts.atomicityProbe = probe), (a.native.notAllowlistedTarget = "qor1other"))),
+    );
+    expect(set.demoChain).toMatchObject({ atomicityProbe: probe, caseDTarget: "qor1other" });
+    expect(() => loadServerConfig(copy((l) => (l.demo.retireMemo = "no \"quotes\"")))).toThrow(/demo.retireMemo/);
+    expect(() => loadServerConfig(copy((l) => (l.demo.probeNote = "x".repeat(41))))).toThrow(/demo.probeNote/);
+    expect(() => loadServerConfig(copy((l) => (l.demo.revertCaseGas = 0)))).toThrow(/demo.revertCaseGas/);
+    expect(() => loadServerConfig(copy((_l, a) => (a.contracts.atomicityProbe = "0x1")))).toThrow(/contracts.atomicityProbe/);
+    expect(() => loadServerConfig(copy((_l, a) => delete a.native.notAllowlistedTarget))).toThrow(/notAllowlistedTarget/);
+  });
+
   it("fills the receipts book into the smart-query prefix", () => {
     const c = loadServerConfig(copy((_l, app) => (app.native.receiptsBook = "qor1test")));
     expect(c.lcd.allowedPrefixes).toContain("/cosmwasm/wasm/v1/contract/qor1test/smart/");

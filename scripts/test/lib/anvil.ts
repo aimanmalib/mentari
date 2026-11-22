@@ -30,6 +30,8 @@ const SIGNATURE_LENGTH = 4627;
 const PUBKEY_LENGTH = 2592;
 
 export interface LocalChain {
+  /** JSON-RPC URL of the node. */
+  rpcUrl: string;
   pub: PublicClient;
   /** Unlocked anvil accounts. */
   accounts: Address[];
@@ -37,6 +39,8 @@ export interface LocalChain {
   /** Registers a proven ML-DSA-87 key for `account` in the test precompile. */
   makeQuantumReady(account: Address): Promise<void>;
   sign: PqcSigner;
+  /** Places the runtime code of a Foundry artifact (built with no constructor arguments) at `address`. */
+  etch(address: Address, artifact: string): Promise<void>;
   stop(): void;
 }
 
@@ -124,11 +128,16 @@ export async function startAnvil(chainId = 9800): Promise<LocalChain> {
     await pub.waitForTransactionReceipt({ hash: tx });
   };
   return {
+    rpcUrl: `http://127.0.0.1:${port}`,
     pub,
     accounts,
     wallet,
     makeQuantumReady,
     sign: (account, message) => testSignature(testPubkey(account), message),
+    etch: async (address, artifact) => {
+      const code = (await deployedCode(pub, wallet(accounts[0]!), loadArtifact(artifact))) as Hex;
+      await test.setCode({ address, bytecode: code });
+    },
     stop: () => child.kill(),
   };
 }

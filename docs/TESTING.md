@@ -166,7 +166,7 @@ contract errors), and that the wallet ABI and its errors match `contracts/src/Me
 
 ## Script tests
 
-`scripts/test/` runs with vitest and no network beyond a local anvil node. `cd scripts && npx vitest run` reported 48
+`scripts/test/` runs with vitest and no network beyond a local anvil node. `cd scripts && npx vitest run` reported 60
 passed on 2026-11-22.
 
 `scripts/src/meter.ts` makes the simulated meter readings and the bytes a meter or the registrar signs. The meter tests
@@ -183,6 +183,12 @@ producer without a key, bytes that differ from the contract's, a capacity that d
 unregistered system all stop before anything is sent. Four checks in the driver (the bytes comparison, the
 capacity comparison, the read of attested days, and treating only `UnknownSystem` as not registered) were each
 removed once, and each time one test went red. The suite needs `anvil` and `forge build` output; `scripts/gerbang-ujian.sh` provides both.
+
+`scripts/src/setup.ts` ties the driver to one testnet setup run (ADR 0015). Its tests deploy, register and backfill on
+the same local node and check that a second run sends nothing, that the config is refused when it names an address with
+no code, only one address, or no deploy block, that writing the addresses keeps every other key of `config/app.json`,
+and that the meter keys file is mode 600, is read back by the server's parser, and is refused inside the repository.
+Removing the no-code check or the one-address check each turned one test red.
 
 Changes checked to fail:
 

@@ -9,7 +9,7 @@
   "scripts": {
     "keys": "pnpm --filter @mentari/scripts keys",
     "dev": "pnpm --filter @mentari/web dev",
-    "build": "pnpm --filter @mentari/web build",
+    "build": "pnpm --filter @mentari/web build && pnpm --filter @mentari/server build",
     "start": "pnpm --filter @mentari/server start",
     "test": "pnpm -r --if-present test",
     "typecheck": "pnpm -r --if-present typecheck"

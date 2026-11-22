@@ -150,13 +150,23 @@ contract errors), and that the wallet ABI and its errors match `contracts/src/Me
 
 ## Script tests
 
-`scripts/test/` runs with vitest and no network. `cd scripts && npx vitest run` reported 38 passed on 2026-11-22.
+`scripts/test/` runs with vitest and no network beyond a local anvil node. `cd scripts && npx vitest run` reported 48
+passed on 2026-11-22.
 
 `scripts/src/meter.ts` makes the simulated meter readings and the bytes a meter or the registrar signs. The meter tests
 use a frozen config, not `config/meter.json`. Two hashes pin the signed bytes from both sides: the vitest suite checks
 them for the TypeScript encoder, and `contracts/test/mentari/MentariMessages.t.sol` checks them for
 `Mentari.attestMessage` and `Mentari.registerMessage` on chain id 9800 at a fixed address. If either side changes its
 encoding, one of the two suites goes red. A signature made with the encoder is checked with ML-DSA-87 verification.
+
+`scripts/src/chain.ts` deploys the contracts, registers the systems and attests the finished days (ADR 0012). Its tests
+start anvil on chain id 9800 with `MockPqc` at the two precompile addresses and use anvil's unlocked accounts, so no
+key is involved. They check that registration and attestation happen once (a second run sends nothing), that a daily
+run followed by a backfill fills the window, that the totals match the simulated readings, and that a bad signature, a
+producer without a key, bytes that differ from the contract's, a capacity that differs from the chain, and an
+unregistered system all stop before anything is sent. Four checks in the driver (the bytes comparison, the
+capacity comparison, the read of attested days, and treating only `UnknownSystem` as not registered) were each
+removed once, and each time one test went red. The suite needs `anvil` and `forge build` output; `scripts/gerbang-ujian.sh` provides both.
 
 Changes checked to fail:
 

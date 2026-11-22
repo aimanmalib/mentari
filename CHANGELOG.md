@@ -26,4 +26,6 @@ contract is a new deployment, listed here with its new address.
 - README in English and Bahasa Melayu, `AI_USAGE.md`, architecture, threat model and community files.
 - Simulated meter readings from a seeded model in `config/meter.json`, and the exact bytes a meter or the registrar
   signs, checked against the contract with fixed hashes on both sides (ADR 0011).
+- A chain driver that deploys the contracts, registers the systems and attests the finished days, reading the chain
+  first so a second run sends nothing, and simulating each call before sending it (ADR 0012).
 - Eight slides in `deck/` (HTML source and PDF), linked from the README and the site footer.

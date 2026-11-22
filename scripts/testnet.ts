@@ -2,7 +2,7 @@
  * testnet: deploy Mentari and AtomicityProbe, register the simulated meters and backfill their readings.
  *
  *   pnpm testnet          run every step that is still missing, then write the addresses to config/app.json
- *                         and the meter keys file to MENTARI_SECRETS_DIR (when set)
+ *                         and the meter and demo sender key files to MENTARI_SECRETS_DIR (when set)
  *
  * Accounts come from the shared accounts file (MENTARI_ACCOUNTS) by the roles in config/app.json. The
  * deployer pays gas. Each registration is signed with the registrar's ML-DSA-87 key and each reading with
@@ -19,7 +19,7 @@ import { accountsPath, readAccountsFile } from "./src/accounts.js";
 import { loadArtifact, type PqcSigner } from "./src/chain.js";
 import { loadAppConfig, type AppConfig } from "./src/config.js";
 import { loadMeterConfig, signMessage } from "./src/meter.js";
-import { setupTestnet, writeContractsConfig, writeMeterKeys, type ContractsConfig } from "./src/setup.js";
+import { setupTestnet, writeContractsConfig, writeDemoKey, writeMeterKeys, type ContractsConfig } from "./src/setup.js";
 
 const repoRoot = fileURLToPath(new URL("..", import.meta.url));
 const appJson = fileURLToPath(new URL("../config/app.json", import.meta.url));
@@ -91,9 +91,10 @@ async function main(): Promise<void> {
       sender: registrar.privateKey as Hex,
       meters: meterAccounts.map((a) => ({ address: getAddress(a.evm), pqcSecretKey: a.pqc.secretKey })),
     });
-    console.log("wrote the meter keys file to the key folder");
+    writeDemoKey(dir, repoRoot, (await account("demo sender")).privateKey as Hex);
+    console.log("wrote the meter keys and demo sender key files to the key folder");
   } else {
-    console.log("MENTARI_SECRETS_DIR is not set: no meter keys file written");
+    console.log("MENTARI_SECRETS_DIR is not set: no key files written");
   }
 }
 

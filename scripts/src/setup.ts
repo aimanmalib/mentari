@@ -121,27 +121,37 @@ export function writeContractsConfig(appJson: string, contracts: ContractsConfig
   replaceFile(appJson, JSON.stringify(json, null, 2) + "\n", 0o644);
 }
 
-/** The file the server's daily meter job reads from its read-only key folder. */
+/** The files the server reads from its read-only key folder (`server/src/meter/keys.ts`, `server/src/demo/keys.ts`). */
 export const METER_KEYS_FILE = "meter-keys.json";
+export const DEMO_KEY_FILE = "demo-sender.json";
 
 /**
- * Write the meter keys file (mode 600) into the key folder. The folder must be absolute and outside the
- * repository, like the accounts file. Nothing about the keys is returned or logged.
+ * Write one key file (mode 600) into the key folder. The folder must be absolute and outside the repository,
+ * like the accounts file. Nothing about the keys is returned or logged.
  */
+function writeKeyFile(dir: string, repoRoot: string, file: string, body: unknown): string {
+  if (!isAbsolute(dir)) throw new Error("key folder must be an absolute path");
+  const rel = relative(resolve(repoRoot), resolve(dir));
+  if (!rel.startsWith("..") && !isAbsolute(rel)) throw new Error("key folder is inside the repository; keep it outside");
+  mkdirSync(dir, { recursive: true, mode: 0o700 });
+  const path = join(dir, file);
+  replaceFile(path, JSON.stringify(body, null, 2) + "\n", 0o600);
+  return path;
+}
+
+/** The daily meter job's keys: the sender that pays gas and each meter's ML-DSA-87 key. */
 export function writeMeterKeys(
   dir: string,
   repoRoot: string,
   keys: { sender: Hex; meters: readonly { address: Address; pqcSecretKey: Uint8Array }[] },
 ): string {
-  if (!isAbsolute(dir)) throw new Error("key folder must be an absolute path");
-  const rel = relative(resolve(repoRoot), resolve(dir));
-  if (!rel.startsWith("..") && !isAbsolute(rel)) throw new Error("key folder is inside the repository; keep it outside");
-  mkdirSync(dir, { recursive: true, mode: 0o700 });
-  const body = {
+  return writeKeyFile(dir, repoRoot, METER_KEYS_FILE, {
     sender: keys.sender,
     meters: keys.meters.map((m) => ({ address: getAddress(m.address), pqcSecretKey: bytesToHex(m.pqcSecretKey) })),
-  };
-  const path = join(dir, METER_KEYS_FILE);
-  replaceFile(path, JSON.stringify(body, null, 2) + "\n", 0o600);
-  return path;
+  });
+}
+
+/** The demo sender's EVM key (account 7), which sends the site's demo buttons. */
+export function writeDemoKey(dir: string, repoRoot: string, privateKey: Hex): string {
+  return writeKeyFile(dir, repoRoot, DEMO_KEY_FILE, { privateKey });
 }

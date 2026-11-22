@@ -3,14 +3,17 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import type { Address } from "viem";
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
-import { parseMeterKeys } from "../../server/src/meter/keys.js";
+import { DEMO_KEY_FILE as SERVER_DEMO_KEY_FILE, parseDemoKey } from "../../server/src/demo/keys.js";
+import { METER_KEYS_FILE as SERVER_METER_KEYS_FILE, parseMeterKeys } from "../../server/src/meter/keys.js";
 import { chainDay, loadArtifact, type SystemPlan } from "../src/chain.js";
 import type { MeterConfig } from "../src/meter.js";
 import {
+  DEMO_KEY_FILE,
   METER_KEYS_FILE,
   deployIfMissing,
   setupTestnet,
   writeContractsConfig,
+  writeDemoKey,
   writeMeterKeys,
   type ContractsConfig,
 } from "../src/setup.js";
@@ -154,6 +157,27 @@ describe("writeMeterKeys", () => {
     const repo = tempDir();
     expect(() => writeMeterKeys(join(repo, "state"), repo, keys)).toThrow(/inside the repository/);
     expect(() => writeMeterKeys("keys", repo, keys)).toThrow(/absolute/);
+  });
+});
+
+describe("writeDemoKey", () => {
+  const key = `0x${"9c".repeat(32)}` as const;
+
+  it("writes a mode 600 file the server reads back, beside the meter keys", () => {
+    const dir = join(tempDir(), "keys");
+    const path = writeDemoKey(dir, "/nonexistent-repo", key);
+    expect(path).toBe(join(dir, DEMO_KEY_FILE));
+    expect(statSync(path).mode & 0o777).toBe(0o600);
+    expect(parseDemoKey(readFileSync(path, "utf8"))).toBe(key);
+  });
+
+  it("uses the file names the server looks for", () => {
+    expect([DEMO_KEY_FILE, METER_KEYS_FILE]).toEqual([SERVER_DEMO_KEY_FILE, SERVER_METER_KEYS_FILE]);
+  });
+
+  it("refuses a folder inside the repository", () => {
+    const repo = tempDir();
+    expect(() => writeDemoKey(join(repo, "state"), repo, key)).toThrow(/inside the repository/);
   });
 });
 

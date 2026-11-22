@@ -103,6 +103,7 @@
       "imageMaxKb": 300,
       "twitterCard": "summary_large_image",
       "appleTouchIcon": "/apple-touch-icon.png",
+      "appleTouchIconSize": 180,
       "ogLocales": {
         "en": "en_US",
         "ms": "ms_MY"

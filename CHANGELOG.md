@@ -11,6 +11,8 @@ contract is a new deployment, listed here with its new address.
 - Link preview tags: the page title, description, Open Graph and X card tags, a canonical link and an Apple touch icon
   link are written into the page head at build time from `config/app.json` `web.share` and the default locale's
   `meta` texts (decision 0018).
+- Link preview image (`web/public/og.png`, 1200 × 630) and Apple touch icon (180 × 180), drawn from the site's own
+  fonts, colours and brand mark by `pnpm --filter @mentari/web og` and committed (decision 0018).
 - `Mentari` contract: systems registered with an ML-DSA-87 signature, daily meter readings checked with `pqcVerify`,
   transfers only to accounts with a registered post-quantum key, and `retire`, which burns and writes a receipt into
   the Native `qday-receipts` contract through the Cross-VM bridge in one transaction.

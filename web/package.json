@@ -6,6 +6,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "og": "tsx og/render.ts",
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json"
   },

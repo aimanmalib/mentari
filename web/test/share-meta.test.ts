@@ -18,6 +18,7 @@ const web: WebConfig = {
     imageMaxKb: 300,
     twitterCard: "card-kind",
     appleTouchIcon: "/touch.png",
+    appleTouchIconSize: 99,
     ogLocales: { en: "en_XX", ms: "ms_XX" },
   },
 };
@@ -40,7 +41,11 @@ describe("shareTags", () => {
     }
     expect(tags.find((t) => t.tag === "title")?.text).toBe("T");
     expect(tags.find((t) => t.attrs.rel === "canonical")?.attrs.href).toBe("https://example.test/");
-    expect(tags.find((t) => t.attrs.rel === "apple-touch-icon")?.attrs.href).toBe("/touch.png");
+    expect(tags.find((t) => t.attrs.rel === "apple-touch-icon")?.attrs).toEqual({
+      rel: "apple-touch-icon",
+      sizes: "99x99",
+      href: "/touch.png",
+    });
   });
 
   it("takes every value from config and the default locale", () => {

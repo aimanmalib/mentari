@@ -10,6 +10,7 @@ export interface ShareConfig {
   imageMaxKb: number;
   twitterCard: string;
   appleTouchIcon: string;
+  appleTouchIconSize: number;
   ogLocales: Record<string, string>;
 }
 
@@ -98,7 +99,7 @@ export function shareTags(web: WebConfig, catalogues: Record<string, unknown>): 
     name("twitter:description", text.description),
     name("twitter:image", imageUrl),
     name("twitter:image:alt", text.imageAlt),
-    { tag: "link", attrs: { rel: "apple-touch-icon", href: share.appleTouchIcon } },
+    { tag: "link", attrs: { rel: "apple-touch-icon", sizes: `${share.appleTouchIconSize}x${share.appleTouchIconSize}`, href: share.appleTouchIcon } },
   ];
 }
 

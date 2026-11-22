@@ -21,15 +21,24 @@ the language chosen in the browser, so the preview can only carry one language.
 - Image addresses are absolute (`siteUrl` + `image`), since preview crawlers do not resolve relative ones. Every value
   is HTML escaped.
 - The page body does not change. The browser tab title still follows the chosen language at run time.
+- The preview image and the Apple touch icon are drawn by `web/og/render.ts`: it fills the template `web/og/card.html`
+  with the default locale's title and description, the colours from `web/src/styles/tokens.css`, the brand mark
+  `brand/logo.svg` and the site's own fonts, and captures it with the Playwright Chromium the repository already uses
+  for the slides. The touch icon is the brand mark without its rounded corners, at `web.share.appleTouchIconSize`.
+- Both images are committed under `web/public/`, so building the site needs no browser. The render stops when the
+  image is over `web.share.imageMaxKb`; a test checks both sizes and the byte limit against `web.share`.
 
 ## Consequences
 
-- The preview image and the Apple touch icon are separate files in `web/public/`; until they exist the tags point to
-  addresses that answer 404 and previews show text only.
+- Changing the preview title, description, colours or brand mark means running `pnpm --filter @mentari/web og`
+  again and committing the two images. Text and contrast were checked on the first render: 9.6:1 for the title and
+  description on the blue ground.
 - Changing the preview wording means editing the locale files; changing the address or image means editing
   `config/app.json`. Both need a rebuild.
 
 ## How to undo
 
-Revert the commit that added `web/share-meta.ts`: `web/vite.config.ts` stops calling it, and the title and
-description go back into `web/index.html`. Redeploying the previous image restores the old page head.
+Revert the commit that added the two images to drop them; the tags then point to addresses that answer 404 and
+previews show text only. Revert the commit that added `web/share-meta.ts`: `web/vite.config.ts` stops calling it, and
+the title and description go back into `web/index.html`. Redeploying the previous container image restores the old
+page head.

@@ -1,0 +1,235 @@
+/* Systems list, the How it works diagram and prose sections. */
+.systems,
+.prose {
+  display: grid;
+  gap: var(--space-4);
+  max-width: var(--page);
+}
+
+.systems-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.systems h2,
+.prose h2 {
+  font-size: var(--step-2);
+  font-stretch: 86%;
+}
+
+.systems-note {
+  color: var(--muted);
+  max-width: var(--measure);
+}
+
+.system-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 2px solid var(--ink);
+}
+
+.system {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-5) var(--space-5) var(--space-5) 0;
+  border-bottom: var(--rule);
+}
+
+.system h3 {
+  font-size: var(--step-1);
+  font-stretch: 90%;
+}
+
+.system dl {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-1) var(--space-4);
+  margin: 0;
+}
+
+.system dl div {
+  display: contents;
+}
+
+.system dt {
+  color: var(--muted);
+}
+
+.system dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.empty {
+  color: var(--muted);
+}
+
+.prose {
+  max-width: var(--measure);
+}
+
+.prose p,
+.prose li {
+  max-width: var(--measure);
+}
+
+.steps {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding-left: var(--space-5);
+}
+
+.steps li::marker {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--silicon);
+}
+
+.fail-line {
+  padding: var(--space-3) var(--space-4);
+  border-left: 4px solid var(--alarm);
+  background: var(--alarm-wash);
+  font-weight: 600;
+}
+
+.note-sample {
+  margin: 0;
+  padding: var(--space-4);
+  border-radius: var(--radius-small);
+  background: var(--paper);
+  border: var(--rule);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.limits ul {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding-left: var(--space-5);
+}
+
+/* Diagram: one transaction frame holding EVM node, bridge and Native node. */
+.diagram {
+  margin: 0;
+}
+
+.diagram-frame {
+  position: relative;
+  padding: var(--space-6) var(--space-5) var(--space-5);
+  border: 2px dashed var(--silicon);
+  border-radius: var(--radius-lane);
+}
+
+.diagram-tx {
+  position: absolute;
+  top: calc(-1 * var(--space-3));
+  left: var(--space-5);
+  padding: 0 var(--space-2);
+  background: var(--daylight);
+  color: var(--silicon);
+  font-weight: 600;
+  font-size: var(--step--1);
+}
+
+.diagram-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(4.5rem, 7rem) minmax(0, 1fr) minmax(4.5rem, 7rem) minmax(0, 1fr);
+  align-items: center;
+}
+
+.dnode {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+  padding: var(--space-4);
+  border-radius: var(--radius-small);
+}
+
+.dnode strong {
+  font: 700 var(--step-1) / 1.1 var(--font-display);
+  font-stretch: 88%;
+}
+
+.dnode-vm,
+.dnode-act {
+  font-size: var(--step--1);
+}
+
+.dnode-evm {
+  background: var(--silicon);
+  color: var(--silicon-text);
+}
+
+.dnode-act {
+  justify-self: start;
+  padding: 0 var(--space-2);
+  border-radius: 999px;
+  background: var(--busbar-on-silicon);
+}
+
+.dnode-bridge {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+}
+
+.dnode-native {
+  background: var(--noon-wash);
+  border: 2px solid var(--noon);
+}
+
+.dlink {
+  display: grid;
+  gap: var(--space-2);
+  padding-inline: var(--space-1);
+  font-size: var(--step--1);
+  text-align: center;
+  color: var(--muted);
+}
+
+.dlink span {
+  display: block;
+  padding-bottom: 2px;
+  border-bottom: 2px solid var(--ink);
+}
+
+.dlink-out::after {
+  content: " ›";
+}
+
+.dlink-back::before {
+  content: "‹ ";
+}
+
+@media (max-width: 52rem) {
+  .diagram-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-2);
+  }
+
+  .dlink {
+    grid-auto-flow: column;
+    justify-content: center;
+    gap: var(--space-5);
+    padding-block: var(--space-1);
+  }
+
+  .dlink span {
+    border-bottom: 0;
+  }
+
+  .dlink-out::after {
+    content: " ↓";
+  }
+
+  .dlink-back::before {
+    content: "↑ ";
+  }
+}

@@ -1,0 +1,228 @@
+/* The ledger seam: EVM lane | verdict | Native lane. */
+.seam {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(12rem, 15rem) minmax(0, 1fr);
+  align-items: stretch;
+}
+
+.lane {
+  display: grid;
+  align-content: start;
+  gap: var(--space-5);
+  min-width: 0;
+  padding: var(--space-6);
+}
+
+.lane h2 {
+  display: grid;
+  gap: var(--space-1);
+  font-size: var(--step-2);
+  font-stretch: 86%;
+}
+
+.lane h2 small {
+  font: 500 var(--step--1) var(--font-body);
+  opacity: 0.8;
+}
+
+.lane dl {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+}
+
+.figure {
+  display: grid;
+  gap: 2px;
+}
+
+.figure dt {
+  font-size: var(--step--1);
+  font-weight: 500;
+}
+
+.figure dd {
+  margin: 0;
+  font: 700 var(--step-3) / 1 var(--font-display);
+  font-stretch: 80%;
+  letter-spacing: -0.01em;
+}
+
+.lane code {
+  font-size: var(--step--1);
+  opacity: 0.85;
+}
+
+/* Silicon cell: blue with thin busbars and fingers, the way a panel looks up close. */
+.lane-evm {
+  border-radius: var(--radius-lane) 0 0 var(--radius-lane);
+  color: var(--silicon-text);
+  background-color: var(--silicon);
+  background-image:
+    repeating-linear-gradient(90deg, transparent 0 calc(25% - 1px), var(--busbar-on-silicon) calc(25% - 1px) 25%),
+    repeating-linear-gradient(0deg, transparent 0 11px, var(--busbar-on-silicon) 11px 12px);
+}
+
+/* Receipt paper: warm noon wash with ruled lines. */
+.lane-native {
+  border-radius: 0 var(--radius-lane) var(--radius-lane) 0;
+  background-color: var(--noon-wash);
+  background-image: repeating-linear-gradient(180deg, transparent 0 calc(1.75rem - 1px), rgb(107 72 0 / 0.12) calc(1.75rem - 1px) 1.75rem);
+  color: var(--ink);
+}
+
+.lane-native .figure dt,
+.lane-native h2 small {
+  color: var(--noon-ink);
+}
+
+.lane-sender {
+  font-size: var(--step--1);
+  color: var(--noon-ink);
+}
+
+.verdict {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: var(--space-3);
+  padding: var(--space-6) var(--space-4);
+  background: var(--paper);
+  border-block: var(--rule);
+  text-align: center;
+}
+
+.seal {
+  width: 5.5rem;
+  height: 5.5rem;
+  border-radius: 50%;
+  box-shadow: var(--shadow-seal);
+}
+
+.seal-ring {
+  fill: var(--paper);
+  stroke: var(--busbar);
+  stroke-width: 4;
+}
+
+.seal-mark {
+  fill: none;
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.seal-agree .seal-ring {
+  fill: var(--agree-wash);
+  stroke: var(--agree);
+}
+
+.seal-agree .seal-mark {
+  stroke: var(--agree);
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: seal-draw var(--seal-draw) ease-out 120ms forwards;
+}
+
+.seal-disagree .seal-ring,
+.seal-error .seal-ring {
+  fill: var(--alarm-wash);
+  stroke: var(--alarm);
+}
+
+.seal-disagree .seal-mark,
+.seal-error .seal-mark {
+  stroke: var(--alarm);
+}
+
+.seal-empty .seal-mark {
+  stroke: var(--muted);
+}
+
+.seal-checking .seal-ring {
+  stroke: var(--silicon);
+  stroke-dasharray: 20 162;
+  transform-origin: center;
+  animation: seal-turn 1.1s linear infinite;
+}
+
+@keyframes seal-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes seal-turn {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+.verdict-title {
+  font: 700 var(--step-1) / 1.15 var(--font-display);
+  font-stretch: 88%;
+}
+
+.verdict-agree .verdict-title {
+  color: var(--agree);
+}
+
+.verdict-disagree .verdict-title,
+.verdict-error .verdict-title {
+  color: var(--alarm);
+}
+
+.verdict-text,
+.verdict-list {
+  font-size: var(--step--1);
+  color: var(--muted);
+}
+
+.verdict-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (max-width: 52rem) {
+  .seam {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .lane-evm {
+    border-radius: var(--radius-lane) var(--radius-lane) 0 0;
+  }
+
+  .lane-native {
+    border-radius: 0 0 var(--radius-lane) var(--radius-lane);
+  }
+
+  .verdict {
+    border-block: 0;
+    border-inline: var(--rule);
+    grid-template-columns: auto minmax(0, 1fr);
+    justify-items: start;
+    text-align: left;
+    column-gap: var(--space-4);
+  }
+
+  .verdict .seal {
+    grid-row: span 3;
+    width: 4rem;
+    height: 4rem;
+  }
+
+  .lane {
+    padding: var(--space-5);
+  }
+
+  .lane dl {
+    grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
+  }
+}
+
+@media (max-width: 22rem) {
+  .lane {
+    padding: var(--space-5) var(--space-4);
+  }
+}

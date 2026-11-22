@@ -1,0 +1,50 @@
+/* Design tokens. Colours, type and spacing used by every page come from here and nowhere else. */
+:root {
+  /* Daylight over a photovoltaic cell: cool white page, silicon-blue EVM lane, noon-sun Native lane. */
+  --daylight: #f5f7fb;
+  --paper: #ffffff;
+  --ink: #141a3a;
+  --muted: #4a5378;
+  --silicon: #22357e;
+  --silicon-deep: #18265e;
+  --silicon-text: #e9edfb;
+  --busbar: #c7d0e4;
+  --busbar-on-silicon: rgb(233 237 251 / 0.14);
+  --noon: #f3b415;
+  --noon-wash: #fff4d1;
+  --noon-ink: #6b4800;
+  --agree: #17734f;
+  --agree-wash: #e3f4ec;
+  --alarm: #b3261e;
+  --alarm-wash: #fbe7e5;
+  --focus: #1d4ed8;
+
+  --font-display: "Bricolage Grotesque Variable", "Arial Narrow", system-ui, sans-serif;
+  --font-body: "Instrument Sans Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  /* Type scale: a perfect fourth (1.333) from 1rem. */
+  --step--1: 0.8125rem;
+  --step-0: 1rem;
+  --step-1: 1.333rem;
+  --step-2: 1.777rem;
+  --step-3: clamp(1.9rem, 1.3rem + 2.6vw, 2.369rem);
+  --step-4: clamp(2.2rem, 1.2rem + 4.4vw, 3.157rem);
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4.5rem;
+
+  --measure: 68ch;
+  --page: 72rem;
+  --radius-lane: 18px;
+  --radius-small: 6px;
+  --rule: 1px solid var(--busbar);
+  --shadow-seal: 0 0 0 6px var(--daylight);
+  --seal-draw: 700ms;
+}

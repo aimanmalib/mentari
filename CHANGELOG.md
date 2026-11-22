@@ -24,3 +24,4 @@ contract is a new deployment, listed here with its new address.
   account for 500 Wh (`POST /api/demo/grant/<address>`), and retire from the wallet. QoreX does not sign EVM
   transactions yet, and the page says so. Browser tests with `@qorechain/qorex-wallet-mock` in Chromium and WebKit.
 - README in English and Bahasa Melayu, `AI_USAGE.md`, architecture, threat model and community files.
+- Eight slides in `deck/` (HTML source and PDF), linked from the README and the site footer.

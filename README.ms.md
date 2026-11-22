@@ -34,7 +34,7 @@ pertama ialah [`6012d2b`](https://github.com/aimanmalib/mentari/commit/6012d2b) 
 2. Pergi ke **Try it**. "Retire now" membersarakan 500 Wh (jumlahnya dalam
    [`config/limits.json`](config/limits.json)), dan tiga butang kegagalan masing-masing mencuba panggilan cross-VM yang
    mesti gagal. Halaman menunjukkan kiraan resit di kedua-dua lejar sebelum dan selepas. Hari ini ia memakai data sampel.
-3. Baca buktinya dalam kod. `contracts/test/` ada 113 ujian Foundry yang lulus, termasuk empat invarian, dan
+3. Baca buktinya dalam kod. `contracts/test/` ada 115 ujian Foundry yang lulus, termasuk empat invarian, dan
    [`docs/TESTING.md`](docs/TESTING.md) menunjukkan setiap invarian menjadi merah bila kontrak sengaja dirosakkan.
 
 ## Cara ia berfungsi
@@ -86,10 +86,10 @@ Dikira pada 22 November 2026 daripada larian tempatan, langkah yang sama dengan 
 
 | Suite | Hasil |
 | --- | --- |
-| Foundry, `contracts/test/` | 113 lulus: 96 ujian unit, 16 ujian fuzz (512 larian setiap satu) dan satu suite invarian yang memegang 4 invarian (forge mengira suite itu sekali, jadi 96 + 16 + 1 = 113); liputan baris `contracts/src` 99 % |
+| Foundry, `contracts/test/` | 115 lulus: 98 ujian unit, 16 ujian fuzz (512 larian setiap satu) dan satu suite invarian yang memegang 4 invarian (forge mengira suite itu sekali, jadi 98 + 16 + 1 = 115); liputan baris `contracts/src` 99 % |
 | vitest, `server/test/` | 86 lulus |
 | vitest, `web/test/` | 141 lulus |
-| vitest, `scripts/test/` | 20 lulus |
+| vitest, `scripts/test/` | 38 lulus |
 | Playwright, `web/e2e/` | 10 lulus: laluan dompet dengan dompet tiruan QoreX, 5 kes dalam Chromium dan WebKit sebagai iPhone 13 |
 
 Empat invarian: dicetak tolak dibersara sama dengan bekalan; bilangan persaraan sama dengan bilangan resit yang jambatan

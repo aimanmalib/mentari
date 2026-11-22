@@ -25,6 +25,8 @@ export interface SiteConfig {
   /** Wallet path: memo on wallet retirements, and the wallet dialog's locale for each site locale. */
   wallet: { memo: string; modalLocales: Record<string, string> };
   explorer: { tx: string; block: string; address: string };
+  /** Footer links: the public repository and the slides PDF. */
+  links: { source: string; slides: string };
   defaultLocale: string;
   locales: string[];
   simulatedMeters: boolean;
@@ -49,6 +51,7 @@ export const siteConfig: SiteConfig = {
   demoGrantWh: limits.demo.grantWh,
   wallet: app.web.wallet,
   explorer: app.web.explorer,
+  links: app.web.links,
   defaultLocale: app.web.defaultLocale,
   locales: app.web.locales,
   simulatedMeters: meter.simulated,

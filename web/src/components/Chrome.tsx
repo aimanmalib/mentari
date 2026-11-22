@@ -65,6 +65,10 @@ export function Footer() {
       <SunMark />
       <p>{t("footer.entry")}</p>
       <p>{t("footer.testnet")}</p>
+      <p className="footer-links">
+        <a href={siteConfig.links.source}>{t("footer.source")}</a>
+        <a href={siteConfig.links.slides}>{t("footer.slides")}</a>
+      </p>
     </footer>
   );
 }

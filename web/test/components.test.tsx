@@ -6,6 +6,7 @@ import { describe, expect, it } from "vitest";
 import { DemoResult, CountsBoard } from "../src/components/DemoResult.js";
 import { RecordPair } from "../src/components/RecordPair.js";
 import { VerifyResult } from "../src/components/VerifyReport.js";
+import { Footer } from "../src/components/Chrome.js";
 import { siteConfig } from "../src/config.js";
 import type { DemoOutcome } from "../src/data/demo.js";
 import type { RetirementRecord } from "../src/data/records.js";
@@ -184,5 +185,21 @@ describe("Retirements list", () => {
     expect(fromParam("?from=0")).toBeNull();
     expect(fromParam("?from=abc")).toBeNull();
     expect(fromParam("")).toBeNull();
+  });
+});
+
+describe("Footer", () => {
+  it("links the source code and the slides from config, in both languages", () => {
+    for (const locale of ["en", "ms"]) {
+      const html = render(<Footer />, locale);
+      expect(html).toContain(`href="${siteConfig.links.source}"`);
+      expect(html).toContain(`href="${siteConfig.links.slides}"`);
+    }
+    expect(text(render(<Footer />, "ms"))).toContain("Slaid (PDF)");
+  });
+
+  it("points the slides link at the PDF in this repository", () => {
+    expect(siteConfig.links.slides.endsWith("/deck/mentari-slides.pdf")).toBe(true);
+    expect(readFileSync(fileURLToPath(new URL("../../deck/mentari-slides.pdf", import.meta.url))).subarray(0, 5).toString()).toBe("%PDF-");
   });
 });

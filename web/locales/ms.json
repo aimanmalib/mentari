@@ -261,7 +261,9 @@
   },
   "footer": {
     "entry": "Mentari ialah entri untuk QoreChain Developer Fest: Build Before Q-Day.",
-    "testnet": "Testnet sahaja. Apache-2.0."
+    "testnet": "Testnet sahaja. Apache-2.0.",
+    "source": "Kod sumber",
+    "slides": "Slaid (PDF)"
   },
   "notFound": {
     "title": "Halaman ini tidak wujud",

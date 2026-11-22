@@ -163,7 +163,18 @@ main {
 }
 
 .site-footer .sun-mark {
-  grid-row: span 2;
+  grid-row: span 3;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+}
+
+.footer-links a {
+  display: inline-block;
+  padding-block: var(--space-1);
 }
 
 @media (max-width: 40rem) {

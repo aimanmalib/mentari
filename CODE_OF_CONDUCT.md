@@ -60,7 +60,7 @@ representative at an online or offline event.
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
 reported to the community leaders responsible for enforcement at
-a private report through [GitHub private vulnerability reporting](https://github.com/aimanmalib/mentari/security/advisories/new) (it reaches only the maintainer), or by contacting [@aimanmalib](https://github.com/aimanmalib).
+hello@sasateguh.com (it reaches only the maintainer).
 All complaints will be reviewed and investigated promptly and fairly.
 
 All community leaders are obligated to respect the privacy and security of the

@@ -5,9 +5,8 @@ about anything that breaks the rules the contracts promise.
 
 ## Reporting
 
-Please do not open a public issue. Use
-[private vulnerability reporting](https://github.com/aimanmalib/mentari/security/advisories/new); it reaches only the
-maintainer. Say what you found, how to reproduce it, and what it lets an attacker do. I aim to answer within 7 days.
+Please do not open a public issue. E-mail hello@sasateguh.com with "Mentari security" in the subject; it reaches only
+the maintainer. Say what you found, how to reproduce it, and what it lets an attacker do. I aim to answer within 7 days.
 
 ## In scope
 

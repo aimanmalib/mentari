@@ -18,18 +18,18 @@ cd contracts && forge test && forge fmt --check && forge coverage --report summa
 
 ## What is tested
 
-Counts are test functions in `contracts/test/`, by name prefix, on 2026-11-21.
+Counts are test functions in `contracts/test/`, by name prefix, on 2026-11-22.
 
 | Kind | Count | Where |
 |---|---|---|
-| Unit (`test_*`) | 96 | `test/lib/`, `test/mentari/`, `test/AtomicityProbe.t.sol` |
+| Unit (`test_*`) | 98 | `test/lib/`, `test/mentari/`, `test/AtomicityProbe.t.sol` |
 | Fuzz (`testFuzz_*`) | 16 | 8 in `test/lib/`, 8 in `test/mentari/MentariFuzz.t.sol` |
 | Invariant (`invariant_*`) | 4 | `test/invariant/MentariInvariant.t.sol` |
 
 Fuzz tests run 512 cases each. The invariant suite runs 128 random sequences of 64 handler calls (8,192 calls), and checks
 all four invariants after every call. Seeds are fixed in `contracts/foundry.toml`, so a run repeats exactly.
 
-Last local gate run (2026-11-21): `forge test` reported 113 passed, 0 failed, 0 skipped (Foundry lists the invariant suite
+Last local run (2026-11-22): `forge test` reported 115 passed, 0 failed, 0 skipped (Foundry lists the invariant suite
 as one entry); line coverage of `contracts/src` 99 %; `forge fmt --check` clean.
 
 ### Fuzz properties
@@ -147,6 +147,26 @@ languages through `react-dom/server`.
 The wallet path adds tests for the grant client (request shape, refusals, a malformed address is never sent), the
 reading of wallet errors (QoreX's "not yet supported" and "signature rejected" wording, codes 4001 and 4200, the
 contract errors), and that the wallet ABI and its errors match `contracts/src/Mentari.sol`.
+
+## Script tests
+
+`scripts/test/` runs with vitest and no network. `cd scripts && npx vitest run` reported 38 passed on 2026-11-22.
+
+`scripts/src/meter.ts` makes the simulated meter readings and the bytes a meter or the registrar signs. The meter tests
+use a frozen config, not `config/meter.json`. Two hashes pin the signed bytes from both sides: the vitest suite checks
+them for the TypeScript encoder, and `contracts/test/mentari/MentariMessages.t.sol` checks them for
+`Mentari.attestMessage` and `Mentari.registerMessage` on chain id 9800 at a fixed address. If either side changes its
+encoding, one of the two suites goes red. A signature made with the encoder is checked with ML-DSA-87 verification.
+
+Changes checked to fail:
+
+| Change | Tests that failed |
+|---|---|
+| `wh` packed as `uint64` in place of `day` as `uint32` | the attest message vector |
+| meter and producer swapped in the register message | the register message vector |
+| the config check ignores the spread when comparing with the chain's cap | the over-the-cap config test |
+| the day loop includes today, which the contract refuses | three `daysToAttest` tests |
+| no upper or no lower clamp on a reading | the unchecked-config test |
 
 ## Browser tests
 

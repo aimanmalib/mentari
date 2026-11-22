@@ -14,7 +14,7 @@ contract is a new deployment, listed here with its new address.
 - `AtomicityProbe` demo contract for the three failure cases.
 - Contract libraries for the bridge call, the receipt note, the reply reader and the post-quantum precompiles, with
   mocks of the bridge and the precompiles for tests.
-- 113 Foundry tests: unit, 16 fuzz tests and 4 invariants; line coverage of `contracts/src` 99 %.
+- 115 Foundry tests: unit, 16 fuzz tests and 4 invariants; line coverage of `contracts/src` 99 %.
 - Node server: the site, a read-only `/lcd` proxy with an allowlist, the demo sender with rate limits and an off switch,
   client IP from Cloudflare only, `/healthz`.
 - Site in English and Bahasa Melayu: Registry, Retirements, Verify, Try it and How it works, on labelled sample data
@@ -24,4 +24,6 @@ contract is a new deployment, listed here with its new address.
   account for 500 Wh (`POST /api/demo/grant/<address>`), and retire from the wallet. QoreX does not sign EVM
   transactions yet, and the page says so. Browser tests with `@qorechain/qorex-wallet-mock` in Chromium and WebKit.
 - README in English and Bahasa Melayu, `AI_USAGE.md`, architecture, threat model and community files.
+- Simulated meter readings from a seeded model in `config/meter.json`, and the exact bytes a meter or the registrar
+  signs, checked against the contract with fixed hashes on both sides (ADR 0011).
 - Eight slides in `deck/` (HTML source and PDF), linked from the README and the site footer.

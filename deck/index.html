@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mentari: slides</title>
+<link rel="icon" href="img/sun.svg">
+<link rel="stylesheet" href="deck.css">
+</head>
+<body>
+<div class="viewport"><div class="stage">
+
+<section class="slide sky cover" aria-label="Mentari">
+  <div class="chrome"><span class="who"><img src="img/sun.svg" alt="">Mentari</span><span class="why">Cross-VM track</span></div>
+  <div class="hero">
+    <div>
+      <h1>Mentari</h1>
+      <p class="lead">Solar certificates you can retire only once: burn and public receipt land together, or not at all.</p>
+      <p class="event">Build Before Q-Day: The QoreChain Developer Fest<br>Built in Malaysia by Aiman Malib</p>
+    </div>
+    <figure style="margin:0">
+      <img class="shot" src="img/registry.png" alt="The Mentari registry: the EVM ledger and the Native receipts book side by side">
+      <figcaption class="cap">The registry, over sample data</figcaption>
+    </figure>
+  </div>
+  <div class="horizon" aria-hidden="true"></div>
+  <div class="foot"><a href="https://mentari.sasateguh.com">mentari.sasateguh.com</a><a href="https://github.com/aimanmalib/mentari">github.com/aimanmalib/mentari</a></div>
+</section>
+
+<section class="slide day" aria-label="EVM-to-Native call">
+  <div class="chrome"><span class="who"><img src="img/sun.svg" alt="">Mentari</span><span class="why">Cross-VM track: a working EVM-to-Native call to an approved Native contract</span></div>
+  <div class="title"><h1>EVM-to-Native call</h1>
+    <p>Retiring a certificate burns it in an EVM contract and writes a public receipt into a Native contract through the Cross-VM bridge, in the same transaction.</p></div>
+  <div class="cols c5-7">
+    <ul class="bars">
+      <li><span class="hl">Burn first.</span> <code>retire</code> burns the watt-hours, then builds the receipt note from typed fields.</li>
+      <li><span class="hl">One bridge call.</span> The bridge at <code>0x…0901</code> sends <code>record</code> to <code>qday-receipts</code>, which is on the testnet allowlist: governance proposal 40, code id 865.</li>
+      <li><span class="hl">Read the reply.</span> The contract stores the receipt id. An empty reply or an id that is not new reverts the retirement.</li>
+    </ul>
+    <div>
+<pre class="code"><span class="k">retire</span>(wh, memo)
+  burn wh
+  <span class="k">executeCrossVMCall</span>(Native, receipts book,
+    {"record":{"note":"MTR1 n=… wh=… by=0x… m=…"}})
+  check id is new
+  store Retirement{holder, wh, receiptId}</pre>
+      <p class="cap">The EVM event names the Native receipt. The Native note names the EVM retirement.</p>
+    </div>
+  </div>
+  <div class="foot"><span>contracts/src/Mentari.sol</span><span>02 / 08</span></div>
+</section>
+
+<section class="slide sky" aria-label="Atomic execution shown on testnet">
+  <div class="chrome"><span class="who"><img src="img/sun.svg" alt="">Mentari</span><span class="why">Cross-VM track: atomic execution shown on testnet</span></div>
+  <div class="title"><h1>Atomic execution shown on testnet</h1>
+    <p>If either side fails, neither happens. AtomicityProbe, a separate demo contract, fails on purpose.</p></div>
+  <div class="cols c7-5">
+    <div>
+      <table class="t">
+        <thead><tr><th>Case</th><th>What AtomicityProbe does</th><th>Must hold</th></tr></thead>
+        <tbody>
+          <tr><td>B</td><td>Writes a receipt, then reverts</td><td>Receipt count the same before and after</td></tr>
+          <tr><td>C</td><td>Asks the Native contract to refuse</td><td>Receipt count the same before and after</td></tr>
+          <tr><td>D</td><td>Calls a Native contract governance has not approved</td><td>Receipt count the same before and after</td></tr>
+        </tbody>
+      </table>
+      <p class="note">Tested against the bridge mock today. Testnet transaction hashes for each case come with the deployment.</p>
+    </div>
+    <figure style="margin:0">
+      <img class="shot" src="img/try-it.png" alt="The Try it page: the Retire now button, three failure buttons and the receipt counts before and after">
+      <figcaption class="cap">The Try it page, over sample data</figcaption>
+    </figure>
+  </div>
+  <div class="foot"><span>contracts/src/AtomicityProbe.sol</span><span>03 / 08</span></div>
+</section>
+
+<section class="slide day" aria-label="Post-quantum checks">
+  <div class="chrome"><span class="who"><img src="img/sun.svg" alt="">Mentari</span><span class="why">Post-quantum: ML-DSA-87 checked on chain</span></div>
+  <div class="title"><h1>Post-quantum checks</h1>
+    <p>Every certificate starts as a solar meter reading signed with ML-DSA-87, and the contract checks it with the <code>pqcVerify</code> precompile.</p></div>
+  <div class="cols c2">
+    <ul class="bars">
+      <li><span class="hl">Minting.</span> A daily reading signed by the meter's ML-DSA-87 key mints watt-hours to the producer. A leaked classical key alone mints nothing.</li>
+      <li><span class="hl">Moving.</span> <code>transfer</code> only sends to accounts whose ML-DSA-87 key is registered on chain with proof of possession (<code>pqcKeyStatus</code>).</li>
+      <li><span class="hl">No replay.</span> Signed messages include the chain id and the contract address.</li>
+    </ul>
+    <table class="t">
+      <thead><tr><th>Precompile</th><th>Address</th></tr></thead>
+      <tbody>
+        <tr><td>Cross-VM bridge</td><td class="mono">0x…0901</td></tr>
+        <tr><td>pqcVerify (ML-DSA-87)</td><td class="mono">0x…0a01</td></tr>
+        <tr><td>pqcKeyStatus</td><td class="mono">0x…0a02</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="foot"><span>docs/threat-model.md</span><span>04 / 08</span></div>
+</section>
+
+<section class="slide sky" aria-label="Verified features">
+  <div class="chrome"><span class="who"><img src="img/sun.svg" alt="">Mentari</span><span class="why">Kits and network features: declared and verified</span></div>
+  <div class="title"><h1>Verified features</h1>
+    <p>What the code uses, and where. Each kit is pinned in package.json.</p></div>
+  <table class="t">
+    <thead><tr><th>Kit or feature</th><th>Version or address</th><th>Where</th></tr></thead>
+    <tbody>
+      <tr><td>@qorechain/sdk</td><td>0.14.0</td><td>Deriving the test accounts</td></tr>
+      <tr><td>Bridge, pqcVerify, pqcKeyStatus</td><td class="mono">0x…0901 · 0x…0a01 · 0x…0a02</td><td>contracts/src/lib</td></tr>
+      <tr><td>qday-receipts Native contract</td><td>code id 865</td><td>The target of every retirement</td></tr>
+      <tr><td>@qorechain/qorex-rainbowkit</td><td>0.1.0</td><td>QoreX as the wallet on the Try it page</td></tr>
+      <tr><td>@qorechain/qorex-wallet-mock</td><td>0.1.0</td><td>QoreX in the browser tests</td></tr>
+    </tbody>
+  </table>
+  <p class="note">The project page on the fest site is not created yet, so nothing is declared or verified there yet.</p>
+  <div class="foot"><span>README.md: Kits and network features</span><span>05 / 08</span></div>
+</section>
+
+<section class="slide day" aria-label="Polished, functional and well-documented">
+  <div class="chrome"><span class="who"><img src="img/sun.svg" alt="">Mentari</span><span class="why">Top-Quality: polished, functional and well-documented</span></div>
+  <div class="title"><h1>Tested, then broken on purpose</h1></div>
+  <div class="stats">
+    <div class="stat"><b>113</b><span>Foundry tests, including fuzz and invariants</span></div>
+    <div class="stat"><b>99 %</b><span>line coverage of contracts/src</span></div>
+    <div class="stat"><b>86</b><span>server tests (vitest)</span></div>
+    <div class="stat"><b>133</b><span>site tests (vitest)</span></div>
+    <div class="stat"><b>10</b><span>browser tests, Chromium and WebKit</span></div>
+  </div>
+  <div class="cols c2">
+    <div><h2>Four invariants hold after every random call</h2>
+      <ul class="bars" style="margin-top:24px">
+        <li>Minted minus retired equals supply.</li>
+        <li>Retirements equal receipts the bridge accepted.</li>
+        <li>Each receipt id is unique and increasing.</li>
+        <li>No balance sits on an address without a post-quantum key.</li>
+      </ul></div>
+    <div><h2>Each one goes red when the contract is broken</h2>
+      <p style="margin-top:24px">I broke <code>Mentari.sol</code> on purpose for each invariant, and each break turned its invariant red. The steps are in the <a href="https://github.com/aimanmalib/mentari/blob/main/docs/TESTING.md">test notes</a>. The site is in English and Bahasa Melayu, and every design decision has a record with how to undo it.</p></div>
+  </div>
+  <div class="foot"><span>README.md: Tests</span><span>06 / 08</span></div>
+</section>
+
+<section class="slide sky" aria-label="AI usage">
+  <div class="chrome"><span class="who"><img src="img/sun.svg" alt="">Mentari</span><span class="why">AI-Native: the workflow, the generated work and the human contribution</span></div>
+  <div class="title"><h1>AI usage</h1>
+    <p>I built Mentari with AI coding agents (Claude Code). AI_USAGE.md has the full account.</p></div>
+  <div class="cols" style="grid-template-columns:1fr 1fr 1fr">
+    <div><h2>Workflow</h2>
+      <p style="margin-top:20px">Three roles in separate sessions: a planner, a builder that takes one slice at a time, and a reviewer that breaks the code to see a test turn red. A mechanical gate sits between builder and reviewer.</p></div>
+    <div><h2>Generated work</h2>
+      <p style="margin-top:20px">Almost everything: the contracts and their tests, the server, the site, the documents. Up to 22 November 2026 the builder ran 15 sessions; 12 were accepted on the first try and 3 were not.</p></div>
+    <div><h2>Human contribution</h2>
+      <p style="margin-top:20px">Mine: entering the fest, choosing the track, approving the requirements and the visual direction, the accounts and the faucet, and everything published in my name.</p></div>
+  </div>
+  <div class="foot"><a href="https://github.com/aimanmalib/mentari/blob/main/AI_USAGE.md">AI_USAGE.md</a><span>07 / 08</span></div>
+</section>
+
+<section class="slide day" aria-label="Check it in 3 steps">
+  <div class="chrome"><span class="who"><img src="img/sun.svg" alt="">Mentari</span><span class="why">Check it yourself</span></div>
+  <div class="title"><h1>Check it in 3 steps</h1></div>
+  <div class="cols c7-5">
+    <ol class="steps">
+      <li><span>Open <a href="https://mentari.sasateguh.com">mentari.sasateguh.com</a>. The registry shows the EVM ledger and the Native receipts book side by side.</span></li>
+      <li><span>Go to Try it. "Retire now" retires 500 Wh, and three failure buttons each try a cross-VM call that must fail.</span></li>
+      <li><span>Read the proof in code: <a href="https://github.com/aimanmalib/mentari">github.com/aimanmalib/mentari</a>, contracts/test and the <a href="https://github.com/aimanmalib/mentari/blob/main/docs/TESTING.md">test notes</a>.</span></li>
+    </ol>
+    <div><h2>Limits</h2>
+      <ul class="bars" style="margin-top:24px">
+        <li>The meter is simulated. The signatures, contracts and chain are real.</li>
+        <li>Testnet only. The certificates have no value.</li>
+        <li>Not on the testnet yet: the site runs on sample data and says so.</li>
+        <li>No professional audit.</li>
+      </ul></div>
+  </div>
+  <div class="foot"><span>Apache-2.0</span><span>08 / 08</span></div>
+</section>
+
+</div></div>
+<script src="deck.js"></script>
+</body>
+</html>

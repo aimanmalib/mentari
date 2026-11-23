@@ -21,7 +21,7 @@
     ]
   },
   "demo": {
-    "enabled": true,
+    "enabled": false,
     "maxConcurrent": 1,
     "perIpPerHour": 5,
     "perDay": 40,

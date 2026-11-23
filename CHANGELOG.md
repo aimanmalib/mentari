@@ -57,6 +57,7 @@ contract is a new deployment, listed here with its new address.
 
 ### Changed
 
+- Live demo sends are switched off in `config/limits.json` until the demo account holds certificates (decision 0022).
 - The site reads the testnet contracts instead of sample data (decision 0021).
 - The judge slides are generated from `deck/kandungan.json` by the judge-pack deck engine, with the site's own
   colours and fonts, and printed to `docs/deck.pdf`. A test checks that the PDF and the slide source match the hashes
@@ -65,3 +66,7 @@ contract is a new deployment, listed here with its new address.
 ### Removed
 
 - The hand-written slides (`deck/deck.css`, `deck/deck.js`, `deck/img/sun.svg`) and the PDF printed from them.
+
+### Fixed
+
+- A failed or timed-out demo send answers 503 so Cloudflare keeps the reason and hash in the body (decision 0022).

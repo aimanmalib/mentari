@@ -29,6 +29,8 @@ pertama ialah [`6012d2b`](https://github.com/aimanmalib/mentari/commit/6012d2b) 
 > berkunci ([`evidence/accounts.json`](evidence/accounts.json)). Kes A, B, C, D, E2 dan G sudah direkod bersama
 > transaksinya ([`evidence/testnet.json`](evidence/testnet.json)); E dan F perlukan hari yang selesai tanpa bacaan.
 > Larian `pnpm verify` pertama lulus 28 daripada 28 semakan ([`evidence/verify.json`](evidence/verify.json)).
+> Kes H: satu transaksi Native bertandatangan hibrid, dihantar tanpa EVM window terbuka, menjalankan `Mentari.retire`,
+> yang menulis resitnya kembali dalam buku Native ([`docs/findings.md`](docs/findings.md), dalam bahasa Inggeris).
 
 ## Semak dalam 3 langkah
 
@@ -95,7 +97,7 @@ Dikira pada 22 November 2026 (ujian skrip pada 23 November) daripada larian temp
 | Foundry, `contracts/test/` | 115 lulus: 98 ujian unit, 16 ujian fuzz (512 larian setiap satu) dan satu suite invarian yang memegang 4 invarian (forge mengira suite itu sekali, jadi 98 + 16 + 1 = 115); liputan baris `contracts/src` 99 % |
 | vitest, `server/test/` | 152 lulus |
 | vitest, `web/test/` | 157 lulus |
-| vitest, `scripts/test/` | 98 lulus |
+| vitest, `scripts/test/` | 128 lulus |
 | Playwright, `web/e2e/` | 10 lulus: laluan dompet dengan dompet tiruan QoreX, 5 kes dalam Chromium dan WebKit sebagai iPhone 13 |
 
 Empat invarian: dicetak tolak dibersara sama dengan bekalan; bilangan persaraan sama dengan bilangan resit yang jambatan

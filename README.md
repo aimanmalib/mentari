@@ -28,6 +28,8 @@ commit is [`6012d2b`](https://github.com/aimanmalib/mentari/commit/6012d2b) on 2
 > ([`evidence/accounts.json`](evidence/accounts.json)). Cases A, B, C, D, E2 and G are recorded with their
 > transactions ([`evidence/testnet.json`](evidence/testnet.json)); E and F need a finished day without a reading.
 > The first `pnpm verify` run passed 28 of 28 checks ([`evidence/verify.json`](evidence/verify.json)).
+> Case H: one hybrid-signed Native transaction, sent with no EVM window open, ran `Mentari.retire`, which wrote its
+> receipt back in the Native book ([`docs/findings.md`](docs/findings.md)).
 
 ## Check it in 3 steps
 
@@ -96,7 +98,8 @@ uses today.
 
 | Kit or feature | Version or address | Where |
 | --- | --- | --- |
-| `@qorechain/sdk` | 0.14.0 (pinned) | [`scripts/src/accounts.ts`](scripts/src/accounts.ts): `generateMnemonic` and `deriveUnifiedAccount` for the test accounts |
+| `@qorechain/sdk` | 0.14.0 (pinned) | [`scripts/src/accounts.ts`](scripts/src/accounts.ts): `generateMnemonic` and `deriveUnifiedAccount` for the test accounts; [`scripts/src/native-entry.ts`](scripts/src/native-entry.ts): `crossvm.crossVmCall` for case H |
+| `MsgCrossVMCall` from an account, hybrid-signed, no EVM window | `/qorechain.crossvm.v1.MsgCrossVMCall` | case H: `Mentari.retire` called from the Native lane ([`docs/findings.md`](docs/findings.md)) |
 | Cross-VM bridge precompile | `0x0000000000000000000000000000000000000901` | [`contracts/src/lib/CrossVm.sol`](contracts/src/lib/CrossVm.sol) |
 | `pqcVerify` precompile (ML-DSA-87) | `0x0000000000000000000000000000000000000a01` | [`contracts/src/lib/Pqc.sol`](contracts/src/lib/Pqc.sol) |
 | `pqcKeyStatus` precompile | `0x0000000000000000000000000000000000000a02` | [`contracts/src/lib/Pqc.sol`](contracts/src/lib/Pqc.sol) |
@@ -138,7 +141,7 @@ Counted on 22 November 2026 (the script tests on 23 November) from a local run, 
 | Foundry, `contracts/test/` | 115 passed, 0 failed | 98 unit tests, 16 fuzz tests (512 runs each) and one invariant suite holding 4 invariants (128 sequences of 64 calls; forge counts the suite once, so 98 + 16 + 1 = 115); line coverage of `contracts/src` 99 % |
 | vitest, `server/test/` | 152 passed | the `/lcd` allowlist, client IP behind Cloudflare, demo rate limits, the off switch, fallbacks, the wallet grant, the live demo sender on a local node, the daily meter run and its chain job |
 | vitest, `web/test/` | 157 passed | the "both ledgers agree" check, the link preview tags and image sizes, the slide counts match this table, the slide PDF is the one printed from the slide source, address encoding, the receipts reader, both languages have the same keys, wallet errors |
-| vitest, `scripts/test/` | 98 passed | account derivation, balances, funding, key registration and EVM windows on the Native lane, simulated meter readings and the bytes a meter signs, deploy, registration and attestation on a local node, the one-command testnet setup, the health watch, the low-funds watch, the account evidence file, the test counter |
+| vitest, `scripts/test/` | 128 passed | account derivation, balances, funding, key registration and EVM windows on the Native lane, the Native-entry experiment (case H), simulated meter readings and the bytes a meter signs, deploy, registration and attestation on a local node, the one-command testnet setup, the health watch, the low-funds watch, the account evidence file, the test counter |
 | Playwright, `web/e2e/` | 10 passed | the wallet path with the QoreX wallet mock, 5 cases in Chromium and in WebKit as an iPhone 13 |
 
 The four invariants hold after every random call:

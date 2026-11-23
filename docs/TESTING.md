@@ -189,7 +189,7 @@ curl -s  -A 'TelegramBot (like TwitterBot)' https://mentari.sasateguh.com/ | gre
 
 ## Script tests
 
-`scripts/test/` runs with vitest and no network beyond a local anvil node. `cd scripts && npx vitest run` reported 116
+`scripts/test/` runs with vitest and no network beyond a local anvil node. `cd scripts && npx vitest run` reported 128
 passed on 2026-11-23.
 
 `scripts/src/meter.ts` makes the simulated meter readings and the bytes a meter or the registrar signs. The meter tests
@@ -232,6 +232,16 @@ move for case A; a Cosmos hash that differs from the evidence; a contract withou
 that cannot serve an old height or find a Cosmos transaction gives `unavailable`, not a failure. Six checks were each
 removed once (receipt sender, receipt note, EVM status, receipts book unchanged, minted - retired = supply, the
 retirements sum) and each time one test went red.
+
+`scripts/src/native-entry.ts` runs case H (ADR 0025). Its tests use a fake signer and a fake lane. They check that a
+step is one hybrid-signed `MsgCrossVMCall` into the EVM contract, whose payload decodes back to the ABI call, at the
+gas and price in the config; that an accepted call, a call that fails in its block and a refusal before any block are
+each recorded as such, with the receipts count at the block before and at the transaction's block; that nothing is
+sent while the sender has a live EVM window; that step 1 falls back to an already attested day when no day is free;
+and that a step sent again replaces its earlier record. `pnpm cases` keeps case H when it rewrites the file. Five
+changes were each made once, and each turned at least one test red: removing the window check, counting a failed
+block as accepted, dropping case H in `mergeEvidence`, treating a refusal before any block as included, and signing
+classical instead of hybrid.
 
 `scripts/src/native.ts` gets the accounts ready on the Native lane (ADR 0016). Its tests run against an in-memory
 lane that applies bank sends, key registrations and windows, and refuses a hybrid transaction from an account with no

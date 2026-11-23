@@ -251,6 +251,17 @@ match, and report a transaction the node no longer has as `unavailable`. Ignorin
 the count, skipping case H, reading every code as 0 in the book reader, and sorting case H first were each tried once;
 each turned a test red.
 
+`scripts/src/live.ts` checks `evidence/live.json`, the record of the Try it buttons pressed on the public site
+(ADR 0027). `pnpm verify` runs it when the file exists. For each run it checks what the page showed: Retire now moved
+both counts by one, each failure button moved neither, the page said "As expected", it logged no console error and was
+no wider than the screen. It checks the record's claim of Retire now succeeding N times in a row. Then it reads each
+transaction back: a Retire now Cosmos transaction must be accepted at the recorded block, with the receipts book one
+higher there; a failure button's EVM transaction must have reverted, sent to Mentari or AtomicityProbe. Its tests
+fail a run with the wrong counts, a console error, a wide page or "not as expected"; a broken streak; a failure that
+succeeded or went to another contract; a retire the book did not record; a rejected Native transaction. A transaction
+the node cannot find is `unavailable`. Resetting the streak never, accepting any book count, treating every run as a
+retire, and ignoring the EVM status were each tried once; each turned a test red.
+
 `scripts/src/native-entry.ts` runs case H (ADR 0025). Its tests use a fake signer and a fake lane. They check that a
 step is one hybrid-signed `MsgCrossVMCall` into the EVM contract, whose payload decodes back to the ABI call, at the
 gas and price in the config; that an accepted call, a call that fails in its block and a refusal before any block are

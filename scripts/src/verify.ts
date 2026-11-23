@@ -9,7 +9,7 @@ import type { BookReader, Receipt } from "./book.js";
 export type Outcome = "pass" | "fail" | "unavailable";
 
 export interface Check {
-  group: "contracts" | "retirements" | "totals" | "cases";
+  group: "contracts" | "retirements" | "totals" | "cases" | "live";
   name: string;
   outcome: Outcome;
   detail?: string;
@@ -73,10 +73,10 @@ export function noteFor(n: bigint, wh: bigint, holder: string): string {
   return `MTR1 n=${n} wh=${wh} by=${holder.toLowerCase()} m=`;
 }
 
-const pass = (group: Check["group"], name: string, detail?: string): Check =>
+export const pass = (group: Check["group"], name: string, detail?: string): Check =>
   detail === undefined ? { group, name, outcome: "pass" } : { group, name, outcome: "pass", detail };
-const fail = (group: Check["group"], name: string, detail: string): Check => ({ group, name, outcome: "fail", detail });
-const sameAddress = (a: string | null, b: string) => a !== null && a.toLowerCase() === b.toLowerCase();
+export const fail = (group: Check["group"], name: string, detail: string): Check => ({ group, name, outcome: "fail", detail });
+export const sameAddress = (a: string | null, b: string) => a !== null && a.toLowerCase() === b.toLowerCase();
 const message = (err: unknown) => (err instanceof Error ? err.message : String(err));
 
 async function contractChecks(evm: EvmReader, input: VerifyInput): Promise<Check[]> {
@@ -144,7 +144,7 @@ async function retirementChecks(evm: EvmReader, book: BookReader, input: VerifyI
 }
 
 /** Receipts book count just before and at the case's block, or null when the node cannot serve those heights. */
-async function countsAround(book: BookReader, height: number): Promise<[number, number] | null> {
+export async function countsAround(book: BookReader, height: number): Promise<[number, number] | null> {
   try {
     return [await book.countAt(height - 1), await book.countAt(height)];
   } catch {

@@ -7,13 +7,15 @@
  * For every retirement on the EVM side it reads the Native receipt and compares sender, note and amount. It checks
  * minted - retired = supply, that the retirements add up to the retired total, and that each case recorded in
  * evidence/testnet.json ended the way it says: case A succeeded and added a receipt, the others reverted and left
- * the receipts book unchanged.
+ * the receipts book unchanged. When evidence/live.json exists it also reads back every transaction the public Try it
+ * page sent in that record.
  */
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { evmToQor } from "@qorechain/sdk";
 import { bookReader } from "./src/book.js";
+import { liveChecks, type LiveRecord } from "./src/live.js";
 import { loadAppConfig } from "./src/config.js";
 import { writeEvidence } from "./src/evidence.js";
 import { mentariReader } from "./src/mentari-reader.js";
@@ -40,6 +42,12 @@ async function main(): Promise<void> {
     cases: testnet.cases,
     concurrency: CONCURRENCY,
   });
+  const livePath = join(repoRoot, "evidence", "live.json");
+  if (existsSync(livePath)) {
+    const live = JSON.parse(readFileSync(livePath, "utf8")) as LiveRecord;
+    const evm = mentariReader(pub, app.contracts.mentari);
+    checks.push(...(await liveChecks(evm, book, live, [app.contracts.mentari, app.contracts.atomicityProbe])));
+  }
   console.log(formatReport(checks));
 
   const summary = summarise(checks);

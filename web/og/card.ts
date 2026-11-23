@@ -39,17 +39,27 @@ export function cardHtml(input: CardInput): string {
     tokens: input.tokensCss,
     width: String(share.imageWidth),
     height: String(share.imageHeight),
-    logo: input.logoSvg.replace(/<title>[^<]*<\/title>/, "").replace("<svg ", '<svg aria-hidden="true" '),
+    logo: inlineLogo(input.logoSvg),
     siteName: escapeHtml(share.siteName),
     host: escapeHtml(new URL(share.siteUrl).host),
     title: escapeHtml(text.title),
     description: escapeHtml(text.description),
   };
-  return input.template.replace(/\{\{(\w+)\}\}/g, (_, key: string) => {
+  return fillSlots(input.template, slots, "preview card: card.html");
+}
+
+/** Replaces every `{{slot}}` in `template`; a slot with no value stops the render, named after `what`. */
+export function fillSlots(template: string, slots: Record<string, string>, what: string): string {
+  return template.replace(/\{\{(\w+)\}\}/g, (_, key: string) => {
     const value = slots[key];
-    if (value === undefined) throw new Error(`preview card: card.html has an unknown slot {{${key}}}`);
+    if (value === undefined) throw new Error(`${what} has an unknown slot {{${key}}}`);
     return value;
   });
+}
+
+/** The brand mark for inline use in a template: no title, hidden from screen readers. */
+export function inlineLogo(logoSvg: string): string {
+  return logoSvg.replace(/<title>[^<]*<\/title>/, "").replace("<svg ", '<svg aria-hidden="true" ');
 }
 
 /** The Apple touch icon: the brand mark without its rounded corners, since iOS rounds the icon itself. */

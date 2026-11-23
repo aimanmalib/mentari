@@ -8,6 +8,10 @@ contract is a new deployment, listed here with its new address.
 
 ### Added
 
+- "Retire now" is sent from the Native lane: one hybrid-signed `MsgCrossVMCall` from the demo account, with no EVM
+  window. The Try it panel shows the Native transaction. `config/app.json` `nativeRoute` switches the route per job
+  ("Retire now" on, the daily meter off for now); the failure buttons stay EVM transactions. The key files now carry the
+  ML-DSA-87 key pair, and `pnpm testnet --keys` rewrites them (decision 0026).
 - `pnpm native-entry` records case H in `evidence/testnet.json`: calls into Mentari sent as hybrid-signed
   `MsgCrossVMCall` from an account with no EVM window. `retire`, with its bridge call, was accepted (retirement 5,
   receipt 14); `attest` reached the contract and reverted there. `pnpm verify` checks each step's Cosmos transaction

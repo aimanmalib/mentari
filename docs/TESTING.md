@@ -88,7 +88,7 @@ Foundry saves a failing sequence under `contracts/cache/` and replays it first o
 
 `server/test/` runs with vitest and no internet: the upstream `fetch` is a fake, the config is a frozen fixture, so
 changing `config/` never breaks a test, and the live meter job talks only to a local anvil node (as in the chain driver
-tests). `cd server && npx vitest run` reported 152 passed on 2026-11-22.
+tests). `cd server && npx vitest run` reported 171 passed on 2026-11-23.
 
 They cover the `/lcd` allowlist (other paths, other contracts, `//host`, `@host`, dot segments and `%2e` are refused
 without an upstream call), methods other than `GET` (405), the 5 second cache, joined concurrent requests, 502 on
@@ -124,6 +124,19 @@ its contents. The REST count reader is tested with a fake `fetch`. Five changes 
 the failure cases, no certificate check, no case D target check, a wrong count query, every send reported as a
 success); each turned a test red.
 
+The Native route (`server/src/native.ts`, decision 0026) is tested against a fake REST node with a real signature
+from a public test phrase. The account rebuilt from the two keys alone has the same addresses and compressed public
+key as the one derived from the phrase. The signed transaction carries one `MsgCrossVMCall`, the `retire` call data,
+the sender, the fee for the gas limit at the configured price, and an ML-DSA-87 signature; a call that reverts in its
+block is reported as reverted, and a refusal before any block is an error. On the local anvil node, "Retire now" goes
+through the Native caller when one is set (both ledgers gain one), the failure buttons stay EVM transactions, and an
+account without certificates sends nothing. The meter job sends each `attest` through the route when it has one and
+treats a reverted call as a failed run. A route that is on with no ML-DSA-87 key in the key file logs that and keeps
+the EVM route. Nine changes were tried on purpose (a classical signature, the compressed key prefix swapped, a refusal
+before the block not thrown, the route ignored, no certificate check before a Native retirement, the ML-DSA-87 pair
+dropped from the demo key file, the Cosmos hash not answered, a reverted meter call not thrown, no log for a missing
+key); each turned a test red.
+
 Each guard was removed from a copy of the code to check that a test notices:
 
 | Change to the server | Tests that failed |
@@ -141,7 +154,7 @@ Each guard was removed from a copy of the code to check that a test notices:
 
 ## Web tests
 
-`web/test/` runs with vitest in Node and no network. `cd web && npx vitest run` reported 157 passed on 2026-11-23.
+`web/test/` runs with vitest in Node and no network. `cd web && npx vitest run` reported 162 passed on 2026-11-23.
 
 They cover the check behind the "both ledgers agree" badge (sender, note, receipt id, nothing checked), the EVM to
 Native address encoding, the receipts book reader (a missing receipt is `null`, any other failure throws so the page
@@ -189,7 +202,7 @@ curl -s  -A 'TelegramBot (like TwitterBot)' https://mentari.sasateguh.com/ | gre
 
 ## Script tests
 
-`scripts/test/` runs with vitest and no network beyond a local anvil node. `cd scripts && npx vitest run` reported 132
+`scripts/test/` runs with vitest and no network beyond a local anvil node. `cd scripts && npx vitest run` reported 134
 passed on 2026-11-23.
 
 `scripts/src/meter.ts` makes the simulated meter readings and the bytes a meter or the registrar signs. The meter tests

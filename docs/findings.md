@@ -67,8 +67,10 @@ Native" feature shows as verified.
 ## What this changes
 
 Following the plan I set before the test: when step 2 is accepted, the demo sender and the meter should use this
-Native route and need no EVM window. Decision 0025 records that, and what is still to do. Until it is built, the site
-keeps sending through the demo sender's scoped window, which works.
+Native route and need no EVM window. Decision 0025 records that. Since 23 November "Retire now" on the site is sent
+this way (decision 0026): the first live one, `EDAEF9C88E6C44FF39029F642A3B6CCDFA2423A2317CE44B58ED606B71124F0F`,
+used 1,005,093 gas, and the demo sender's EVM window, which the failure buttons still use, did not count it. The meter
+job can use the route too; its switch stays off until cases E and F are recorded.
 
 ## What I did not test
 

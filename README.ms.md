@@ -31,14 +31,17 @@ pertama ialah [`6012d2b`](https://github.com/aimanmalib/mentari/commit/6012d2b) 
 > Larian `pnpm verify` pertama lulus 28 daripada 28 semakan ([`evidence/verify.json`](evidence/verify.json)).
 > Kes H: satu transaksi Native bertandatangan hibrid, dihantar tanpa EVM window terbuka, menjalankan `Mentari.retire`,
 > yang menulis resitnya kembali dalam buku Native ([`docs/findings.md`](docs/findings.md), dalam bahasa Inggeris).
+> "Retire now" di laman kini memakai laluan yang sama: satu transaksi Native dari akaun demo, tanpa EVM window
+> ([ADR 0026](docs/decisions/0026-native-route-for-retire-now.md)).
 
 ## Semak dalam 3 langkah
 
 1. Buka <https://mentari.sasateguh.com>. Halaman daftar menunjukkan lejar EVM dan buku resit Native bersebelahan, dan
    lencana yang menyemak persaraan terkini dengan resitnya.
 2. Pergi ke **Try it**. "Retire now" membersarakan 500 Wh (jumlahnya dalam
-   [`config/limits.json`](config/limits.json)), dan tiga butang kegagalan masing-masing mencuba panggilan cross-VM yang
-   mesti gagal. Halaman menunjukkan kiraan resit di kedua-dua lejar sebelum dan selepas. Butang ini menghantar transaksi testnet sebenar.
+   [`config/limits.json`](config/limits.json)) dalam satu transaksi Native bertandatangan hibrid yang menjalankan
+   kontrak EVM, dan tiga butang kegagalan masing-masing menghantar transaksi EVM dengan panggilan cross-VM yang mesti
+   gagal. Halaman menunjukkan kiraan resit di kedua-dua lejar sebelum dan selepas. Butang ini menghantar transaksi testnet sebenar.
 3. Jalankan `pnpm demo` dalam klon baharu (Node 22, pnpm). Ia tidak perlukan kunci: ia membaca titik hujung EVM dan
    REST awam, menyemak setiap persaraan dengan resit Native-nya (pengirim, nota, jumlah), menyemak dicetak - dibersara =
    bekalan, dan menyemak setiap kes yang direkod berakhir seperti yang direkod. Ia keluar 0 hanya bila tiada semakan
@@ -95,9 +98,9 @@ Dikira pada 22 November 2026 (ujian skrip pada 23 November) daripada larian temp
 | Suite | Hasil |
 | --- | --- |
 | Foundry, `contracts/test/` | 115 lulus: 98 ujian unit, 16 ujian fuzz (512 larian setiap satu) dan satu suite invarian yang memegang 4 invarian (forge mengira suite itu sekali, jadi 98 + 16 + 1 = 115); liputan baris `contracts/src` 99 % |
-| vitest, `server/test/` | 152 lulus |
-| vitest, `web/test/` | 157 lulus |
-| vitest, `scripts/test/` | 132 lulus |
+| vitest, `server/test/` | 171 lulus |
+| vitest, `web/test/` | 162 lulus |
+| vitest, `scripts/test/` | 134 lulus |
 | Playwright, `web/e2e/` | 10 lulus: laluan dompet dengan dompet tiruan QoreX, 5 kes dalam Chromium dan WebKit sebagai iPhone 13 |
 
 Empat invarian: dicetak tolak dibersara sama dengan bekalan; bilangan persaraan sama dengan bilangan resit yang jambatan

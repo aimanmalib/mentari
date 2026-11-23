@@ -28,6 +28,8 @@ export interface DemoRequest {
 
 type FallbackReason = Refusal | "unavailable" | "low-funds" | "timeout" | "send-failed" | "not-quantum-ready";
 
+// Cloudflare sits in front of the site and replaces the body of a 502 or 504 answer with its own text, so the page
+// would lose the reason and the transaction hash. Failed and timed-out sends answer 503, which it passes through.
 const STATUS: Record<FallbackReason, number> = {
   disabled: 503,
   unavailable: 503,
@@ -35,8 +37,8 @@ const STATUS: Record<FallbackReason, number> = {
   busy: 429,
   "daily-limit": 429,
   "ip-limit": 429,
-  timeout: 504,
-  "send-failed": 502,
+  timeout: 503,
+  "send-failed": 503,
   "not-quantum-ready": 409,
 };
 

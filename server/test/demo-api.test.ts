@@ -154,7 +154,7 @@ describe("DemoApi refuses", () => {
         finish = () => ok({ evmTx: "0x3", status: "success" });
       });
     const r = await api.handle(req("/api/demo/retire"));
-    expect(r.status).toBe(504);
+    expect(r.status).toBe(503);
     expect(body(r)).toMatchObject({ reason: "timeout", fallback: { evidenceCase: "A" } });
     expect(body(await api.handle(req("/api/demo/retire", { ip: "b" }))).reason).toBe("busy");
     finish();
@@ -162,13 +162,13 @@ describe("DemoApi refuses", () => {
     expect(body(await api.handle(req("/api/demo/status", { method: "GET" }))).busy).toBe(false);
   });
 
-  it("reports a failed send as 502 without internal detail and frees the slot", async () => {
+  it("reports a failed send as 503 without internal detail and frees the slot", async () => {
     const { api, chain } = setup();
     chain.onSend = async () => {
       throw new Error("nonce too low at 10.0.0.5");
     };
     const r = await api.handle(req("/api/demo/retire"));
-    expect(r.status).toBe(502);
+    expect(r.status).toBe(503);
     expect(String(r.body)).not.toContain("nonce");
     expect(body(r)).toMatchObject({ reason: "send-failed", fallback: { evidenceCase: "A" } });
     chain.onSend = async () => ({ evmTx: "0x4", status: "success" });
@@ -184,7 +184,7 @@ describe("DemoApi refuses", () => {
       return { receipts: 1, retirements: 1 };
     };
     const r = await api.handle(req("/api/demo/retire"));
-    expect(r.status).toBe(502);
+    expect(r.status).toBe(503);
     expect(body(r).evmTx).toBe(`0x${"a".repeat(64)}`);
   });
 });
@@ -250,7 +250,7 @@ describe("DemoApi grant to a visitor's wallet", () => {
     chain.quantumReady.add(wallet.toLowerCase());
     chain.onGrant = async () => ({ evmTx: "0xdead", status: "reverted" });
     const r = await api.handle(req(url));
-    expect(r.status).toBe(502);
+    expect(r.status).toBe(503);
     expect(body(r)).toEqual({ ok: false, reason: "send-failed", evmTx: "0xdead" });
   });
 

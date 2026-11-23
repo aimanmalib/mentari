@@ -26,8 +26,9 @@ pertama ialah [`6012d2b`](https://github.com/aimanmalib/mentari/commit/6012d2b) 
 > `0xf5cb2c6048a7ce8c5a7accc66eb8efc33942a448` dan `AtomicityProbe` di `0x7438df055f0d96e6ba1b9ac8e7334a1be56130e4`.
 > Tiga meter simulasi sudah didaftar dan sembilan bacaan harian yang diisi semula, setiap satu disemak di rantai dengan
 > ML-DSA-87, mencetak 344,115 Wh ([`evidence/deploy.json`](evidence/deploy.json)). Lapan akaun ujian sudah diberi dana dan
-> berkunci ([`evidence/accounts.json`](evidence/accounts.json)). Laman langsung membaca testnet. Belum ada sijil yang
-> dibersarakan: persaraan, tiga kes kegagalan dan skrip `verify` datang seterusnya.
+> berkunci ([`evidence/accounts.json`](evidence/accounts.json)). Kes A, B, C, D, E2 dan G sudah direkod bersama
+> transaksinya ([`evidence/testnet.json`](evidence/testnet.json)); E dan F perlukan hari yang selesai tanpa bacaan.
+> Larian `pnpm verify` pertama lulus 28 daripada 28 semakan ([`evidence/verify.json`](evidence/verify.json)).
 
 ## Semak dalam 3 langkah
 
@@ -35,8 +36,11 @@ pertama ialah [`6012d2b`](https://github.com/aimanmalib/mentari/commit/6012d2b) 
    lencana yang menyemak persaraan terkini dengan resitnya.
 2. Pergi ke **Try it**. "Retire now" membersarakan 500 Wh (jumlahnya dalam
    [`config/limits.json`](config/limits.json)), dan tiga butang kegagalan masing-masing mencuba panggilan cross-VM yang
-   mesti gagal. Halaman menunjukkan kiraan resit di kedua-dua lejar sebelum dan selepas. Butang ini menghantar transaksi sebenar sebaik akaun demo memegang sijil (lihat di atas).
-3. Baca buktinya dalam kod. `contracts/test/` ada 115 ujian Foundry yang lulus, termasuk empat invarian, dan
+   mesti gagal. Halaman menunjukkan kiraan resit di kedua-dua lejar sebelum dan selepas. Butang ini menghantar transaksi testnet sebenar.
+3. Jalankan `pnpm demo` dalam klon baharu (Node 22, pnpm). Ia tidak perlukan kunci: ia membaca titik hujung EVM dan
+   REST awam, menyemak setiap persaraan dengan resit Native-nya (pengirim, nota, jumlah), menyemak dicetak - dibersara =
+   bekalan, dan menyemak setiap kes yang direkod berakhir seperti yang direkod. Ia keluar 0 hanya bila tiada semakan
+   gagal. Bukti dalam kod ada di `contracts/test/`: 115 ujian Foundry yang lulus, dan
    [`docs/TESTING.md`](docs/TESTING.md) menunjukkan setiap invarian menjadi merah bila kontrak sengaja dirosakkan.
 
 ## Cara ia berfungsi

@@ -25,17 +25,21 @@ commit is [`6012d2b`](https://github.com/aimanmalib/mentari/commit/6012d2b) on 2
 > `0xf5cb2c6048a7ce8c5a7accc66eb8efc33942a448` and `AtomicityProbe` at `0x7438df055f0d96e6ba1b9ac8e7334a1be56130e4`.
 > Three simulated meters are registered and nine backfilled daily readings, each checked on chain with ML-DSA-87,
 > minted 344,115 Wh ([`evidence/deploy.json`](evidence/deploy.json)). The eight test accounts are funded and keyed
-> ([`evidence/accounts.json`](evidence/accounts.json)). The live site reads the testnet. No certificate is retired yet:
-> the retirements, the three failure cases and the `verify` script come next.
+> ([`evidence/accounts.json`](evidence/accounts.json)). Cases A, B, C, D, E2 and G are recorded with their
+> transactions ([`evidence/testnet.json`](evidence/testnet.json)); E and F need a finished day without a reading.
+> The first `pnpm verify` run passed 28 of 28 checks ([`evidence/verify.json`](evidence/verify.json)).
 
 ## Check it in 3 steps
 
 1. Open <https://mentari.sasateguh.com>. The registry shows the EVM ledger and the Native receipts book side by side,
    and a badge that checks the latest retirements against their receipts.
 2. Go to **Try it**. "Retire now" retires 500 Wh (the amount is in [`config/limits.json`](config/limits.json)), and the three failure buttons each try a cross-VM call that must fail.
-   The page shows the receipt count on both ledgers before and after. The buttons send real transactions once the demo account holds certificates (see above).
-3. Read the proof in code. `contracts/test/` has 115 passing Foundry tests, including the four invariants below, and
-   [`docs/TESTING.md`](docs/TESTING.md) shows that each invariant goes red when the contract is broken on purpose.
+   The page shows the receipt count on both ledgers before and after. The buttons send real testnet transactions.
+3. Run `pnpm demo` in a fresh clone (Node 22, pnpm). It needs no key: it reads the public EVM and REST endpoints,
+   checks every retirement against its Native receipt (sender, note, amount), checks minted - retired = supply, and
+   checks that each recorded case ended as recorded. It exits 0 only when no check fails. The proof in code is in
+   `contracts/test/`: 115 passing Foundry tests, and [`docs/TESTING.md`](docs/TESTING.md) shows that each invariant
+   goes red when the contract is broken on purpose.
 
 ## How it works
 

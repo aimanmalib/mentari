@@ -8,6 +8,9 @@ contract is a new deployment, listed here with its new address.
 
 ### Added
 
+- Cover image `brand/mentari-cover.png` (1920 × 1080) for the project page: the name, the tagline and a shot of the
+  live registry page, drawn by `pnpm --filter @mentari/web cover` from the site's own colours and fonts. Size, page and
+  texts come from `config/app.json` `web.cover` and the locale files (decision 0028).
 - `evidence/live.json`: the Try it buttons pressed on the public site in Chromium and WebKit (iPhone 13), in English
   and Malay. "Retire now" succeeded 5 times in a row, each moving both ledgers by one; each failure button moved
   neither. `pnpm verify` checks the record and reads all 8 transactions back from the testnet (decision 0027).

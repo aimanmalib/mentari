@@ -1,0 +1,189 @@
+{
+  "chainId": "qorechain-diana",
+  "evmChainId": 9800,
+  "evmRpc": "https://evm-testnet.qore.host",
+  "contracts": [
+    {
+      "name": "Mentari",
+      "address": "0xf5cb2c6048a7ce8c5a7accc66eb8efc33942a448",
+      "evmTx": "0x3625b38204755973cedf7be432930230c754c4bbe0045d3899e1c3c8c7fa15bc",
+      "block": 10606924,
+      "gasUsed": 3139965,
+      "status": "success"
+    },
+    {
+      "name": "AtomicityProbe",
+      "address": "0x7438df055f0d96e6ba1b9ac8e7334a1be56130e4",
+      "evmTx": "0x8488e96e60346d70eee42bdf708057dac5bd7ef8943a452e28c19e3e773a0ec3",
+      "block": 10606926,
+      "gasUsed": 1687515,
+      "status": "success"
+    }
+  ],
+  "registrations": [
+    {
+      "system": 1,
+      "label": "A",
+      "firstDay": 20777,
+      "firstDate": "2026-11-20",
+      "signedBy": "registrar (ML-DSA-87)",
+      "evmTx": "0x2c9e3f6f3b30365ca9825bc645b8f90c4c07d1e07355a6df47dbeb61f0215474",
+      "block": 10606928,
+      "gasUsed": 282949,
+      "status": "success"
+    },
+    {
+      "system": 2,
+      "label": "B",
+      "firstDay": 20777,
+      "firstDate": "2026-11-20",
+      "signedBy": "registrar (ML-DSA-87)",
+      "evmTx": "0xd0bcec6da6f1b6402ff903b84202d4d84102b7456d42dbcd53490d192845d509",
+      "block": 10606930,
+      "gasUsed": 265741,
+      "status": "success"
+    },
+    {
+      "system": 3,
+      "label": "C",
+      "firstDay": 20777,
+      "firstDate": "2026-11-20",
+      "signedBy": "registrar (ML-DSA-87)",
+      "evmTx": "0xcbf53a7342503e80ec274f72c1aed2b92b4ea60807d7ec9a6a1544530adcce3b",
+      "block": 10606932,
+      "gasUsed": 265669,
+      "status": "success"
+    }
+  ],
+  "readings": [
+    {
+      "system": 1,
+      "label": "A",
+      "day": 20777,
+      "date": "2026-11-20",
+      "wh": 21988,
+      "backfilled": true,
+      "signedBy": "meter A (ML-DSA-87)",
+      "evmTx": "0xcec25f529e7f396de096b8f0b25cf735279c54b294d112afc3dc8284d4cd1ed5",
+      "block": 10606935,
+      "gasUsed": 303474,
+      "status": "success"
+    },
+    {
+      "system": 1,
+      "label": "A",
+      "day": 20778,
+      "date": "2026-11-21",
+      "wh": 26372,
+      "backfilled": true,
+      "signedBy": "meter A (ML-DSA-87)",
+      "evmTx": "0x69d2f55fe91bc9584f615f9a881d093777ab699d8563ff4399cab12610040848",
+      "block": 10606937,
+      "gasUsed": 252390,
+      "status": "success"
+    },
+    {
+      "system": 1,
+      "label": "A",
+      "day": 20779,
+      "date": "2026-11-22",
+      "wh": 28398,
+      "backfilled": true,
+      "signedBy": "meter A (ML-DSA-87)",
+      "evmTx": "0x8a890632ccd6b6f20a141ebacb510c58785d6dcd94154823d2225df3ff2c516a",
+      "block": 10606939,
+      "gasUsed": 252210,
+      "status": "success"
+    },
+    {
+      "system": 2,
+      "label": "B",
+      "day": 20777,
+      "date": "2026-11-20",
+      "wh": 38431,
+      "backfilled": true,
+      "signedBy": "meter B (ML-DSA-87)",
+      "evmTx": "0x0ed164c5df26bb7395f4e9121ac7a3b4c8031b16fca2b63350f497395e5ab0c1",
+      "block": 10606941,
+      "gasUsed": 252222,
+      "status": "success"
+    },
+    {
+      "system": 2,
+      "label": "B",
+      "day": 20778,
+      "date": "2026-11-21",
+      "wh": 32404,
+      "backfilled": true,
+      "signedBy": "meter B (ML-DSA-87)",
+      "evmTx": "0xe1dbd9606f2b8d876b3cbbe6447e7d1908fda9373da78030aa7e9b571f75c867",
+      "block": 10606943,
+      "gasUsed": 252330,
+      "status": "success"
+    },
+    {
+      "system": 2,
+      "label": "B",
+      "day": 20779,
+      "date": "2026-11-22",
+      "wh": 36620,
+      "backfilled": true,
+      "signedBy": "meter B (ML-DSA-87)",
+      "evmTx": "0xec0b64233c8d852282bd3457237f1ac4fd8692edf9d8164a4c88ee9a4aac0d83",
+      "block": 10606945,
+      "gasUsed": 252234,
+      "status": "success"
+    },
+    {
+      "system": 3,
+      "label": "C",
+      "day": 20777,
+      "date": "2026-11-20",
+      "wh": 54432,
+      "backfilled": true,
+      "signedBy": "meter C (ML-DSA-87)",
+      "evmTx": "0x9fb2486a676e9a345827adeb4dc6c353ffa76249fdbce992a532f5831aa10ec3",
+      "block": 10606947,
+      "gasUsed": 252318,
+      "status": "success"
+    },
+    {
+      "system": 3,
+      "label": "C",
+      "day": 20778,
+      "date": "2026-11-21",
+      "wh": 54561,
+      "backfilled": true,
+      "signedBy": "meter C (ML-DSA-87)",
+      "evmTx": "0xca0e733bc8cefc71ad2d47c16b89023b0c705d410bac28cbe9613b4d858e9144",
+      "block": 10606949,
+      "gasUsed": 252366,
+      "status": "success"
+    },
+    {
+      "system": 3,
+      "label": "C",
+      "day": 20779,
+      "date": "2026-11-22",
+      "wh": 50909,
+      "backfilled": true,
+      "signedBy": "meter C (ML-DSA-87)",
+      "evmTx": "0x7e7232f056aff91dc7ae9bd8bd9fcbcdffb72976fcde6f665ce97c977581fd8c",
+      "block": 10606951,
+      "gasUsed": 252282,
+      "status": "success"
+    }
+  ],
+  "nativeWindow": {
+    "opened": "BF46F87FAE787F4588A77A052419E37A13CBADF56AAC178BB4711CDB410DAADB",
+    "closed": "793BAC5FB43AC2FEFC8BCC1D29A77230FD12D8383FD1CE1ABE71AB61848E883C",
+    "role": "funder and deployer"
+  },
+  "totals": {
+    "mintedWh": 344115,
+    "retiredWh": 0,
+    "supplyWh": 344115,
+    "readAtBlock": 10607035
+  },
+  "recordedAt": "2026-11-23T09:37:25Z"
+}

@@ -1,13 +1,13 @@
 {
   "chainId": "qorechain-diana",
   "rest": "https://api-testnet.qore.host",
-  "readAt": "2026-11-23T09:16:49.353Z",
+  "readAt": "2026-11-23T09:37:58.987Z",
   "accounts": [
     {
       "role": "funder and deployer",
       "evm": "0x9dEF414277275054bF585EAE1Cc6A4b2b673078B",
       "cosmos": "qor1nhh5zsnhyag9f06ct6hpe34yk2m8xputtw4t63",
-      "balanceUqor": "70505000",
+      "balanceUqor": "64444087",
       "pqcKeyRegistered": true,
       "possessionProven": true,
       "evmWindowOpen": false

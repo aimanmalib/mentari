@@ -22,9 +22,9 @@
     "11": "reserved (second project) sample account"
   },
   "contracts": {
-    "mentari": "",
-    "atomicityProbe": "",
-    "mentariDeployBlock": 0
+    "mentari": "0xf5cb2c6048a7ce8c5a7accc66eb8efc33942a448",
+    "atomicityProbe": "0x7438df055f0d96e6ba1b9ac8e7334a1be56130e4",
+    "mentariDeployBlock": 10606924
   },
   "native": {
     "receiptsBook": "qor1xjayq5ev55tkzpml9klxwyshr7gdrha0nurha9jhm0f0gdckksgs3gltw8",

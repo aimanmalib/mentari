@@ -8,6 +8,9 @@ contract is a new deployment, listed here with its new address.
 
 ### Added
 
+- Testnet deployment: `Mentari` at `0xf5cb2c6048a7ce8c5a7accc66eb8efc33942a448` and `AtomicityProbe` at
+  `0x7438df055f0d96e6ba1b9ac8e7334a1be56130e4` on the Diana testnet, three simulated meters registered and three
+  backfilled days attested for each. `evidence/deploy.json` lists every transaction (decision 0021).
 - `pnpm native record` writes the public state of every account to `evidence/accounts.json`; the first record shows
   the eight accounts funded, each with a registered ML-DSA-87 key and a proof of possession (decision 0020).
 - `deploy/funds.sh`: a low-funds watch for cron that reads public balances only and warns once when an account that
@@ -54,6 +57,7 @@ contract is a new deployment, listed here with its new address.
 
 ### Changed
 
+- The site reads the testnet contracts instead of sample data (decision 0021).
 - The judge slides are generated from `deck/kandungan.json` by the judge-pack deck engine, with the site's own
   colours and fonts, and printed to `docs/deck.pdf`. A test checks that the PDF and the slide source match the hashes
   the engine recorded, and that the test-count tiles match the README (decision 0019).

@@ -194,6 +194,14 @@ describe("evidence", () => {
     ]);
   });
 
+  it("carries case H over untouched when it adds cases", () => {
+    const h = { id: "H", steps: [{ step: 1, cosmos_tx: "AB" }] };
+    const next = mergeEvidence({ ...mergeEvidence(undefined, head, [rec("A")]), nativeEntry: h }, head, [rec("E")]);
+    expect(next.nativeEntry).toEqual(h);
+    expect(next.cases.map((c) => c.id)).toEqual(["A", "E"]);
+    expect("nativeEntry" in mergeEvidence(undefined, head, [])).toBe(false);
+  });
+
   it("lists only the cases still to send", () => {
     const specs = fixedCases(CFG);
     expect(pendingCases(specs, [{ id: "A" }, { id: "D" }]).map((s) => s.id)).toEqual(["B", "C", "G"]);

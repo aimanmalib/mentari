@@ -1,0 +1,151 @@
+{
+  "chainId": "qorechain-diana",
+  "evmChainId": 9800,
+  "evmRpc": "https://evm-testnet.qore.host",
+  "rest": "https://api-testnet.qore.host",
+  "contracts": {
+    "mentari": "0xF5cb2c6048a7CE8c5A7ACcc66eB8efc33942a448",
+    "mentariNative": "qor17h9jcczg5l8gckn6enrxaw80cvu59fzg2335fw",
+    "atomicityProbe": "0x7438Df055F0D96e6ba1b9AC8e7334a1Be56130E4",
+    "receiptsBook": "qor1xjayq5ev55tkzpml9klxwyshr7gdrha0nurha9jhm0f0gdckksgs3gltw8",
+    "notAllowlistedTarget": "qor1k50lljx5myr6f7ctvdngdaf09erfct5rtn8yccd5sy845tphk2jqe26mpr"
+  },
+  "sender": {
+    "role": "demo sender",
+    "evm": "0x859bA2e40f7e892e53cE25Ae67b79F3A8af7F2b3"
+  },
+  "revertReasonFrom": "eth_call of the same call from the same sender just before it was sent; a mined receipt only says reverted",
+  "cases": [
+    {
+      "id": "A",
+      "title": "Retire certificates",
+      "expect": "success",
+      "status": "success",
+      "contract": "0xF5cb2c6048a7CE8c5A7ACcc66eB8efc33942a448",
+      "function": "retire",
+      "evm_tx": "0x08e96e38d8880b92eb676f621c7be5bab83725468470ff7a396d6e92c6401a03",
+      "cosmos_tx": "5654336FDCC86E817D25DE3391FE76FFDAAC8CE92785C785E0AA276369E8A618",
+      "height": 10609362,
+      "gas_used": 685557,
+      "revert_reason": null,
+      "receipts": {
+        "before": 7,
+        "after": 8
+      },
+      "retirements": {
+        "before": 0,
+        "after": 1
+      },
+      "receipt": {
+        "id": 8,
+        "sender": "qor17h9jcczg5l8gckn6enrxaw80cvu59fzg2335fw",
+        "note": "MTR1 n=1 wh=500 by=0x859ba2e40f7e892e53ce25ae67b79f3a8af7f2b3 m=Testnet case A"
+      }
+    },
+    {
+      "id": "B",
+      "title": "Native write, then the EVM side reverts",
+      "expect": "revert",
+      "status": "reverted",
+      "contract": "0x7438Df055F0D96e6ba1b9AC8e7334a1Be56130E4",
+      "function": "recordThenRevert",
+      "evm_tx": "0xdf7bc37dcbfed49096d4fa903120a20e8e7f9f2e3dc1a6ed1acafd605031926c",
+      "cosmos_tx": "9837A24B4D575651DB50875540C94CC58A3F1D7C6734B05F0A82846D3F260CF8",
+      "height": 10609364,
+      "gas_used": 1500000,
+      "revert_reason": "RevertedAfterNativeWrite(9)",
+      "receipts": {
+        "before": 8,
+        "after": 8
+      },
+      "retirements": {
+        "before": 1,
+        "after": 1
+      }
+    },
+    {
+      "id": "C",
+      "title": "The Native contract refuses the message",
+      "expect": "revert",
+      "status": "reverted",
+      "contract": "0x7438Df055F0D96e6ba1b9AC8e7334a1Be56130E4",
+      "function": "nativeRefuses",
+      "evm_tx": "0x976f99cccc32b7aaf2a396a53e899f44e3e920c2f19e4ece8534ae35b11c9418",
+      "cosmos_tx": "A6D4F2754F99ADE9A2BD35CA2F2668620D5799A7B7342876556E8C34F6B66CA3",
+      "height": 10609366,
+      "gas_used": 1500000,
+      "revert_reason": "BridgeCallFailed(\"cross-VM call failed: refused on purpose by the Native contract: execute wasm contract failed: CosmWasm contract execution failed\")",
+      "receipts": {
+        "before": 8,
+        "after": 8
+      },
+      "retirements": {
+        "before": 1,
+        "after": 1
+      }
+    },
+    {
+      "id": "D",
+      "title": "A Native contract not on the bridge allowlist",
+      "expect": "revert",
+      "status": "reverted",
+      "contract": "0x7438Df055F0D96e6ba1b9AC8e7334a1Be56130E4",
+      "function": "callTarget",
+      "evm_tx": "0x68f3f651f12f5b59cf868f9d724b1c7d2a8573596c4f4ce411b52baae9135114",
+      "cosmos_tx": "55F936A67ACE5226F2EF1BF24CA212C7C994D2D565BC92C6D047CB6CA6B0E635",
+      "height": 10609368,
+      "gas_used": 1500000,
+      "revert_reason": "BridgeCallFailed(\"cross-VM bridge call refused: target cosmwasm:qor1k50lljx5myr6f7ctvdngdaf09erfct5rtn8yccd5sy845tphk2jqe26mpr is not allowlisted\")",
+      "receipts": {
+        "before": 8,
+        "after": 8
+      },
+      "retirements": {
+        "before": 1,
+        "after": 1
+      }
+    },
+    {
+      "id": "E2",
+      "title": "A second reading for the same day",
+      "expect": "revert",
+      "status": "reverted",
+      "contract": "0xF5cb2c6048a7CE8c5A7ACcc66eB8efc33942a448",
+      "function": "attest",
+      "evm_tx": "0x4089e80f0a401393f727980fb6fbc9c9ca5f3036bfd29521b3e45b2eb1c19e7f",
+      "cosmos_tx": "C4589E9AB637B431AD13FB2CF3E4E90F6C3F1520F4845A4709C11EE6EDFC47D3",
+      "height": 10609370,
+      "gas_used": 1500000,
+      "revert_reason": "AlreadyAttested(1, 20777)",
+      "receipts": {
+        "before": 8,
+        "after": 8
+      },
+      "retirements": {
+        "before": 1,
+        "after": 1
+      }
+    },
+    {
+      "id": "G",
+      "title": "Transfer to an account without an ML-DSA-87 key",
+      "expect": "revert",
+      "status": "reverted",
+      "contract": "0xF5cb2c6048a7CE8c5A7ACcc66eB8efc33942a448",
+      "function": "transfer",
+      "evm_tx": "0xb109fdc130ee5ae314d60cf3b03d3b5e85ff80a9eef849fd5c8118cb97c63bfc",
+      "cosmos_tx": "E405CBAB79FAC6335F5982E1396B65249AEC93BCF56484A0540D91B83C9A8F34",
+      "height": 10609373,
+      "gas_used": 1500000,
+      "revert_reason": "NotQuantumReady(0x000000000000000000000000000000000000dEaD)",
+      "receipts": {
+        "before": 8,
+        "after": 8
+      },
+      "retirements": {
+        "before": 1,
+        "after": 1
+      }
+    }
+  ]
+}

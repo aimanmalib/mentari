@@ -65,7 +65,7 @@ beforeAll(async () => {
   const today = await chainDay(chain.pub);
   const plans: SystemPlan[] = METERS.systems.map((s) => ({ ...s, meter: roles[`meter ${s.label}`]!, producer: producer! }));
   await registerSystems(run, registrar!, plans, today - 3);
-  // Only the first day gets a reading, so E2 has a day to repeat and E1 and F have a free one.
+  // Only the first day gets a reading, so E2 has a day to repeat and E and F have a free one.
   const wh = simulatedWh(METERS, METERS.systems[0]!, today - 3);
   const sig = chain.sign(meterA!, attestMessage(9800, m.address, 1, today - 3, wh));
   await send(producer!, m.address, mentariArt.abi, "attest", [1, today - 3, BigInt(wh), sig]);
@@ -141,15 +141,15 @@ describe("fixed cases", () => {
 });
 
 describe("attest cases", () => {
-  it("builds E2 on the attested day and E1 and F on the free one; each reverts with its own error", async () => {
+  it("builds E2 on the attested day and E and F on the free one; each reverts with its own error", async () => {
     const specs = await attestCases(env, CFG, METERS, sign);
-    expect(specs.map((s) => s.id)).toEqual(["E2", "E1", "F"]);
+    expect(specs.map((s) => s.id)).toEqual(["E2", "E", "F"]);
     const today = await chainDay(chain.pub);
     expect(specs.map((s) => s.args[1])).toEqual([today - 3, today - 1, today - 1]);
     const out = [];
     for (const s of pendingCases(specs, [])) out.push(await runCase(env, s, CFG.revertGas));
     expect(out.map((r) => [r.id, r.status])).toEqual([
-      ["E1", "reverted"],
+      ["E", "reverted"],
       ["E2", "reverted"],
       ["F", "reverted"],
     ]);
@@ -158,7 +158,7 @@ describe("attest cases", () => {
     expect(out[2]!.revert_reason).toBe("WhOutOfRange(40001, 40000)");
   });
 
-  it("leaves E1 and F out while every finished day has a reading", async () => {
+  it("leaves E and F out while every finished day has a reading", async () => {
     const today = await chainDay(chain.pub);
     for (const day of [today - 2, today - 1]) {
       const wh = simulatedWh(METERS, METERS.systems[0]!, day);
@@ -185,11 +185,11 @@ describe("evidence", () => {
   it("keeps recorded cases, adds new ones in case order, and never replaces one", () => {
     const first = mergeEvidence(undefined, head, [rec("G"), rec("A")]);
     expect(first.cases.map((c) => c.id)).toEqual(["A", "G"]);
-    const second = mergeEvidence(first, head, [rec("A", "0x02"), rec("E1"), rec("B")]);
+    const second = mergeEvidence(first, head, [rec("A", "0x02"), rec("E"), rec("B")]);
     expect(second.cases.map((c) => [c.id, c.evm_tx])).toEqual([
       ["A", "0x01"],
       ["B", "0x01"],
-      ["E1", "0x01"],
+      ["E", "0x01"],
       ["G", "0x01"],
     ]);
   });

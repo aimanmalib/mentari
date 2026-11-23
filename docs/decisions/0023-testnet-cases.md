@@ -23,9 +23,9 @@ Native contract that is not on the bridge allowlist.
   book code (code id 865) that is not in `bridge_allowed_targets` of `/qorechain/crossvm/v1/params` (read
   2026-11-23). Same code, so the only difference from case A's target is the allowlist. It is
   `native.notAllowlistedTarget` in `config/app.json`.
-- Case G sends 1 Wh to `0x…dEaD`, which has no ML-DSA-87 key. E2 repeats the first attested day with a correct meter
-  signature. E1 (signed with meter B's key) and F (1 Wh over the cap, correct signature) need a finished day without a
-  reading. On the day of the first run every finished day had one, so the script leaves E1 and F for a run after the
+- Case E has two transactions, recorded as `E` and `E2`. Case G sends 1 Wh to `0x…dEaD`, which has no ML-DSA-87 key. E2 repeats the first attested day with a correct meter
+  signature. E (signed with meter B's key) and F (1 Wh over the cap, correct signature) need a finished day without a
+  reading. On the day of the first run every finished day had one, so the script leaves E and F for a run after the
   next UTC midnight.
 - Windows are scoped (`targets` in `config/app.json` `windows`, resolved from `contracts`): `stock` lets the producer
   move 100,000 Wh to the demo sender once (1 transaction), and `demo` lets the demo sender reach only `Mentari` and

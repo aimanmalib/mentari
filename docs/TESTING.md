@@ -216,9 +216,9 @@ Removing the no-code check or the one-address check each turned one test red.
 
 `scripts/src/cases.ts` records the testnet cases (ADR 0023). Its tests run every case on the same local node with
 `MockCrossVmBridge` placed at the bridge address: case A writes one receipt whose sender is the contract and whose
-note matches the retirement; B, C, D, E1, E2, F and G revert with their own named error and leave the receipt and
+note matches the retirement; B, C, D, E, E2, F and G revert with their own named error and leave the receipt and
 retirement counts unchanged. They also check that nothing is sent when a revert case would succeed, fails with
-another error, or a success case fails in simulation; that E1 and F are left out while every finished day has a
+another error, or a success case fails in simulation; that E and F are left out while every finished day has a
 reading; and that a recorded case is never replaced. `scripts/src/book.ts` is tested with a fake `fetch`: the count is
 read through the block height header, and a malformed receipt is refused. Removing the expected-error check in
 `runCase`, or the scope comparison when a window is reused, each turned tests red.

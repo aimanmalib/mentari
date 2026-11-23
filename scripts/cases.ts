@@ -6,7 +6,7 @@
  * Before the cases, the demo sender gets certificates from the producer when it holds fewer than
  * `cases.stockMinWh` (through the producer's scoped window `stock`, closed again after), and its own scoped window
  * `demo` is opened when the live one is missing or too small. That window stays open for the site's demo.
- * E1 and F need a finished UTC day without a reading; while there is none they are left for a later run.
+ * E and F need a finished UTC day without a reading; while there is none they are left for a later run.
  * Output is public data only: roles, addresses, amounts and transaction hashes.
  */
 import { existsSync, readFileSync } from "node:fs";
@@ -18,6 +18,7 @@ import { accountsPath, readAccountsFile } from "./src/accounts.js";
 import { bookReader } from "./src/book.js";
 import {
   attestCases,
+  CASE_ORDER,
   fixedCases,
   mergeEvidence,
   pendingCases,
@@ -127,7 +128,7 @@ async function main(): Promise<void> {
     evidence = mergeEvidence(evidence, head, [record]);
     writeEvidence(EVIDENCE, evidence);
   }
-  const missing = ["A", "B", "C", "D", "E1", "E2", "F", "G"].filter((id) => !evidence.cases.some((c) => c.id === id));
+  const missing = CASE_ORDER.filter((id) => !evidence.cases.some((c) => c.id === id));
   console.log(`evidence/testnet.json holds ${evidence.cases.length} cases${missing.length ? `; still to run: ${missing.join(", ")}` : ""}`);
 }
 

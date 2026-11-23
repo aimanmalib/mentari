@@ -11,17 +11,17 @@ import { describeRevert } from "./revert.js";
  * reason comes from that simulation, because a mined receipt only says "reverted".
  */
 
-export type CaseId = "A" | "B" | "C" | "D" | "E1" | "E2" | "F" | "G";
-export const CASE_ORDER: readonly CaseId[] = ["A", "B", "C", "D", "E1", "E2", "F", "G"];
+export type CaseId = "A" | "B" | "C" | "D" | "E" | "E2" | "F" | "G";
+export const CASE_ORDER: readonly CaseId[] = ["A", "B", "C", "D", "E", "E2", "F", "G"];
 
 /** The `cases` block of config/app.json, plus the values it shares with the demo. */
 export interface CasesConfig {
   retireWh: number;
   memo: string;
   probeNote: string;
-  /** The system E1, E2 and F attest for. */
+  /** The system E, E2 and F attest for. */
   system: number;
-  /** The account whose ML-DSA-87 key signs the E1 reading in place of the system's meter. */
+  /** The account whose ML-DSA-87 key signs the E reading in place of the system's meter. */
   wrongKeyRole: string;
   /** An address with no registered ML-DSA-87 key (case G). */
   unkeyedRecipient: string;
@@ -88,8 +88,8 @@ export function fixedCases(cfg: CasesConfig): CaseSpec[] {
 }
 
 /**
- * Cases E1, E2 and F, which attest readings for one system. E2 repeats a day the chain already holds, with a correct
- * signature. E1 (another account's key) and F (one watt-hour over the cap, correct signature) need a finished day
+ * Cases E, E2 and F, which attest readings for one system. E2 repeats a day the chain already holds, with a correct
+ * signature. E (another account's key) and F (one watt-hour over the cap, correct signature) need a finished day
  * with no reading yet, so the only fault is the one shown; while there is none they are left out.
  */
 export async function attestCases(
@@ -115,7 +115,7 @@ export async function attestCases(
     out.push(attest("E2", "A second reading for the same day", firstDay, simulatedWh(meters, system, firstDay), meterRole, "AlreadyAttested"));
   const free = await freeDay(read, system, firstDay, today);
   if (free !== null) {
-    out.push(attest("E1", "A reading signed with another account's key", free, simulatedWh(meters, system, free), cfg.wrongKeyRole, "BadSignature"));
+    out.push(attest("E", "A reading signed with another account's key", free, simulatedWh(meters, system, free), cfg.wrongKeyRole, "BadSignature"));
     out.push(attest("F", "A reading over the system's capacity", free, maxWh(system.capacityW, meters.maxSunHoursX10) + 1, meterRole, "WhOutOfRange"));
   }
   return out;

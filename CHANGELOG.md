@@ -9,7 +9,7 @@ contract is a new deployment, listed here with its new address.
 ### Added
 
 - `pnpm cases` records the testnet cases in `evidence/testnet.json`: a retirement that writes one receipt (A), and
-  refusals that leave both ledgers unchanged (B, C, D, E2, G so far; E1 and F need a finished day without a reading).
+  refusals that leave both ledgers unchanged (B, C, D, E2, G so far; E and F need a finished day without a reading).
   Each record has the EVM and Cosmos transaction hashes, the block, and the receipt count before and after
   (decision 0023).
 - EVM windows in `config/app.json` can be scoped to named contracts; the demo sender's window reaches only `Mentari`

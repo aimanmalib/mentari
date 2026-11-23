@@ -18,6 +18,7 @@ import {
   feeFor,
   fundAccounts,
   openWindow,
+  windowTargets,
   readStatus,
   registerKey,
   toUqor,
@@ -125,6 +126,7 @@ class FakeLane implements Lane {
           remainingBlocks: BigInt(v.blocks),
           remainingTxs: BigInt(v.maxTxs),
           remainingValue: BigInt(v.maxValue),
+          allowedTargets: [...(v.allowedTargets ?? [])],
         });
       } else if (m.typeUrl.endsWith("MsgCloseEVMWindow")) {
         this.windows.delete(from);
@@ -244,6 +246,12 @@ describe("registerKey", () => {
   });
 });
 
+const MENTARI = "0xF5cb2c6048a7ce8c5a7accc66eb8efc33942a448";
+const SCOPED = {
+  ...SETTINGS.windows,
+  use: { role: "funder", blocks: 100, maxTxs: 10, maxValueQor: "2", targets: ["mentari"] },
+};
+
 describe("EVM window", () => {
   beforeEach(async () => {
     lane.balances.set(funder.cosmos, 30n * Q);
@@ -275,6 +283,24 @@ describe("EVM window", () => {
       allowedTargets: ["0x0000000000000000000000000000000000000901"],
     });
     expect(await openWindow(ctx, funder, "deploy")).toBeDefined();
+  });
+
+  it("narrows a window with targets to the named contracts, and keeps it while enough is left", async () => {
+    const ctxScoped = { ...ctx, settings: { ...SETTINGS, contracts: { mentari: MENTARI }, windows: SCOPED } };
+    await openWindow(ctxScoped, funder, "use");
+    expect(lane.sent.at(-1)!.messages[0]!.value).toMatchObject({ maxTxs: "10", allowedTargets: [MENTARI.toLowerCase()] });
+    const n = lane.sent.length;
+    expect(await openWindow(ctxScoped, funder, "use", { txs: 3, valueQor: "1" })).toBeUndefined();
+    expect(lane.sent).toHaveLength(n);
+    // An unscoped window is not reused for a scoped one: the scope is the point.
+    expect(await openWindow(ctx, funder, "deploy")).toBeDefined();
+    expect(await openWindow(ctxScoped, funder, "use", { txs: 3, valueQor: "1" })).toBeDefined();
+  });
+
+  it("refuses a target whose contract address is not set", async () => {
+    const ctxScoped = { ...ctx, settings: { ...SETTINGS, contracts: { mentari: "" }, windows: SCOPED } };
+    await expect(openWindow(ctxScoped, funder, "use")).rejects.toThrow(/contracts.mentari is not an address/);
+    expect(windowTargets({ role: "x", blocks: 1, maxTxs: 1, maxValueQor: "1" })).toEqual([]);
   });
 
   it("refuses a window for another role or one not in the config", async () => {

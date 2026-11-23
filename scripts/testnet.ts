@@ -19,17 +19,13 @@ import { accountsPath, readAccountsFile } from "./src/accounts.js";
 import { loadArtifact, type PqcSigner } from "./src/chain.js";
 import { loadAppConfig, type AppConfig } from "./src/config.js";
 import { loadMeterConfig, signMessage } from "./src/meter.js";
+import { indexOf } from "./src/session.js";
 import { setupTestnet, writeContractsConfig, writeDemoKey, writeMeterKeys, type ContractsConfig } from "./src/setup.js";
 
 const repoRoot = fileURLToPath(new URL("..", import.meta.url));
 const appJson = fileURLToPath(new URL("../config/app.json", import.meta.url));
 
-/** The account index config/app.json gives a role. A missing or doubled role is an error. */
-export function indexOf(cfg: AppConfig, role: string): number {
-  const hits = Object.entries(cfg.accounts).filter(([, r]) => r === role);
-  if (hits.length !== 1) throw new Error(`config/app.json accounts: expected one "${role}", found ${hits.length}`);
-  return Number(hits[0]![0]);
-}
+export { indexOf };
 
 async function main(): Promise<void> {
   const app = loadAppConfig() as AppConfig & {

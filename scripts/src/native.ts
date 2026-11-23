@@ -42,8 +42,37 @@ export interface NativeSettings {
     lowBalanceRoles: string[];
     targetsQor: Record<string, string>;
   };
-  windows: Record<string, { role: string; blocks: number; maxTxs: number; maxValueQor: string }>;
+  windows: Record<string, WindowSpec>;
+  /** The `contracts` block of config/app.json, where a window's `targets` are looked up by name. */
+  contracts?: Record<string, unknown>;
 }
+
+/**
+ * One window from config/app.json `windows`. `targets` names entries of `contracts`; a window with targets admits
+ * only transactions to those addresses and refuses contract creation. No targets = no scope (needed to deploy).
+ */
+export interface WindowSpec {
+  role: string;
+  blocks: number;
+  maxTxs: number;
+  maxValueQor: string;
+  targets?: string[];
+}
+
+/** The lowercase 0x addresses a window is narrowed to. A target whose contract address is not set is an error. */
+export function windowTargets(spec: WindowSpec, contracts: Record<string, unknown> = {}): string[] {
+  return (spec.targets ?? []).map((name) => {
+    const address = contracts[name];
+    if (typeof address !== "string" || !/^0x[0-9a-fA-F]{40}$/.test(address))
+      throw new Error(`window target "${name}": config contracts.${name} is not an address`);
+    return address.toLowerCase();
+  });
+}
+
+const sameSet = (a: readonly string[], b: readonly string[]): boolean => {
+  const x = new Set(a.map((s) => s.toLowerCase()));
+  return x.size === new Set(b).size && b.every((s) => x.has(s));
+};
 
 /** One account the setup acts for. The keys stay in the process that built the signer. */
 export interface Actor {
@@ -196,25 +225,43 @@ export async function fundAccounts(ctx: Ctx, funder: Actor, recipients: Actor[])
 }
 
 /**
- * Open the named window from config unless the account already has a live window at least as wide: no scope, and at
- * least the transactions and value asked for. A window advances the account's EVM nonce, so EVM txs are signed after.
+ * Open the named window from config unless the account already has a live window with the same scope (the same
+ * targets, or none) and at least `need` left: by default the transactions and value the config asks for. A window
+ * advances the account's EVM nonce, so EVM txs are signed after.
  */
-export async function openWindow(ctx: Ctx, actor: Actor, name: string): Promise<string | undefined> {
+export async function openWindow(
+  ctx: Ctx,
+  actor: Actor,
+  name: string,
+  need?: { txs: number; valueQor: string },
+): Promise<string | undefined> {
   const spec = ctx.settings.windows[name];
   if (!spec) throw new Error(`config windows has no "${name}"`);
   if (spec.role !== actor.role) throw new Error(`window "${name}" belongs to ${spec.role}, not ${actor.role}`);
-  const maxValue = toUqor(spec.maxValueQor, ctx.settings.nativeLane.decimals);
+  const decimals = ctx.settings.nativeLane.decimals;
+  const targets = windowTargets(spec, ctx.settings.contracts);
+  const maxValue = toUqor(spec.maxValueQor, decimals);
   const w = await ctx.lane.window(actor.cosmos);
-  const unscoped = !w.nativeOnly && w.allowedTargets.length === 0;
-  if (w.live && unscoped && w.remainingTxs >= BigInt(spec.maxTxs) && w.remainingValue >= maxValue) {
+  const sameScope = !w.nativeOnly && sameSet(w.allowedTargets, targets);
+  const wantTxs = BigInt(need?.txs ?? spec.maxTxs);
+  const wantValue = need ? toUqor(need.valueQor, decimals) : maxValue;
+  if (w.live && sameScope && w.remainingTxs >= wantTxs && w.remainingValue >= wantValue) {
     ctx.log(`${actor.role}: window already open for ${w.remainingBlocks} more blocks`);
     return undefined;
   }
-  const msg = openEvmWindowMsg({ sender: actor.cosmos, blocks: spec.blocks, maxTxs: spec.maxTxs, maxValue: maxValue.toString() });
+  const msg = openEvmWindowMsg({
+    sender: actor.cosmos,
+    blocks: spec.blocks,
+    maxTxs: spec.maxTxs,
+    maxValue: maxValue.toString(),
+    ...(targets.length > 0 ? { allowedTargets: targets } : {}),
+  });
   const hash = await send(ctx, actor, [msg], "openWindow");
   const after = await ctx.lane.window(actor.cosmos);
   if (!after.live) throw new Error(`${actor.role}: window tx ${hash} left no live window`);
-  ctx.log(`${actor.role}: opened window "${name}" until block ${after.expiryHeight}: ${hash}`);
+  if (!sameSet(after.allowedTargets, targets)) throw new Error(`${actor.role}: window tx ${hash} has another scope`);
+  const scope = targets.length > 0 ? `to ${targets.join(", ")}` : "without a scope";
+  ctx.log(`${actor.role}: opened window "${name}" ${scope} until block ${after.expiryHeight}: ${hash}`);
   return hash;
 }
 

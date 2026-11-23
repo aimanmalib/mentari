@@ -14,23 +14,11 @@
  */
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { deriveUnifiedAccount, resolveSignBytesVersion } from "@qorechain/sdk";
 import { accountsPath, readAccountsFile } from "./src/accounts.js";
 import { loadAppConfig, type AppConfig } from "./src/config.js";
 import { accountsEvidence, writeEvidence } from "./src/evidence.js";
-import { restLane } from "./src/lane.js";
-import {
-  actorFrom,
-  closeWindow,
-  fundAccounts,
-  openWindow,
-  readStatus,
-  registerKey,
-  type Actor,
-  type Ctx,
-  type NativeSettings,
-} from "./src/native.js";
-import { indexOf } from "./testnet.js";
+import { closeWindow, fundAccounts, openWindow, readStatus, registerKey, type NativeSettings } from "./src/native.js";
+import { nativeSession } from "./src/session.js";
 
 const repoRoot = fileURLToPath(new URL("..", import.meta.url));
 const USAGE = "usage: pnpm native status | fund | keys | window <name> | close <role> | record";
@@ -47,30 +35,8 @@ async function main(argv: string[]): Promise<number> {
   const [cmd, arg] = argv;
   const app = loadAppConfig() as AppConfig & NativeSettings;
   const { mnemonic } = readAccountsFile(accountsPath(process.env, repoRoot));
-  const version = await resolveSignBytesVersion({ chainId: app.network.chainId, rest: app.network.rest });
-  const evmByRole: Record<string, string> = {};
-  const actor = async (role: string): Promise<Actor> => {
-    const account = await deriveUnifiedAccount(mnemonic, indexOf(app, role));
-    evmByRole[role] = account.evm;
-    return actorFrom(role, account, app.network.chainId, version);
-  };
-  const actors = await Promise.all(nativeRoles(app).map(actor));
-  const byRole = (role: string): Actor => {
-    const a = actors.find((x) => x.role === role);
-    if (!a) throw new Error(`no account with role "${role}"`);
-    return a;
-  };
-  const ctx: Ctx = {
-    lane: restLane({
-      rest: app.network.rest,
-      denom: app.nativeLane.denom,
-      waitMs: app.nativeLane.waitSeconds * 1000,
-      pollMs: app.nativeLane.pollSeconds * 1000,
-    }),
-    chainId: app.network.chainId,
-    settings: app,
-    log: (line) => console.log(line),
-  };
+  const { ctx, actors, byRole, accounts } = await nativeSession(app, mnemonic, nativeRoles(app));
+  const evmByRole = Object.fromEntries(Object.entries(accounts).map(([role, a]) => [role, a.evm]));
 
   switch (cmd) {
     case "status": {

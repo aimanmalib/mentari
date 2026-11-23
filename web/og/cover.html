@@ -1,0 +1,72 @@
+<!doctype html>
+<!-- The submission cover. web/og/render-cover.ts fills the {{...}} slots from config/app.json web.cover, the default
+     locale's cover texts, web/src/styles/tokens.css and a shot of the live site, then captures it at width x height. -->
+<html lang="{{lang}}">
+<head>
+<meta charset="utf-8">
+<style>
+{{fonts}}
+{{tokens}}
+html, body { margin: 0; }
+body {
+  width: {{width}}px; height: {{height}}px; overflow: hidden; box-sizing: border-box;
+  display: flex; flex-direction: column; padding: 64px 96px 0;
+  background: var(--silicon); color: var(--silicon-text); font-family: var(--font-body);
+}
+.chrome {
+  display: flex; justify-content: space-between; align-items: center; gap: 32px;
+  padding-bottom: 22px; border-bottom: 2px solid var(--busbar-on-silicon);
+  font: 500 26px/1.3 var(--font-mono); letter-spacing: 0.02em;
+}
+.who { display: flex; align-items: center; gap: 16px; }
+.who svg { width: 44px; height: 44px; display: block; }
+.host { opacity: 0.8; }
+main {
+  flex: 1; min-height: 0; display: grid; grid-template-columns: 660px minmax(0, 1fr); gap: 72px;
+  align-items: center; position: relative; z-index: 1;
+}
+.kicker { margin: 0; font: 500 24px/1.4 var(--font-mono); color: var(--noon); letter-spacing: 0.02em; }
+h1 {
+  margin: 20px 0 0; font-family: var(--font-display); font-weight: 700; font-stretch: 80%;
+  font-size: 188px; line-height: 0.9; letter-spacing: -0.015em;
+}
+.tagline { margin: 36px 0 0; font-size: 44px; line-height: 1.25; font-weight: 500; text-wrap: pretty; }
+figure { margin: 0; justify-self: end; width: 100%; }
+.frame {
+  border-radius: var(--radius-lane); overflow: hidden; background: var(--paper);
+  border: 2px solid var(--busbar-on-silicon); box-shadow: 0 40px 90px var(--silicon-deep);
+}
+.bar {
+  display: flex; align-items: center; gap: 12px; height: 48px; padding: 0 22px;
+  background: var(--daylight); border-bottom: var(--rule); color: var(--muted);
+  font: 500 20px/1 var(--font-mono);
+}
+.bar i { width: 12px; height: 12px; border-radius: 50%; background: var(--busbar); }
+.bar span { margin-left: 12px; }
+.frame img { display: block; width: 100%; aspect-ratio: {{shotRatio}}; }
+.horizon { position: relative; height: 150px; margin: 0 -96px; flex: none; }
+.horizon::before {
+  content: ""; position: absolute; left: 360px; bottom: 40px;
+  width: 280px; height: 140px; border-radius: 140px 140px 0 0; background: var(--noon);
+}
+.horizon::after { content: ""; position: absolute; left: 0; right: 0; bottom: 30px; height: 10px; background: var(--daylight); }
+</style>
+</head>
+<body>
+  <div class="chrome"><span class="who">{{logo}}{{siteName}}</span><span class="host">{{host}}</span></div>
+  <main>
+    <div>
+      <p class="kicker">{{kicker}}</p>
+      <h1>{{siteName}}</h1>
+      <p class="tagline">{{tagline}}</p>
+    </div>
+    <figure>
+      <div class="frame">
+        <div class="bar" aria-hidden="true"><i></i><i></i><i></i><span>{{host}}</span></div>
+        <img src="{{shot}}" alt="{{shotAlt}}">
+      </div>
+    </figure>
+  </main>
+  <div class="horizon" aria-hidden="true"></div>
+</body>
+</html>

@@ -276,5 +276,10 @@
   "notFound": {
     "title": "Halaman ini tidak wujud",
     "back": "Pergi ke daftar"
+  },
+  "cover": {
+    "kicker": "Build Before Q-Day · Cross-VM di QoreChain",
+    "tagline": "Sijil solar yang hanya boleh dibersarakan sekali: pembakaran dan resit awam berlaku bersama, atau tidak langsung.",
+    "shotAlt": "Halaman daftar Mentari yang hidup."
   }
 }

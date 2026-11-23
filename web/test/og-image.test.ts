@@ -1,6 +1,7 @@
 import { readFileSync, statSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { cardHtml, fontFaces, touchIconHtml } from "../og/card.js";
+import { coverHtml, type CoverConfig } from "../og/cover.js";
 import type { WebConfig } from "../share-meta.js";
 import app from "../../config/app.json" with { type: "json" };
 
@@ -26,6 +27,13 @@ describe("committed preview images", () => {
   it("the Apple touch icon is a square PNG of web.share.appleTouchIconSize", () => {
     const size = share.appleTouchIconSize;
     expect(pngSize(publicFile(share.appleTouchIcon))).toEqual({ width: size, height: size });
+  });
+
+  it("the cover image has the size web.cover names and stays under the byte limit", () => {
+    const cover = app.web.cover;
+    const file = new URL(`../../${cover.image}`, import.meta.url);
+    expect(pngSize(file)).toEqual({ width: cover.width, height: cover.height });
+    expect(statSync(file).size).toBeLessThanOrEqual(cover.maxKb * 1024);
   });
 });
 
@@ -81,5 +89,33 @@ describe("preview card template", () => {
     expect(html).toContain('width="99" height="99"');
     expect(html).not.toContain("rx=");
     expect(html).not.toContain("<title>");
+  });
+});
+
+describe("cover template", () => {
+  const cover: CoverConfig = {
+    image: "x/cover.png", width: 800, height: 450, maxKb: 10, shotPath: "/", shotReadySelector: ".ready", shotWidth: 16, shotHeight: 10,
+  };
+  const texts = { cover: { kicker: "Fest & Co", tagline: "Once <only>", shotAlt: 'The "live" page' } };
+  const input = { ...base, cover, catalogues: { en: texts }, shotPng: Buffer.from("png") };
+
+  it("fills every slot of the real template, escaped, with the shot as a data URL", () => {
+    const template = readFileSync(new URL("../og/cover.html", import.meta.url), "utf8");
+    const html = coverHtml({ ...input, template });
+    expect(html).not.toMatch(/\{\{\w+\}\}/);
+    expect(html).toContain("Fest &amp; Co");
+    expect(html).toContain("Once &lt;only&gt;");
+    expect(html).toContain('alt="The &quot;live&quot; page"');
+    expect(html).toContain("data:image/png;base64,cG5n");
+    expect(html).toContain("width: 800px; height: 450px;");
+    expect(html).toContain("aspect-ratio: 16 / 10;");
+    expect(html).toContain("Site &amp; Co");
+    expect(html).not.toContain("<title>");
+  });
+
+  it("stops on a slot it does not know and on a missing cover text", () => {
+    expect(() => coverHtml({ ...input, template: "{{nope}}" })).toThrow(/cover\.html has an unknown slot \{\{nope\}\}/);
+    const noTagline = { en: { cover: { kicker: "k", shotAlt: "a" } } };
+    expect(() => coverHtml({ ...input, template: "{{tagline}}", catalogues: noTagline })).toThrow(/cover\.tagline/);
   });
 });

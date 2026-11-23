@@ -135,6 +135,17 @@
         "ms": "ms_MY"
       }
     },
+    "cover": {
+      "_comment": "The submission cover image, drawn by web/og/render-cover.ts with a shot of the live page at shotPath, taken once shotReadySelector is on the page. image is relative to the repository root.",
+      "image": "brand/mentari-cover.png",
+      "width": 1920,
+      "height": 1080,
+      "maxKb": 5120,
+      "shotPath": "/",
+      "shotReadySelector": ".seam[aria-busy=\"false\"]",
+      "shotWidth": 1440,
+      "shotHeight": 900
+    },
     "links": {
       "source": "https://github.com/aimanmalib/mentari",
       "slides": "https://github.com/aimanmalib/mentari/blob/main/docs/deck.pdf"

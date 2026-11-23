@@ -276,5 +276,10 @@
   "notFound": {
     "title": "This page does not exist",
     "back": "Go to the registry"
+  },
+  "cover": {
+    "kicker": "Build Before Q-Day · Cross-VM on QoreChain",
+    "tagline": "Solar certificates you can retire only once: burn and public receipt land together, or not at all.",
+    "shotAlt": "The live Mentari registry page."
   }
 }

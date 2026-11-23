@@ -144,5 +144,13 @@
     "stockWh": 100000,
     "stockMinWh": 1000,
     "windowNeedQor": "6"
+  },
+  "nativeEntry": {
+    "role": "buyer",
+    "system": 3,
+    "retireWh": 500,
+    "memo": "Native entry E1",
+    "gas": 2000000,
+    "stockWh": 1000
   }
 }

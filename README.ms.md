@@ -22,11 +22,12 @@ pasca-kuantum.
 Dibina untuk **Build Before Q-Day: The QoreChain Developer Fest**, trek Cross-VM. Saya membinanya semasa fest: komit
 pertama ialah [`6012d2b`](https://github.com/aimanmalib/mentari/commit/6012d2b) pada 21 November 2026.
 
-> **Keadaan hari ini.** Kontrak, ujian, pelayan dan laman sudah dibina. Lapan akaun ujian sudah diberi dana dan
-> setiap satu ada kunci ML-DSA-87 berdaftar dengan bukti pemilikan ([`evidence/accounts.json`](evidence/accounts.json)).
-> Kontrak belum berada di testnet. Sehingga itu, laman langsung memakai data sampel dan menyatakannya di setiap halaman, dan
-> butang "Retire now" menjawab dengan kes sampel yang terakam. Alamat testnet, cincangan transaksi dan skrip `verify`
-> datang bersama deploy.
+> **Keadaan hari ini.** Kontrak sudah berada di testnet Diana: `Mentari` di
+> `0xf5cb2c6048a7ce8c5a7accc66eb8efc33942a448` dan `AtomicityProbe` di `0x7438df055f0d96e6ba1b9ac8e7334a1be56130e4`.
+> Tiga meter simulasi sudah didaftar dan sembilan bacaan harian yang diisi semula, setiap satu disemak di rantai dengan
+> ML-DSA-87, mencetak 344,115 Wh ([`evidence/deploy.json`](evidence/deploy.json)). Lapan akaun ujian sudah diberi dana dan
+> berkunci ([`evidence/accounts.json`](evidence/accounts.json)). Laman langsung membaca testnet. Belum ada sijil yang
+> dibersarakan: persaraan, tiga kes kegagalan dan skrip `verify` datang seterusnya.
 
 ## Semak dalam 3 langkah
 
@@ -34,7 +35,7 @@ pertama ialah [`6012d2b`](https://github.com/aimanmalib/mentari/commit/6012d2b) 
    lencana yang menyemak persaraan terkini dengan resitnya.
 2. Pergi ke **Try it**. "Retire now" membersarakan 500 Wh (jumlahnya dalam
    [`config/limits.json`](config/limits.json)), dan tiga butang kegagalan masing-masing mencuba panggilan cross-VM yang
-   mesti gagal. Halaman menunjukkan kiraan resit di kedua-dua lejar sebelum dan selepas. Hari ini ia memakai data sampel.
+   mesti gagal. Halaman menunjukkan kiraan resit di kedua-dua lejar sebelum dan selepas. Butang ini menghantar transaksi sebenar sebaik akaun demo memegang sijil (lihat di atas).
 3. Baca buktinya dalam kod. `contracts/test/` ada 115 ujian Foundry yang lulus, termasuk empat invarian, dan
    [`docs/TESTING.md`](docs/TESTING.md) menunjukkan setiap invarian menjadi merah bila kontrak sengaja dirosakkan.
 
@@ -116,8 +117,8 @@ Versi penuh dengan sumber (dalam bahasa Inggeris): [`docs/threat-model.md`](docs
 - **Meter disimulasi.** Bacaan datang daripada model jam matahari berbenih. Tandatangan, kontrak dan rantai adalah
   sebenar; panel solarnya tidak.
 - **Testnet sahaja.** Ini demo di testnet Diana, bukan skim sijil yang diiktiraf, dan sijilnya tiada nilai.
-- **Belum dideploy.** Pada komit ini kontrak belum berada di testnet, jadi belum ada cincangan transaksi untuk
-  ditunjukkan, dan laman memakai data sampel.
+- **Belum ada persaraan.** Pada komit ini kontrak sudah dideploy dan mencetak, tetapi belum ada sijil yang dibersarakan
+  di testnet, jadi cincangan persaraan dan kes kegagalan belum ada di sini.
 - **Pihak Native merekod, bukan menguatkuasa.** `qday-receipts` ialah buku resit kongsi dari bengkel. Sesiapa boleh
   menulis kepadanya; resit Mentari ialah yang pengirimnya kontrak Mentari.
 - **Laluan dompet diuji dengan dompet tiruan sahaja.** "Bersarakan dari dompet anda sendiri" menyambung QoreX, meminta

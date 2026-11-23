@@ -136,7 +136,7 @@
         "Open https://mentari.sasateguh.com. The registry shows the EVM ledger and the Native receipts book side by side.",
         "Go to Try it. \"Retire now\" retires 500 Wh, and three failure buttons each try a cross-VM call that must fail.",
         "Read the proof in code: https://github.com/aimanmalib/mentari, contracts/test and the test notes.",
-        "Limits: the meter is simulated; the signatures, contracts and chain are real. Testnet only: the certificates have no value. Not on the testnet yet: the site runs on sample data and says so. No professional audit."
+        "Limits: the meter is simulated; the signatures, contracts and chain are real. Testnet only: the certificates have no value. On the testnet now, minting from signed readings; no retirement recorded yet. No professional audit."
       ],
       "kaki": [
         "Apache-2.0"

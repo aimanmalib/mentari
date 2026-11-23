@@ -43,7 +43,7 @@
   "links": []
  },
  {
-  "text": "Mentari · Build Before Q-Day · Cross-VM track\nCheck it yourself\nCheck it in 3 steps\nOpen https://mentari.sasateguh.com. The registry shows the EVM ledger and the Native receipts book side by side.\nGo to Try it. \"Retire now\" retires 500 Wh, and three failure buttons each try a cross-VM call that must fail.\nRead the proof in code: https://github.com/aimanmalib/mentari, contracts/test and the test notes.\nLimits: the meter is simulated; the signatures, contracts and chain are real. Testnet only: the certificates have no value. Not on the testnet yet: the site runs on sample data and says so. No professional audit.\n\nApache-2.0",
+  "text": "Mentari · Build Before Q-Day · Cross-VM track\nCheck it yourself\nCheck it in 3 steps\nOpen https://mentari.sasateguh.com. The registry shows the EVM ledger and the Native receipts book side by side.\nGo to Try it. \"Retire now\" retires 500 Wh, and three failure buttons each try a cross-VM call that must fail.\nRead the proof in code: https://github.com/aimanmalib/mentari, contracts/test and the test notes.\nLimits: the meter is simulated; the signatures, contracts and chain are real. Testnet only: the certificates have no value. On the testnet now, minting from signed readings; no retirement recorded yet. No professional audit.\n\nApache-2.0",
   "links": [
    {
     "href": "https://mentari.sasateguh.com/",

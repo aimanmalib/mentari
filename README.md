@@ -21,18 +21,19 @@ happens. Every certificate starts as a solar meter reading signed with ML-DSA-87
 Built for **Build Before Q-Day: The QoreChain Developer Fest**, Cross-VM track. I built it during the fest: the first
 commit is [`6012d2b`](https://github.com/aimanmalib/mentari/commit/6012d2b) on 21 November 2026.
 
-> **Where it stands today.** The contracts, the tests, the server and the site are built. The eight test accounts are
-> funded and each has a registered ML-DSA-87 key with a proof of possession ([`evidence/accounts.json`](evidence/accounts.json)).
-> The contracts are not on the testnet yet. Until they are, the live site runs on sample data and says
-> so on every page, and the "Retire now" button answers with a recorded sample case. Testnet addresses, transaction hashes
-> and the `verify` script come with the deployment.
+> **Where it stands today.** The contracts are on the Diana testnet: `Mentari` at
+> `0xf5cb2c6048a7ce8c5a7accc66eb8efc33942a448` and `AtomicityProbe` at `0x7438df055f0d96e6ba1b9ac8e7334a1be56130e4`.
+> Three simulated meters are registered and nine backfilled daily readings, each checked on chain with ML-DSA-87,
+> minted 344,115 Wh ([`evidence/deploy.json`](evidence/deploy.json)). The eight test accounts are funded and keyed
+> ([`evidence/accounts.json`](evidence/accounts.json)). The live site reads the testnet. No certificate is retired yet:
+> the retirements, the three failure cases and the `verify` script come next.
 
 ## Check it in 3 steps
 
 1. Open <https://mentari.sasateguh.com>. The registry shows the EVM ledger and the Native receipts book side by side,
    and a badge that checks the latest retirements against their receipts.
 2. Go to **Try it**. "Retire now" retires 500 Wh (the amount is in [`config/limits.json`](config/limits.json)), and the three failure buttons each try a cross-VM call that must fail.
-   The page shows the receipt count on both ledgers before and after. Today this runs on sample data (see above).
+   The page shows the receipt count on both ledgers before and after. The buttons send real transactions once the demo account holds certificates (see above).
 3. Read the proof in code. `contracts/test/` has 115 passing Foundry tests, including the four invariants below, and
    [`docs/TESTING.md`](docs/TESTING.md) shows that each invariant goes red when the contract is broken on purpose.
 
@@ -167,8 +168,8 @@ Full version with sources: [`docs/threat-model.md`](docs/threat-model.md).
   are real; the solar panels are not.
 - **Testnet only.** This is a demo on the Diana testnet. It is not a recognised certificate scheme, and the certificates
   have no value.
-- **Not deployed yet.** At this commit the contracts are not on the testnet, so there are no transaction hashes to show,
-  and the site runs on sample data.
+- **No retirements yet.** At this commit the contracts are deployed and minting, but no certificate has been retired on
+  the testnet, so the retirement and failure case hashes are not here yet.
 - **The Native side records, it does not enforce.** `qday-receipts` is the shared receipt book from the workshop. Anyone
   can write to it; Mentari's receipts are the ones whose sender is the Mentari contract.
 - **The wallet path is tested with a mock only.** "Retire from your own wallet" connects QoreX, asks the demo account

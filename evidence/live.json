@@ -1,0 +1,180 @@
+{
+  "site": "https://mentari.sasateguh.com/try",
+  "method": "Each run opened the page in a new browser context and pressed one button. The server answer and what the page showed are recorded as they were.",
+  "retireStreak": 5,
+  "runs": [
+    {
+      "n": 1,
+      "at": "2026-11-23T15:21:35.250Z",
+      "action": "case-b",
+      "browser": "webkit",
+      "viewport": "390x664 (iPhone 13)",
+      "lang": "en",
+      "evmTx": "0x757ff8ec239ba66a000f559a6acd8c33dc88b8e64de143921a1e487d9c645f26",
+      "txStatus": "reverted",
+      "receipts": {
+        "before": 18,
+        "after": 18
+      },
+      "retirements": {
+        "before": 9,
+        "after": 9
+      },
+      "asExpected": true,
+      "consoleErrors": 0,
+      "overflowPx": 0
+    },
+    {
+      "n": 2,
+      "at": "2026-11-23T15:21:46.762Z",
+      "action": "case-c",
+      "browser": "webkit",
+      "viewport": "390x664 (iPhone 13)",
+      "lang": "ms",
+      "evmTx": "0x5d37eb0ebb20560f1a06409338dd6e141526c6319c29486de0458c2462975dae",
+      "txStatus": "reverted",
+      "receipts": {
+        "before": 18,
+        "after": 18
+      },
+      "retirements": {
+        "before": 9,
+        "after": 9
+      },
+      "asExpected": true,
+      "consoleErrors": 0,
+      "overflowPx": 0
+    },
+    {
+      "n": 3,
+      "at": "2026-11-23T15:21:56.861Z",
+      "action": "case-d",
+      "browser": "chromium",
+      "viewport": "1440x1000",
+      "lang": "en",
+      "evmTx": "0xbb19525e52079833eaacacc8a000533995babb2ffa75fdc55cc8e34b42a965d3",
+      "txStatus": "reverted",
+      "receipts": {
+        "before": 18,
+        "after": 18
+      },
+      "retirements": {
+        "before": 9,
+        "after": 9
+      },
+      "asExpected": true,
+      "consoleErrors": 0,
+      "overflowPx": 0
+    },
+    {
+      "n": 4,
+      "at": "2026-11-23T16:22:24.097Z",
+      "action": "retire",
+      "browser": "webkit",
+      "viewport": "390x664 (iPhone 13)",
+      "lang": "en",
+      "cosmosTx": "C9E915DFBF6E64C8DB6285A06F75D92C62DFD550E66B40941580C6C9E65F8443",
+      "height": 10623201,
+      "txStatus": "success",
+      "receipts": {
+        "before": 18,
+        "after": 19
+      },
+      "retirements": {
+        "before": 9,
+        "after": 10
+      },
+      "asExpected": true,
+      "consoleErrors": 0,
+      "overflowPx": 0
+    },
+    {
+      "n": 5,
+      "at": "2026-11-23T16:22:32.664Z",
+      "action": "retire",
+      "browser": "webkit",
+      "viewport": "390x664 (iPhone 13)",
+      "lang": "ms",
+      "cosmosTx": "76B4BA7AF4B3553E1144125707EA2941F76A2D36D9E18CE156B0C0568CB76ADA",
+      "height": 10623204,
+      "txStatus": "success",
+      "receipts": {
+        "before": 19,
+        "after": 20
+      },
+      "retirements": {
+        "before": 10,
+        "after": 11
+      },
+      "asExpected": true,
+      "consoleErrors": 0,
+      "overflowPx": 0
+    },
+    {
+      "n": 6,
+      "at": "2026-11-23T16:22:40.264Z",
+      "action": "retire",
+      "browser": "chromium",
+      "viewport": "1440x1000",
+      "lang": "en",
+      "cosmosTx": "811BCF985F207B2E551F7E04E9EA44375C4329F3099082D8A647CE9909E2B222",
+      "height": 10623206,
+      "txStatus": "success",
+      "receipts": {
+        "before": 20,
+        "after": 21
+      },
+      "retirements": {
+        "before": 11,
+        "after": 12
+      },
+      "asExpected": true,
+      "consoleErrors": 0,
+      "overflowPx": 0
+    },
+    {
+      "n": 7,
+      "at": "2026-11-23T16:22:50.770Z",
+      "action": "retire",
+      "browser": "chromium",
+      "viewport": "1440x1000",
+      "lang": "ms",
+      "cosmosTx": "9D05A4A380BF70B7D6127EE154B50ED8F0DC99EB6666361420C03B410F3D444B",
+      "height": 10623210,
+      "txStatus": "success",
+      "receipts": {
+        "before": 21,
+        "after": 22
+      },
+      "retirements": {
+        "before": 12,
+        "after": 13
+      },
+      "asExpected": true,
+      "consoleErrors": 0,
+      "overflowPx": 0
+    },
+    {
+      "n": 8,
+      "at": "2026-11-23T16:22:59.754Z",
+      "action": "retire",
+      "browser": "webkit",
+      "viewport": "320x700",
+      "lang": "en",
+      "cosmosTx": "3BCA230097D87905141B33ACD0922EF24C29798050ACC0A697994790CF8047AB",
+      "height": 10623214,
+      "txStatus": "success",
+      "receipts": {
+        "before": 22,
+        "after": 23
+      },
+      "retirements": {
+        "before": 13,
+        "after": 14
+      },
+      "asExpected": true,
+      "consoleErrors": 0,
+      "overflowPx": 0
+    }
+  ]
+}

@@ -8,6 +8,10 @@ contract is a new deployment, listed here with its new address.
 
 ### Added
 
+- `pnpm native record` writes the public state of every account to `evidence/accounts.json`; the first record shows
+  the eight accounts funded, each with a registered ML-DSA-87 key and a proof of possession (decision 0020).
+- `deploy/funds.sh`: a low-funds watch for cron that reads public balances only and warns once when an account that
+  pays for the demo drops below the line in `config/app.json` (decision 0020).
 - Link preview tags: the page title, description, Open Graph and X card tags, a canonical link and an Apple touch icon
   link are written into the page head at build time from `config/app.json` `web.share` and the default locale's
   `meta` texts (decision 0018).

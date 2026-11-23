@@ -189,8 +189,8 @@ curl -s  -A 'TelegramBot (like TwitterBot)' https://mentari.sasateguh.com/ | gre
 
 ## Script tests
 
-`scripts/test/` runs with vitest and no network beyond a local anvil node. `cd scripts && npx vitest run` reported 89
-passed on 2026-11-22.
+`scripts/test/` runs with vitest and no network beyond a local anvil node. `cd scripts && npx vitest run` reported 98
+passed on 2026-11-23.
 
 `scripts/src/meter.ts` makes the simulated meter readings and the bytes a meter or the registrar signs. The meter tests
 use a frozen config, not `config/meter.json`. Two hashes pin the signed bytes from both sides: the vitest suite checks

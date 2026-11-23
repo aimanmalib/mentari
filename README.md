@@ -21,8 +21,9 @@ happens. Every certificate starts as a solar meter reading signed with ML-DSA-87
 Built for **Build Before Q-Day: The QoreChain Developer Fest**, Cross-VM track. I built it during the fest: the first
 commit is [`6012d2b`](https://github.com/aimanmalib/mentari/commit/6012d2b) on 21 November 2026.
 
-> **Where it stands today.** The contracts, the tests, the server and the site are built. The contracts are not on the
-> testnet yet, because the test accounts are not funded yet. Until they are, the live site runs on sample data and says
+> **Where it stands today.** The contracts, the tests, the server and the site are built. The eight test accounts are
+> funded and each has a registered ML-DSA-87 key with a proof of possession ([`evidence/accounts.json`](evidence/accounts.json)).
+> The contracts are not on the testnet yet. Until they are, the live site runs on sample data and says
 > so on every page, and the "Retire now" button answers with a recorded sample case. Testnet addresses, transaction hashes
 > and the `verify` script come with the deployment.
 
@@ -125,14 +126,14 @@ cd contracts && forge test
 
 ## Tests
 
-Counted on 22 November 2026 from a local run, the same steps CI runs on every push.
+Counted on 22 November 2026 (the script tests on 23 November) from a local run, the same steps CI runs on every push.
 
 | Suite | Result | What it covers |
 | --- | --- | --- |
 | Foundry, `contracts/test/` | 115 passed, 0 failed | 98 unit tests, 16 fuzz tests (512 runs each) and one invariant suite holding 4 invariants (128 sequences of 64 calls; forge counts the suite once, so 98 + 16 + 1 = 115); line coverage of `contracts/src` 99 % |
 | vitest, `server/test/` | 152 passed | the `/lcd` allowlist, client IP behind Cloudflare, demo rate limits, the off switch, fallbacks, the wallet grant, the live demo sender on a local node, the daily meter run and its chain job |
 | vitest, `web/test/` | 157 passed | the "both ledgers agree" check, the link preview tags and image sizes, the slide counts match this table, the slide PDF is the one printed from the slide source, address encoding, the receipts reader, both languages have the same keys, wallet errors |
-| vitest, `scripts/test/` | 89 passed | account derivation, balances, funding, key registration and EVM windows on the Native lane, simulated meter readings and the bytes a meter signs, deploy, registration and attestation on a local node, the one-command testnet setup, the health watch, the test counter |
+| vitest, `scripts/test/` | 98 passed | account derivation, balances, funding, key registration and EVM windows on the Native lane, simulated meter readings and the bytes a meter signs, deploy, registration and attestation on a local node, the one-command testnet setup, the health watch, the low-funds watch, the account evidence file, the test counter |
 | Playwright, `web/e2e/` | 10 passed | the wallet path with the QoreX wallet mock, 5 cases in Chromium and in WebKit as an iPhone 13 |
 
 The four invariants hold after every random call:

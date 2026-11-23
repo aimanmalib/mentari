@@ -1,0 +1,158 @@
+{
+  "readAt": "2026-11-23T11:25:05.098Z",
+  "evmRpc": "https://evm-testnet.qore.host",
+  "rest": "https://api-testnet.qore.host",
+  "evmBlock": 10611560,
+  "checks": 28,
+  "passed": 28,
+  "failed": 0,
+  "unavailable": 0,
+  "checkList": [
+    {
+      "group": "contracts",
+      "name": "Mentari has code at 0xf5cb2c6048a7ce8c5a7accc66eb8efc33942a448",
+      "outcome": "pass"
+    },
+    {
+      "group": "contracts",
+      "name": "AtomicityProbe has code at 0x7438df055f0d96e6ba1b9ac8e7334a1be56130e4",
+      "outcome": "pass"
+    },
+    {
+      "group": "contracts",
+      "name": "Mentari writes to the configured receipts book",
+      "outcome": "pass"
+    },
+    {
+      "group": "retirements",
+      "name": "retirement 1 matches receipt 8",
+      "outcome": "pass"
+    },
+    {
+      "group": "retirements",
+      "name": "retirement 2 matches receipt 9",
+      "outcome": "pass"
+    },
+    {
+      "group": "retirements",
+      "name": "retirement 3 matches receipt 10",
+      "outcome": "pass"
+    },
+    {
+      "group": "retirements",
+      "name": "receipt ids rise with the retirement number (3 retirements)",
+      "outcome": "pass"
+    },
+    {
+      "group": "totals",
+      "name": "minted 344115 - retired 1500 = supply 342615",
+      "outcome": "pass"
+    },
+    {
+      "group": "totals",
+      "name": "the 3 retirements add up to retired 1500 Wh",
+      "outcome": "pass"
+    },
+    {
+      "group": "cases",
+      "name": "case A EVM transaction success",
+      "outcome": "pass"
+    },
+    {
+      "group": "cases",
+      "name": "case A Cosmos transaction 5654336FDCC86E817D25DE3391FE76FFDAAC8CE92785C785E0AA276369E8A618",
+      "outcome": "pass"
+    },
+    {
+      "group": "cases",
+      "name": "case A receipts book gained a receipt at block 10609362",
+      "outcome": "pass",
+      "detail": "7 -> 8"
+    },
+    {
+      "group": "cases",
+      "name": "case A receipt 8 as recorded",
+      "outcome": "pass"
+    },
+    {
+      "group": "cases",
+      "name": "case B EVM transaction reverted",
+      "outcome": "pass"
+    },
+    {
+      "group": "cases",
+      "name": "case B Cosmos transaction 9837A24B4D575651DB50875540C94CC58A3F1D7C6734B05F0A82846D3F260CF8",
+      "outcome": "pass"
+    },
+    {
+      "group": "cases",
+      "name": "case B receipts book unchanged at block 10609364",
+      "outcome": "pass",
+      "detail": "8 -> 8"
+    },
+    {
+      "group": "cases",
+      "name": "case C EVM transaction reverted",
+      "outcome": "pass"
+    },
+    {
+      "group": "cases",
+      "name": "case C Cosmos transaction A6D4F2754F99ADE9A2BD35CA2F2668620D5799A7B7342876556E8C34F6B66CA3",
+      "outcome": "pass"
+    },
+    {
+      "group": "cases",
+      "name": "case C receipts book unchanged at block 10609366",
+      "outcome": "pass",
+      "detail": "8 -> 8"
+    },
+    {
+      "group": "cases",
+      "name": "case D EVM transaction reverted",
+      "outcome": "pass"
+    },
+    {
+      "group": "cases",
+      "name": "case D Cosmos transaction 55F936A67ACE5226F2EF1BF24CA212C7C994D2D565BC92C6D047CB6CA6B0E635",
+      "outcome": "pass"
+    },
+    {
+      "group": "cases",
+      "name": "case D receipts book unchanged at block 10609368",
+      "outcome": "pass",
+      "detail": "8 -> 8"
+    },
+    {
+      "group": "cases",
+      "name": "case E2 EVM transaction reverted",
+      "outcome": "pass"
+    },
+    {
+      "group": "cases",
+      "name": "case E2 Cosmos transaction C4589E9AB637B431AD13FB2CF3E4E90F6C3F1520F4845A4709C11EE6EDFC47D3",
+      "outcome": "pass"
+    },
+    {
+      "group": "cases",
+      "name": "case E2 receipts book unchanged at block 10609370",
+      "outcome": "pass",
+      "detail": "8 -> 8"
+    },
+    {
+      "group": "cases",
+      "name": "case G EVM transaction reverted",
+      "outcome": "pass"
+    },
+    {
+      "group": "cases",
+      "name": "case G Cosmos transaction E405CBAB79FAC6335F5982E1396B65249AEC93BCF56484A0540D91B83C9A8F34",
+      "outcome": "pass"
+    },
+    {
+      "group": "cases",
+      "name": "case G receipts book unchanged at block 10609373",
+      "outcome": "pass",
+      "detail": "8 -> 8"
+    }
+  ]
+}

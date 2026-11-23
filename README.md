@@ -31,6 +31,10 @@ commit is [`6012d2b`](https://github.com/aimanmalib/mentari/commit/6012d2b) on 2
 > Case H: one hybrid-signed Native transaction, sent with no EVM window open, ran `Mentari.retire`, which wrote its
 > receipt back in the Native book ([`docs/findings.md`](docs/findings.md)). "Retire now" on the site now uses the same
 > route: one Native transaction from the demo account, with no EVM window ([ADR 0026](docs/decisions/0026-native-route-for-retire-now.md)).
+> On the public site I pressed "Retire now" 5 times in a row and each failure button once, in Chromium and in WebKit
+> as an iPhone 13, in English and Malay. Every retirement moved both ledgers by one; every failure moved neither, and
+> no page logged an error ([`evidence/live.json`](evidence/live.json)). `pnpm verify` reads each of those 8
+> transactions back from the testnet.
 
 ## Check it in 3 steps
 
@@ -144,7 +148,7 @@ Counted on 22 November 2026 (the script tests on 23 November) from a local run, 
 | Foundry, `contracts/test/` | 115 passed, 0 failed | 98 unit tests, 16 fuzz tests (512 runs each) and one invariant suite holding 4 invariants (128 sequences of 64 calls; forge counts the suite once, so 98 + 16 + 1 = 115); line coverage of `contracts/src` 99 % |
 | vitest, `server/test/` | 171 passed | the `/lcd` allowlist, client IP behind Cloudflare, demo rate limits, the off switch, fallbacks, the wallet grant, the live demo sender on a local node, the hybrid-signed Native route for "Retire now", the daily meter run and its chain job |
 | vitest, `web/test/` | 162 passed | the "both ledgers agree" check, the link preview tags and image sizes, the slide counts match this table, the slide PDF is the one printed from the slide source, address encoding, the receipts reader, both languages have the same keys, wallet errors |
-| vitest, `scripts/test/` | 134 passed | account derivation, balances, funding, key registration and EVM windows on the Native lane, the Native-entry experiment (case H), simulated meter readings and the bytes a meter signs, deploy, registration and attestation on a local node, the one-command testnet setup, the health watch, the low-funds watch, the account evidence file, the test counter |
+| vitest, `scripts/test/` | 140 passed | account derivation, balances, funding, key registration and EVM windows on the Native lane, the Native-entry experiment (case H), simulated meter readings and the bytes a meter signs, deploy, registration and attestation on a local node, the one-command testnet setup, the health watch, the low-funds watch, the account evidence file, the live Try it record, the test counter |
 | Playwright, `web/e2e/` | 10 passed | the wallet path with the QoreX wallet mock, 5 cases in Chromium and in WebKit as an iPhone 13 |
 
 The four invariants hold after every random call:

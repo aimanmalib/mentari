@@ -8,6 +8,9 @@ contract is a new deployment, listed here with its new address.
 
 ### Added
 
+- `evidence/live.json`: the Try it buttons pressed on the public site in Chromium and WebKit (iPhone 13), in English
+  and Malay. "Retire now" succeeded 5 times in a row, each moving both ledgers by one; each failure button moved
+  neither. `pnpm verify` checks the record and reads all 8 transactions back from the testnet (decision 0027).
 - "Retire now" is sent from the Native lane: one hybrid-signed `MsgCrossVMCall` from the demo account, with no EVM
   window. The Try it panel shows the Native transaction. `config/app.json` `nativeRoute` switches the route per job
   ("Retire now" on, the daily meter off for now); the failure buttons stay EVM transactions. The key files now carry the

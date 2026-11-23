@@ -33,6 +33,10 @@ pertama ialah [`6012d2b`](https://github.com/aimanmalib/mentari/commit/6012d2b) 
 > yang menulis resitnya kembali dalam buku Native ([`docs/findings.md`](docs/findings.md), dalam bahasa Inggeris).
 > "Retire now" di laman kini memakai laluan yang sama: satu transaksi Native dari akaun demo, tanpa EVM window
 > ([ADR 0026](docs/decisions/0026-native-route-for-retire-now.md)).
+> Di laman awam saya menekan "Retire now" 5 kali berturut-turut dan setiap butang kegagalan sekali, dalam Chromium dan
+> WebKit sebagai iPhone 13, dalam bahasa Inggeris dan Melayu. Setiap persaraan menaikkan kedua-dua lejar satu; setiap
+> kegagalan tidak mengubah mana-mana lejar, dan tiada halaman mencatat ralat ([`evidence/live.json`](evidence/live.json)).
+> `pnpm verify` membaca semula kesemua 8 transaksi itu dari testnet.
 
 ## Semak dalam 3 langkah
 
@@ -100,7 +104,7 @@ Dikira pada 22 November 2026 (ujian skrip pada 23 November) daripada larian temp
 | Foundry, `contracts/test/` | 115 lulus: 98 ujian unit, 16 ujian fuzz (512 larian setiap satu) dan satu suite invarian yang memegang 4 invarian (forge mengira suite itu sekali, jadi 98 + 16 + 1 = 115); liputan baris `contracts/src` 99 % |
 | vitest, `server/test/` | 171 lulus |
 | vitest, `web/test/` | 162 lulus |
-| vitest, `scripts/test/` | 134 lulus |
+| vitest, `scripts/test/` | 140 lulus |
 | Playwright, `web/e2e/` | 10 lulus: laluan dompet dengan dompet tiruan QoreX, 5 kes dalam Chromium dan WebKit sebagai iPhone 13 |
 
 Empat invarian: dicetak tolak dibersara sama dengan bekalan; bilangan persaraan sama dengan bilangan resit yang jambatan

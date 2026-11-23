@@ -8,6 +8,12 @@ contract is a new deployment, listed here with its new address.
 
 ### Added
 
+- `pnpm cases` records the testnet cases in `evidence/testnet.json`: a retirement that writes one receipt (A), and
+  refusals that leave both ledgers unchanged (B, C, D, E2, G so far; E1 and F need a finished day without a reading).
+  Each record has the EVM and Cosmos transaction hashes, the block, and the receipt count before and after
+  (decision 0023).
+- EVM windows in `config/app.json` can be scoped to named contracts; the demo sender's window reaches only `Mentari`
+  and `AtomicityProbe` (decision 0023).
 - Testnet deployment: `Mentari` at `0xf5cb2c6048a7ce8c5a7accc66eb8efc33942a448` and `AtomicityProbe` at
   `0x7438df055f0d96e6ba1b9ac8e7334a1be56130e4` on the Diana testnet, three simulated meters registered and three
   backfilled days attested for each. `evidence/deploy.json` lists every transaction (decision 0021).
@@ -58,6 +64,8 @@ contract is a new deployment, listed here with its new address.
 ### Changed
 
 - Live demo sends are switched off in `config/limits.json` until the demo account holds certificates (decision 0022).
+- Live demo sends are on again, and each failure button uses a 1,500,000 gas limit instead of 3,000,000, because the
+  chain charges a failed transaction at least half its limit (decision 0023).
 - The site reads the testnet contracts instead of sample data (decision 0021).
 - The judge slides are generated from `deck/kandungan.json` by the judge-pack deck engine, with the site's own
   colours and fonts, and printed to `docs/deck.pdf`. A test checks that the PDF and the slide source match the hashes

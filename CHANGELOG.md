@@ -8,6 +8,9 @@ contract is a new deployment, listed here with its new address.
 
 ### Added
 
+- `pnpm verify` checks the testnet record from public endpoints, with no key: every retirement against its Native
+  receipt, minted - retired = supply, and each recorded case. `pnpm demo` installs the scripts in a fresh clone and
+  runs it. The first run passed 28 of 28 checks (`evidence/verify.json`, decision 0024).
 - `pnpm cases` records the testnet cases in `evidence/testnet.json`: a retirement that writes one receipt (A), and
   refusals that leave both ledgers unchanged (B, C, D, E2, G so far; E and F need a finished day without a reading).
   Each record has the EVM and Cosmos transaction hashes, the block, and the receipt count before and after

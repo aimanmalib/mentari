@@ -189,7 +189,7 @@ curl -s  -A 'TelegramBot (like TwitterBot)' https://mentari.sasateguh.com/ | gre
 
 ## Script tests
 
-`scripts/test/` runs with vitest and no network beyond a local anvil node. `cd scripts && npx vitest run` reported 109
+`scripts/test/` runs with vitest and no network beyond a local anvil node. `cd scripts && npx vitest run` reported 116
 passed on 2026-11-23.
 
 `scripts/src/meter.ts` makes the simulated meter readings and the bytes a meter or the registrar signs. The meter tests
@@ -222,6 +222,16 @@ another error, or a success case fails in simulation; that E and F are left out 
 reading; and that a recorded case is never replaced. `scripts/src/book.ts` is tested with a fake `fetch`: the count is
 read through the block height header, and a malformed receipt is refused. Removing the expected-error check in
 `runCase`, or the scope comparison when a window is reused, each turned tests red.
+
+`scripts/src/verify.ts` holds the checks behind `pnpm verify` (ADR 0024). Its tests run them against a fake chain with
+two retirements, one success case and one revert case. A consistent chain passes all 15 checks. Each of these fails
+exactly the check it should: a receipt from another sender, another amount or no receipt; receipt ids that do not rise;
+supply that does not equal minted minus retired; retirements that do not add up to the retired total; a revert case
+that succeeded, went to another contract or has no receipt; a receipts book count that moved for a revert or did not
+move for case A; a Cosmos hash that differs from the evidence; a contract without code; another receipts book. A node
+that cannot serve an old height or find a Cosmos transaction gives `unavailable`, not a failure. Six checks were each
+removed once (receipt sender, receipt note, EVM status, receipts book unchanged, minted - retired = supply, the
+retirements sum) and each time one test went red.
 
 `scripts/src/native.ts` gets the accounts ready on the Native lane (ADR 0016). Its tests run against an in-memory
 lane that applies bank sends, key registrations and windows, and refuses a hybrid transaction from an account with no

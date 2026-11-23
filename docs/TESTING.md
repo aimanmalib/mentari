@@ -189,7 +189,7 @@ curl -s  -A 'TelegramBot (like TwitterBot)' https://mentari.sasateguh.com/ | gre
 
 ## Script tests
 
-`scripts/test/` runs with vitest and no network beyond a local anvil node. `cd scripts && npx vitest run` reported 128
+`scripts/test/` runs with vitest and no network beyond a local anvil node. `cd scripts && npx vitest run` reported 132
 passed on 2026-11-23.
 
 `scripts/src/meter.ts` makes the simulated meter readings and the bytes a meter or the registrar signs. The meter tests
@@ -231,14 +231,19 @@ that succeeded, went to another contract or has no receipt; a receipts book coun
 move for case A; a Cosmos hash that differs from the evidence; a contract without code; another receipts book. A node
 that cannot serve an old height or find a Cosmos transaction gives `unavailable`, not a failure. Six checks were each
 removed once (receipt sender, receipt note, EVM status, receipts book unchanged, minted - retired = supply, the
-retirements sum) and each time one test went red.
+retirements sum) and each time one test went red. Case H has its own checks: the node must find each step's Cosmos
+transaction with the recorded outcome and block, and the receipts book must gain one receipt for an accepted `retire`
+and stay the same otherwise. Its tests fail a step whose outcome or block differs and a book count that does not
+match, and report a transaction the node no longer has as `unavailable`. Ignoring the outcome, accepting any rise in
+the count, skipping case H, reading every code as 0 in the book reader, and sorting case H first were each tried once;
+each turned a test red.
 
 `scripts/src/native-entry.ts` runs case H (ADR 0025). Its tests use a fake signer and a fake lane. They check that a
 step is one hybrid-signed `MsgCrossVMCall` into the EVM contract, whose payload decodes back to the ABI call, at the
 gas and price in the config; that an accepted call, a call that fails in its block and a refusal before any block are
 each recorded as such, with the receipts count at the block before and at the transaction's block; that nothing is
 sent while the sender has a live EVM window; that step 1 falls back to an already attested day when no day is free;
-and that a step sent again replaces its earlier record. `pnpm cases` keeps case H when it rewrites the file. Five
+and that a step sent again replaces its earlier record. `pnpm cases` keeps case H, after G, when it rewrites the file. Five
 changes were each made once, and each turned at least one test red: removing the window check, counting a failed
 block as accepted, dropping case H in `mergeEvidence`, treating a refusal before any block as included, and signing
 classical instead of hybrid.

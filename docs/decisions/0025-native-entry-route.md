@@ -17,9 +17,11 @@ left; the chain did not refuse it.
 
 ## Decision
 
-- Case H is recorded in `evidence/testnet.json` as `nativeEntry`, apart from `cases`. It has a Cosmos transaction
-  and no EVM transaction of its own, so `pnpm verify` does not read it as a case; its retirement is checked with every
-  other retirement. `pnpm cases` keeps `nativeEntry` when it rewrites the file.
+- Case H is recorded in `evidence/testnet.json` `cases`, after G, in its own shape: one entry per step, with the
+  Cosmos transaction, its block, and whether it was accepted. It has no EVM transaction of its own, so `pnpm verify`
+  checks it apart from A to G: the node must find each step's Cosmos transaction with the recorded outcome and block,
+  and the receipts book must gain one receipt for an accepted `retire` and stay the same otherwise. Its retirement is
+  also checked with every other retirement. `pnpm cases` keeps case H when it rewrites the file.
 - `pnpm native-entry` refuses to send while the sender has a live EVM window, records a refusal instead of retrying,
   and uses a fixed gas limit (`config/app.json` `nativeEntry.gas`), because a simulation would hide a refusal behind an
   estimate error.
@@ -42,6 +44,7 @@ left; the chain did not refuse it.
 ## How to undo
 
 Remove `scripts/native-entry.ts`, `scripts/src/native-entry.ts`, their test, the `native-entry` scripts in both
-`package.json` files, `nativeEntry` in `config/app.json` and in `evidence/testnet.json`, and `docs/findings.md`. The
-lane's `submit` and the `nativeEntry` carry-over in `mergeEvidence` can stay; nothing else uses them. If the route move
+`package.json` files, `nativeEntry` in `config/app.json`, case H in `evidence/testnet.json`, `entryChecks` in
+`scripts/src/verify.ts`, and `docs/findings.md`. The lane's `submit`, the book reader's `cosmosTx` and the case H
+ordering in `mergeEvidence` can stay; nothing else needs them. If the route move
 has shipped, set the demo sender back to the EVM window path.

@@ -1,7 +1,7 @@
 # Findings: calling Mentari from the Native lane (case H)
 
 Date: 2026-11-23, on the Diana testnet (`qorechain-diana`, EVM chain id 9800). Decision record: [0025](decisions/0025-native-entry-route.md).
-The record is `nativeEntry` in [`evidence/testnet.json`](../evidence/testnet.json); the command is `pnpm native-entry`.
+The record is case H in [`evidence/testnet.json`](../evidence/testnet.json); the command is `pnpm native-entry`.
 
 ## The question
 

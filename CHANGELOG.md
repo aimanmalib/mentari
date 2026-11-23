@@ -10,7 +10,8 @@ contract is a new deployment, listed here with its new address.
 
 - `pnpm native-entry` records case H in `evidence/testnet.json`: calls into Mentari sent as hybrid-signed
   `MsgCrossVMCall` from an account with no EVM window. `retire`, with its bridge call, was accepted (retirement 5,
-  receipt 14); `attest` reached the contract and reverted there. Write-up in `docs/findings.md` (decision 0025).
+  receipt 14); `attest` reached the contract and reverted there. `pnpm verify` checks each step's Cosmos transaction
+  and the receipt count. Write-up in `docs/findings.md` (decision 0025).
 - `pnpm verify` checks the testnet record from public endpoints, with no key: every retirement against its Native
   receipt, minted - retired = supply, and each recorded case. `pnpm demo` installs the scripts in a fresh clone and
   runs it. The first run passed 28 of 28 checks (`evidence/verify.json`, decision 0024).

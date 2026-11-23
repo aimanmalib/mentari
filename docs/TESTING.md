@@ -189,7 +189,7 @@ curl -s  -A 'TelegramBot (like TwitterBot)' https://mentari.sasateguh.com/ | gre
 
 ## Script tests
 
-`scripts/test/` runs with vitest and no network beyond a local anvil node. `cd scripts && npx vitest run` reported 98
+`scripts/test/` runs with vitest and no network beyond a local anvil node. `cd scripts && npx vitest run` reported 109
 passed on 2026-11-23.
 
 `scripts/src/meter.ts` makes the simulated meter readings and the bytes a meter or the registrar signs. The meter tests
@@ -213,6 +213,15 @@ no code, only one address, or no deploy block, that writing the addresses keeps 
 and that the meter keys and demo sender key files are mode 600, are read back by the server's parsers under the
 file names the server looks for, and are refused inside the repository.
 Removing the no-code check or the one-address check each turned one test red.
+
+`scripts/src/cases.ts` records the testnet cases (ADR 0023). Its tests run every case on the same local node with
+`MockCrossVmBridge` placed at the bridge address: case A writes one receipt whose sender is the contract and whose
+note matches the retirement; B, C, D, E1, E2, F and G revert with their own named error and leave the receipt and
+retirement counts unchanged. They also check that nothing is sent when a revert case would succeed, fails with
+another error, or a success case fails in simulation; that E1 and F are left out while every finished day has a
+reading; and that a recorded case is never replaced. `scripts/src/book.ts` is tested with a fake `fetch`: the count is
+read through the block height header, and a malformed receipt is refused. Removing the expected-error check in
+`runCase`, or the scope comparison when a window is reused, each turned tests red.
 
 `scripts/src/native.ts` gets the accounts ready on the Native lane (ADR 0016). Its tests run against an in-memory
 lane that applies bank sends, key registrations and windows, and refuses a hybrid transaction from an account with no

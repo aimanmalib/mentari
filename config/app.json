@@ -29,7 +29,7 @@
   "native": {
     "receiptsBook": "qor1xjayq5ev55tkzpml9klxwyshr7gdrha0nurha9jhm0f0gdckksgs3gltw8",
     "receiptsBookCodeId": 865,
-    "notAllowlistedTarget": ""
+    "notAllowlistedTarget": "qor1k50lljx5myr6f7ctvdngdaf09erfct5rtn8yccd5sy845tphk2jqe26mpr"
   },
   "nativeLane": {
     "denom": "uqor",
@@ -68,6 +68,25 @@
       "blocks": 3600,
       "maxTxs": 30,
       "maxValueQor": "8"
+    },
+    "stock": {
+      "role": "producer",
+      "blocks": 300,
+      "maxTxs": 1,
+      "maxValueQor": "0.5",
+      "targets": [
+        "mentari"
+      ]
+    },
+    "demo": {
+      "role": "demo sender",
+      "blocks": 17280,
+      "maxTxs": 300,
+      "maxValueQor": "10",
+      "targets": [
+        "mentari",
+        "atomicityProbe"
+      ]
     }
   },
   "web": {
@@ -113,5 +132,17 @@
       "source": "https://github.com/aimanmalib/mentari",
       "slides": "https://github.com/aimanmalib/mentari/blob/main/docs/deck.pdf"
     }
+  },
+  "cases": {
+    "retireWh": 500,
+    "memo": "Testnet case A",
+    "probeNote": "Testnet case",
+    "system": 1,
+    "wrongKeyRole": "meter B",
+    "unkeyedRecipient": "0x000000000000000000000000000000000000dEaD",
+    "transferWh": 1,
+    "stockWh": 100000,
+    "stockMinWh": 1000,
+    "windowNeedQor": "6"
   }
 }

@@ -10,6 +10,7 @@
     "keys": "pnpm --filter @mentari/scripts keys",
     "testnet": "pnpm --filter @mentari/scripts testnet",
     "native": "pnpm --filter @mentari/scripts native",
+    "cases": "pnpm --filter @mentari/scripts cases",
     "dev": "pnpm --filter @mentari/web dev",
     "build": "pnpm --filter @mentari/web build && pnpm --filter @mentari/server build",
     "start": "pnpm --filter @mentari/server start",

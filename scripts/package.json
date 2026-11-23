@@ -6,6 +6,7 @@
     "keys": "tsx keys.ts",
     "testnet": "tsx testnet.ts",
     "native": "tsx native.ts",
+    "cases": "tsx cases.ts",
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json"
   },

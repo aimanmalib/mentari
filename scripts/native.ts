@@ -7,14 +7,17 @@
  *   pnpm native keys            register the ML-DSA-87 key, with proof of possession, of every account that has funds
  *   pnpm native window <name>   open the EVM window named in config/app.json `windows`
  *   pnpm native close <role>    close that account's EVM window
+ *   pnpm native record          write the public state of every account to evidence/accounts.json
  *
  * Accounts come from the shared accounts file (MENTARI_ACCOUNTS) by the roles in config/app.json. Output is public
  * data only: roles, addresses, amounts and transaction hashes.
  */
+import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { deriveUnifiedAccount, resolveSignBytesVersion } from "@qorechain/sdk";
 import { accountsPath, readAccountsFile } from "./src/accounts.js";
 import { loadAppConfig, type AppConfig } from "./src/config.js";
+import { accountsEvidence, writeEvidence } from "./src/evidence.js";
 import { restLane } from "./src/lane.js";
 import {
   actorFrom,
@@ -30,7 +33,7 @@ import {
 import { indexOf } from "./testnet.js";
 
 const repoRoot = fileURLToPath(new URL("..", import.meta.url));
-const USAGE = "usage: pnpm native status | fund | keys | window <name> | close <role>";
+const USAGE = "usage: pnpm native status | fund | keys | window <name> | close <role> | record";
 
 /** Exit code when a watched account is below the low-balance line, so a scheduler can alert on it. */
 export const EXIT_LOW = 3;
@@ -45,8 +48,12 @@ async function main(argv: string[]): Promise<number> {
   const app = loadAppConfig() as AppConfig & NativeSettings;
   const { mnemonic } = readAccountsFile(accountsPath(process.env, repoRoot));
   const version = await resolveSignBytesVersion({ chainId: app.network.chainId, rest: app.network.rest });
-  const actor = async (role: string): Promise<Actor> =>
-    actorFrom(role, await deriveUnifiedAccount(mnemonic, indexOf(app, role)), app.network.chainId, version);
+  const evmByRole: Record<string, string> = {};
+  const actor = async (role: string): Promise<Actor> => {
+    const account = await deriveUnifiedAccount(mnemonic, indexOf(app, role));
+    evmByRole[role] = account.evm;
+    return actorFrom(role, account, app.network.chainId, version);
+  };
   const actors = await Promise.all(nativeRoles(app).map(actor));
   const byRole = (role: string): Actor => {
     const a = actors.find((x) => x.role === role);
@@ -74,6 +81,13 @@ async function main(argv: string[]): Promise<number> {
         console.log(r.low ? `${line}  LOW` : line);
       }
       return rows.some((r) => r.low) ? EXIT_LOW : 0;
+    }
+    case "record": {
+      const rows = await readStatus(ctx, actors);
+      const meta = { chainId: app.network.chainId, rest: app.network.rest, readAt: new Date() };
+      writeEvidence(join(repoRoot, "evidence", "accounts.json"), accountsEvidence(rows, evmByRole, meta));
+      console.log(`wrote ${rows.length} accounts to evidence/accounts.json`);
+      return 0;
     }
     case "fund":
       await fundAccounts(ctx, byRole(app.funding.funder), actors.slice(1));

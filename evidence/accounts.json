@@ -1,0 +1,79 @@
+{
+  "chainId": "qorechain-diana",
+  "rest": "https://api-testnet.qore.host",
+  "readAt": "2026-11-23T09:16:49.353Z",
+  "accounts": [
+    {
+      "role": "funder and deployer",
+      "evm": "0x9dEF414277275054bF585EAE1Cc6A4b2b673078B",
+      "cosmos": "qor1nhh5zsnhyag9f06ct6hpe34yk2m8xputtw4t63",
+      "balanceUqor": "70505000",
+      "pqcKeyRegistered": true,
+      "possessionProven": true,
+      "evmWindowOpen": false
+    },
+    {
+      "role": "registrar",
+      "evm": "0x4Dd91E66B2542E3E55DA036aF2CA990674fbd7Bc",
+      "cosmos": "qor1fhv3ue4j2shru4w6qd409j5eqe60h4auxtqnd9",
+      "balanceUqor": "5925000",
+      "pqcKeyRegistered": true,
+      "possessionProven": true,
+      "evmWindowOpen": false
+    },
+    {
+      "role": "meter A",
+      "evm": "0xbE13F609C05AD4c0C3a480c4A30c3c6C1B1623a4",
+      "cosmos": "qor1hcflvzwqtt2vpsaysrz2xrpudsd3vgay322tkg",
+      "balanceUqor": "925000",
+      "pqcKeyRegistered": true,
+      "possessionProven": true,
+      "evmWindowOpen": false
+    },
+    {
+      "role": "meter B",
+      "evm": "0x0F1576C683f3bEa0C5AEc4143d0F1dE94492ea59",
+      "cosmos": "qor1pu2hd35r7wl2p3dwcs2r6rcaa9zf96jeekywtl",
+      "balanceUqor": "925000",
+      "pqcKeyRegistered": true,
+      "possessionProven": true,
+      "evmWindowOpen": false
+    },
+    {
+      "role": "meter C",
+      "evm": "0xFcdaD2B7A5782e4ee9e890a4bF24bE51801bAC44",
+      "cosmos": "qor1lndd9da90qhya60gjzjt7f972xqphtzyscuw3w",
+      "balanceUqor": "925000",
+      "pqcKeyRegistered": true,
+      "possessionProven": true,
+      "evmWindowOpen": false
+    },
+    {
+      "role": "producer",
+      "evm": "0x4A4A39F5518AEaBDCb80aA4d87211346f3eD7D41",
+      "cosmos": "qor1ff9rna233t4tmjuq4fxcwggngme76l2prglrg3",
+      "balanceUqor": "1925000",
+      "pqcKeyRegistered": true,
+      "possessionProven": true,
+      "evmWindowOpen": false
+    },
+    {
+      "role": "buyer",
+      "evm": "0xA931a4936cAE0B3490DBe1e86484eE09F7567d01",
+      "cosmos": "qor14yc6fymv4c9nfyxmu85xfp8wp8m4vlgp5srudw",
+      "balanceUqor": "2925000",
+      "pqcKeyRegistered": true,
+      "possessionProven": true,
+      "evmWindowOpen": false
+    },
+    {
+      "role": "demo sender",
+      "evm": "0x859bA2e40f7e892e53cE25Ae67b79F3A8af7F2b3",
+      "cosmos": "qor1skd69eq006yju57wykhx0dul82900u4nr4d3f4",
+      "balanceUqor": "14925000",
+      "pqcKeyRegistered": true,
+      "possessionProven": true,
+      "evmWindowOpen": false
+    }
+  ]
+}

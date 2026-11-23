@@ -131,7 +131,11 @@ export function toUqor(qor: string, decimals: number): bigint {
 
 /** Fee for `n` messages of one kind: gas limit from config, price from config, rounded up. */
 export function feeFor(s: NativeSettings["nativeLane"], kind: GasKind, n = 1): SignRequest["fee"] {
-  const gas = BigInt(s.gas[kind]) * BigInt(n);
+  return feeForGas(s, BigInt(s.gas[kind]) * BigInt(n));
+}
+
+/** Fee for a gas limit at the configured price, rounded up. */
+export function feeForGas(s: Pick<NativeSettings["nativeLane"], "denom" | "gasPriceUqor">, gas: bigint): SignRequest["fee"] {
   const [whole, frac = ""] = s.gasPriceUqor.split(".");
   const scale = 10n ** BigInt(frac.length);
   const price = BigInt(whole! + frac);

@@ -107,6 +107,34 @@ describe("restLane broadcast", () => {
     await expect(lane(f).broadcast(new Uint8Array([1]))).rejects.toThrow(/failed: code 11 out of gas/);
   });
 
+  it("submit reports a CheckTx refusal instead of throwing", async () => {
+    const f = fakeFetch({ [POST]: { status: 200, body: { tx_response: { code: 4, txhash: HASH, codespace: "sdk", raw_log: "no window" } } } });
+    expect(await lane(f).submit(new Uint8Array([1]))).toMatchObject({
+      hash: HASH,
+      stage: "check",
+      code: 4,
+      codespace: "sdk",
+      log: "no window",
+      height: null,
+    });
+  });
+
+  it("submit reports a failure in the block with its height, gas and events", async () => {
+    const events = [{ type: "message", attributes: [{ key: "action", value: "/qorechain.crossvm.v1.MsgCrossVMCall" }] }];
+    const body = { tx_response: { code: 7, codespace: "crossvm", height: "12", gas_used: "900", raw_log: "refused", events } };
+    const f = fakeFetch({ [POST]: accepted, [GET]: { status: 200, body } });
+    expect(await lane(f).submit(new Uint8Array([1]))).toEqual({
+      hash: HASH,
+      stage: "block",
+      code: 7,
+      codespace: "crossvm",
+      log: "refused",
+      height: 12,
+      gasUsed: 900,
+      events,
+    });
+  });
+
   it("gives up after the wait time", async () => {
     const f = fakeFetch({ [POST]: accepted, [GET]: Array.from({ length: 20 }, () => notFound) });
     await expect(lane(f, 500).broadcast(new Uint8Array([1]))).rejects.toThrow(/not in a block after 500 ms/);

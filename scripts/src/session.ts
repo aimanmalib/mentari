@@ -1,6 +1,6 @@
 import { deriveUnifiedAccount, resolveSignBytesVersion, type UnifiedAccount } from "@qorechain/sdk";
 import type { AppConfig } from "./config.js";
-import { restLane } from "./lane.js";
+import { restLane, type Submitter } from "./lane.js";
 import { actorFrom, type Actor, type Ctx, type NativeSettings } from "./native.js";
 
 /** The account index config/app.json gives a role. A missing or doubled role is an error. */
@@ -17,6 +17,8 @@ export interface NativeSession {
   byRole(role: string): Actor;
   /** The derived account of each role, for its EVM address and keys. Stays in this process. */
   accounts: Record<string, UnifiedAccount>;
+  /** The same lane, answering with the chain's verdict instead of throwing when a transaction fails. */
+  submitter: Submitter;
 }
 
 /** Derive the accounts of `roles` from the shared seed and connect them to the Native lane over public REST. */
@@ -39,16 +41,17 @@ export async function nativeSession(
     if (!a) throw new Error(`no account with role "${role}"`);
     return a;
   };
+  const lane = restLane({
+    rest: app.network.rest,
+    denom: app.nativeLane.denom,
+    waitMs: app.nativeLane.waitSeconds * 1000,
+    pollMs: app.nativeLane.pollSeconds * 1000,
+  });
   const ctx: Ctx = {
-    lane: restLane({
-      rest: app.network.rest,
-      denom: app.nativeLane.denom,
-      waitMs: app.nativeLane.waitSeconds * 1000,
-      pollMs: app.nativeLane.pollSeconds * 1000,
-    }),
+    lane,
     chainId: app.network.chainId,
     settings: app,
     log: (line) => console.log(line),
   };
-  return { ctx, actors, byRole, accounts };
+  return { ctx, actors, byRole, accounts, submitter: lane };
 }

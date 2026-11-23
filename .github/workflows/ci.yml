@@ -31,6 +31,6 @@ jobs:
       security-events: write
     steps:
       - uses: actions/checkout@v4
-      - uses: aimanmalib/sisir@1975d9215b40980c5ea2bc8d61b4470281d69df9
+      - uses: aimanmalib/sisir@v1.0.0
         with:
           paths: contracts/src contracts/src/lib

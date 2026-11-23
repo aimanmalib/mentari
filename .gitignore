@@ -34,3 +34,4 @@ keystore/
 deploy/hos.env
 deploy/*_TAG
 deploy/.uptime-state
+deploy/.funds-state

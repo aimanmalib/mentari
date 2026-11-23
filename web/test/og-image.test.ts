@@ -117,5 +117,7 @@ describe("cover template", () => {
     expect(() => coverHtml({ ...input, template: "{{nope}}" })).toThrow(/cover\.html has an unknown slot \{\{nope\}\}/);
     const noTagline = { en: { cover: { kicker: "k", shotAlt: "a" } } };
     expect(() => coverHtml({ ...input, template: "{{tagline}}", catalogues: noTagline })).toThrow(/cover\.tagline/);
+    const blankTagline = { en: { cover: { kicker: "k", tagline: "  ", shotAlt: "a" } } };
+    expect(() => coverHtml({ ...input, template: "{{tagline}}", catalogues: blankTagline })).toThrow(/cover\.tagline/);
   });
 });

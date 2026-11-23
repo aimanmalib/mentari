@@ -5,7 +5,7 @@
 <p align="center"><a href="https://github.com/aimanmalib/mentari/actions/workflows/ci.yml"><img src="https://github.com/aimanmalib/mentari/actions/workflows/ci.yml/badge.svg" alt="CI"></a> <a href="https://github.com/aimanmalib/mentari/blob/main/LICENSE"><img src="https://img.shields.io/github/license/aimanmalib/mentari" alt="Lesen: Apache-2.0"></a> <img src="https://img.shields.io/badge/QoreChain-Diana%20testnet-22357e" alt="Testnet QoreChain Diana"></p>
 
 <p align="center"><b>Sijil solar yang hanya boleh dibersarakan sekali: bakar dan resit awam berlaku bersama, atau tidak langsung.</b> · <i>Solar certificates you can retire only once: burn and public receipt land together, or not at all.</i><br>
-<a href="https://mentari.sasateguh.com"><b>demo langsung</b></a> · <a href="#semak-dalam-3-langkah">semak dalam 3 langkah</a> · <a href="#jalankan">jalankan</a> · <a href="#had">had</a> · <a href="AI_USAGE.md">penggunaan AI</a> · <a href="deck/mentari-slides.pdf">slaid (PDF)</a> · <a href="README.md">English</a><br>
+<a href="https://mentari.sasateguh.com"><b>demo langsung</b></a> · <a href="#semak-dalam-3-langkah">semak dalam 3 langkah</a> · <a href="#jalankan">jalankan</a> · <a href="#had">had</a> · <a href="AI_USAGE.md">penggunaan AI</a> · <a href="docs/deck.pdf">slaid (PDF)</a> · <a href="README.md">English</a><br>
 Dibina di Malaysia oleh <a href="https://aimanmalib.com">Aiman Malib</a> · <a href="https://sasateguh.com">Sasa Teguh</a></p>
 
 <p align="center"><img src="docs/images/screenshot-desktop.png" width="640" alt="Halaman daftar Mentari di desktop: lejar EVM di kiri, buku resit Native di kanan, dan lencana di tengah yang menyatakan kedua-dua lejar sepakat, atas data sampel"> <img src="docs/images/screenshot-mobile.png" width="180" alt="Halaman daftar yang sama di iPhone, dengan label meter simulasi dan nota data sampel"></p>
@@ -88,7 +88,7 @@ Dikira pada 22 November 2026 daripada larian tempatan, langkah yang sama dengan 
 | --- | --- |
 | Foundry, `contracts/test/` | 115 lulus: 98 ujian unit, 16 ujian fuzz (512 larian setiap satu) dan satu suite invarian yang memegang 4 invarian (forge mengira suite itu sekali, jadi 98 + 16 + 1 = 115); liputan baris `contracts/src` 99 % |
 | vitest, `server/test/` | 152 lulus |
-| vitest, `web/test/` | 155 lulus |
+| vitest, `web/test/` | 157 lulus |
 | vitest, `scripts/test/` | 89 lulus |
 | Playwright, `web/e2e/` | 10 lulus: laluan dompet dengan dompet tiruan QoreX, 5 kes dalam Chromium dan WebKit sebagai iPhone 13 |
 

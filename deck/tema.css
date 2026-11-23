@@ -1,0 +1,10 @@
+/* Slide theme on top of web/src/styles/tokens.css: the site's fonts, embedded from fonts/, and the accent the slides use. */
+@font-face { font-family: "Bricolage Grotesque Variable"; src: url("fonts/bricolage-grotesque-latin-wdth-normal.woff2") format("woff2"); font-weight: 200 800; font-stretch: 75% 100%; font-display: block; }
+@font-face { font-family: "Instrument Sans Variable"; src: url("fonts/instrument-sans-latin-wght-normal.woff2") format("woff2"); font-weight: 400 700; font-display: block; }
+@font-face { font-family: "IBM Plex Mono"; src: url("fonts/ibm-plex-mono-latin-500-normal.woff2") format("woff2"); font-weight: 500; font-display: block; }
+
+:root {
+  --accent: var(--silicon);
+  /* The site's --rule is a whole border; the slides need its colour alone. */
+  --rule: var(--busbar);
+}

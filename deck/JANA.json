@@ -1,0 +1,36 @@
+{
+  "enjin": "pakej-juri",
+  "versi": "ee008bcff81b",
+  "masa": "2026-11-23T01:01:08Z",
+  "pdf": "docs/deck.pdf",
+  "sha256_pdf": "dc31f08e157de16e215c3183e942018e4c9a3b940047404866598f35556028d9",
+  "bait_pdf": 285218,
+  "html": "deck/index.html",
+  "slaid": 8,
+  "pptx": null,
+  "kandungan": {
+    "fail": "deck/kandungan.json",
+    "sha256": "1a0f278c3041d3803ee4910e35e202a3051b318acfa3c3ac325fd4a1840a88f8"
+  },
+  "sumber": [
+    "README.md",
+    "AI_USAGE.md"
+  ],
+  "tema": {
+    "fail": [
+      "web/src/styles/tokens.css",
+      "deck/tema.css"
+    ],
+    "token": {
+      "latar": "--paper",
+      "dakwat": "--ink",
+      "aksen": "--accent",
+      "lembut": "--muted",
+      "garis": "--rule",
+      "fon_teks": "--font-body",
+      "fon_paparan": "--font-display",
+      "fon_mono": "--font-mono"
+    },
+    "fon_dibuang": []
+  }
+}

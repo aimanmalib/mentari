@@ -1,0 +1,64 @@
+[
+ {
+  "text": "Mentari · Build Before Q-Day · Cross-VM track\nMentari\n\nSolar certificates you can retire only once: burn and public receipt land together, or not at all.\n\nThe registry, over sample data\n\nBuild Before Q-Day: The QoreChain Developer Fest. Built in Malaysia by Aiman Malib.\n\nhttps://mentari.sasateguh.com · https://github.com/aimanmalib/mentari",
+  "links": [
+   {
+    "href": "https://mentari.sasateguh.com/",
+    "x": 128,
+    "y": 930.40625,
+    "w": 342,
+    "h": 31
+   },
+   {
+    "href": "https://github.com/aimanmalib/mentari",
+    "x": 482,
+    "y": 930.40625,
+    "w": 442,
+    "h": 31
+   }
+  ]
+ },
+ {
+  "text": "Mentari · Build Before Q-Day · Cross-VM track\na working EVM-to-Native call to an approved Native contract\nEVM-to-Native call\n\nRetiring a certificate burns it in an EVM contract and writes a public receipt into a Native contract through the Cross-VM bridge, in the same transaction.\n\nBurn first. retire burns the watt-hours, then builds the receipt note from typed fields.\nOne bridge call. The bridge at 0x…0901 sends record to qday-receipts, which is on the testnet allowlist: governance proposal 40, code id 865.\nRead the reply. The contract stores the receipt id. An empty reply or an id that is not new reverts the retirement.\nThe EVM event names the Native receipt. The Native note names the EVM retirement.\n\ncontracts/src/Mentari.sol",
+  "links": []
+ },
+ {
+  "text": "Mentari · Build Before Q-Day · Cross-VM track\natomic execution shown on testnet\nAtomic execution shown on testnet\n\nIf either side fails, neither happens. AtomicityProbe, a separate demo contract, fails on purpose.\n\nB: writes a receipt, then reverts.\nC: asks the Native contract to refuse.\nD: calls a Native contract governance has not approved.\nEach case must leave the receipt count the same before and after.\nThe Try it page, over sample data\n\nTested against the bridge mock today. Testnet transaction hashes for each case come with the deployment.\n\ncontracts/src/AtomicityProbe.sol",
+  "links": []
+ },
+ {
+  "text": "Mentari · Build Before Q-Day · Cross-VM track\nPost-quantum: ML-DSA-87 checked on chain\nPost-quantum checks\n\nEvery certificate starts as a solar meter reading signed with ML-DSA-87, and the contract checks it with the pqcVerify precompile.\n\nMinting. A daily reading signed by the meter's ML-DSA-87 key mints watt-hours to the producer. A leaked classical key alone mints nothing.\nMoving. transfer only sends to accounts whose ML-DSA-87 key is registered on chain with proof of possession (pqcKeyStatus).\nNo replay. Signed messages include the chain id and the contract address.\nPrecompiles: Cross-VM bridge 0x…0901 · pqcVerify 0x…0a01 · pqcKeyStatus 0x…0a02.\n\ndocs/threat-model.md",
+  "links": []
+ },
+ {
+  "text": "Mentari · Build Before Q-Day · Cross-VM track\nKits and network features: declared and verified\nVerified features\n\nWhat the code uses, and where. Each kit is pinned in package.json.\n\n@qorechain/sdk 0.14.0: deriving the test accounts.\nBridge, pqcVerify, pqcKeyStatus at 0x…0901 · 0x…0a01 · 0x…0a02: contracts/src/lib.\nqday-receipts, Native contract code id 865: the target of every retirement.\n@qorechain/qorex-rainbowkit 0.1.0: QoreX as the wallet on the Try it page.\n@qorechain/qorex-wallet-mock 0.1.0: QoreX in the browser tests.\n\nThe project page on the fest site is not created yet, so nothing is declared or verified there yet.\n\nREADME.md: Kits and network features",
+  "links": []
+ },
+ {
+  "text": "Mentari · Build Before Q-Day · Cross-VM track\nTop-Quality: polished, functional and well-documented\nTested, then broken on purpose\n115\nFoundry tests, including fuzz and invariants\n99 %\nline coverage of contracts/src\n152\nserver tests (vitest)\n157\nsite tests (vitest)\n10\nbrowser tests, Chromium and WebKit\n\nFour invariants hold after every random call, and I broke Mentari.sol on purpose for each one: each break turned its invariant red.\n\nThe site is in English and Bahasa Melayu, and every design decision has a record with how to undo it. README.md: Tests",
+  "links": []
+ },
+ {
+  "text": "Mentari · Build Before Q-Day · Cross-VM track\nAI-Native: the workflow, the generated work and the human contribution\nAI usage\n\nI built Mentari with AI coding agents (Claude Code). AI_USAGE.md has the full account.\n\nWorkflow. Three roles in separate sessions: a planner, a builder that takes one slice at a time, and a reviewer that breaks the code to see a test turn red. A mechanical gate sits between builder and reviewer.\nGenerated work. Almost everything: the contracts and their tests, the server, the site, the documents. Up to 22 November 2026 the builder ran 15 sessions; 12 were accepted on the first try and 3 were not.\nHuman contribution. Mine: entering the fest, choosing the track, approving the requirements and the visual direction, the accounts and the faucet, and everything published in my name.\n\nAI_USAGE.md",
+  "links": []
+ },
+ {
+  "text": "Mentari · Build Before Q-Day · Cross-VM track\nCheck it yourself\nCheck it in 3 steps\nOpen https://mentari.sasateguh.com. The registry shows the EVM ledger and the Native receipts book side by side.\nGo to Try it. \"Retire now\" retires 500 Wh, and three failure buttons each try a cross-VM call that must fail.\nRead the proof in code: https://github.com/aimanmalib/mentari, contracts/test and the test notes.\nLimits: the meter is simulated; the signatures, contracts and chain are real. Testnet only: the certificates have no value. Not on the testnet yet: the site runs on sample data and says so. No professional audit.\n\nApache-2.0",
+  "links": [
+   {
+    "href": "https://mentari.sasateguh.com/",
+    "x": 262,
+    "y": 231.078125,
+    "w": 485,
+    "h": 44
+   },
+   {
+    "href": "https://github.com/aimanmalib/mentari",
+    "x": 534,
+    "y": 412.75,
+    "w": 620,
+    "h": 44
+   }
+  ]
+ }
+]

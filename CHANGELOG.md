@@ -47,3 +47,13 @@ contract is a new deployment, listed here with its new address.
   failure buttons send real testnet transactions from the demo account and wait for them to be mined. `pnpm testnet`
   writes that key file beside the meter keys (ADR 0017).
 - Eight slides in `deck/` (HTML source and PDF), linked from the README and the site footer.
+
+### Changed
+
+- The judge slides are generated from `deck/kandungan.json` by the judge-pack deck engine, with the site's own
+  colours and fonts, and printed to `docs/deck.pdf`. A test checks that the PDF and the slide source match the hashes
+  the engine recorded, and that the test-count tiles match the README (decision 0019).
+
+### Removed
+
+- The hand-written slides (`deck/deck.css`, `deck/deck.js`, `deck/img/sun.svg`) and the PDF printed from them.

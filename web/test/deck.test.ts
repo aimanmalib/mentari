@@ -1,14 +1,24 @@
+import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
-// The slides repeat the test counts from the README. This keeps the two from drifting apart.
+// The slides are generated from deck/kandungan.json by the judge-pack deck engine, which records what it printed in
+// deck/JANA.json. These tests keep the slide numbers in step with the README and catch a hand edit that was never
+// printed again.
 const root = new URL("../../", import.meta.url);
 const read = (path: string) => readFileSync(new URL(path, root), "utf8");
+const sha256 = (path: string) => createHash("sha256").update(readFileSync(new URL(path, root))).digest("hex");
 
-function deckStats(html: string): Map<string, string> {
+interface Slide {
+  jenis?: string;
+  angka?: { nilai: string; label: string }[];
+}
+
+function deckStats(content: { slaid: Slide[] }): Map<string, string> {
   const stats = new Map<string, string>();
-  for (const m of html.matchAll(/<div class="stat"><b>([^<]+)<\/b><span>([^<]+)<\/span><\/div>/g)) {
-    stats.set(m[2]!, m[1]!);
+  for (const slide of content.slaid) {
+    if (slide.jenis !== "angka") continue;
+    for (const { nilai, label } of slide.angka ?? []) stats.set(label, nilai);
   }
   return stats;
 }
@@ -21,7 +31,7 @@ function readmeCount(readme: string, suite: string): string {
 }
 
 describe("deck stats", () => {
-  const stats = deckStats(read("deck/index.html"));
+  const stats = deckStats(JSON.parse(read("deck/kandungan.json")));
   const readme = read("README.md");
 
   it("finds the stat tiles on the slides", () => {
@@ -40,5 +50,21 @@ describe("deck stats", () => {
   it("the coverage tile matches the README", () => {
     const cov = readme.match(/line coverage of `contracts\/src` (\d+) %/)?.[1];
     expect(stats.get("line coverage of contracts/src")).toBe(`${cov} %`);
+  });
+});
+
+describe("generated deck", () => {
+  const record = JSON.parse(read("deck/JANA.json"));
+
+  it("the PDF in the repository is the one the engine printed", () => {
+    expect(record.pdf).toBe("docs/deck.pdf");
+    expect(read(record.pdf).slice(0, 5)).toBe("%PDF-");
+    expect(sha256(record.pdf)).toBe(record.sha256_pdf);
+  });
+
+  it("the slides were printed from the current deck/kandungan.json", () => {
+    expect(record.kandungan.fail).toBe("deck/kandungan.json");
+    expect(sha256(record.kandungan.fail)).toBe(record.kandungan.sha256);
+    expect(record.slaid).toBe(JSON.parse(read(record.kandungan.fail)).slaid.length);
   });
 });

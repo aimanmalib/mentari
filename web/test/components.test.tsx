@@ -199,7 +199,7 @@ describe("Footer", () => {
   });
 
   it("points the slides link at the PDF in this repository", () => {
-    expect(siteConfig.links.slides.endsWith("/deck/mentari-slides.pdf")).toBe(true);
-    expect(readFileSync(fileURLToPath(new URL("../../deck/mentari-slides.pdf", import.meta.url))).subarray(0, 5).toString()).toBe("%PDF-");
+    expect(siteConfig.links.slides.endsWith("/docs/deck.pdf")).toBe(true);
+    expect(readFileSync(fileURLToPath(new URL("../../docs/deck.pdf", import.meta.url))).subarray(0, 5).toString()).toBe("%PDF-");
   });
 });

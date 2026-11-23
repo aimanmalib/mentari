@@ -1,0 +1,146 @@
+{
+  "tajuk": "Mentari",
+  "bahasa": "en",
+  "label": "Mentari · Build Before Q-Day · Cross-VM track",
+  "sumber": [
+    "README.md",
+    "AI_USAGE.md"
+  ],
+  "slaid": [
+    {
+      "jenis": "kulit",
+      "tajuk": "Mentari",
+      "lead": "Solar certificates you can retire only once: burn and public receipt land together, or not at all.",
+      "kaki": [
+        "Build Before Q-Day: The QoreChain Developer Fest. Built in Malaysia by Aiman Malib.",
+        "https://mentari.sasateguh.com · https://github.com/aimanmalib/mentari"
+      ],
+      "gambar": "img/registry.png",
+      "kapsyen": "The registry, over sample data"
+    },
+    {
+      "jenis": "biasa",
+      "tajuk": "EVM-to-Native call",
+      "kriteria": "a working EVM-to-Native call to an approved Native contract",
+      "lead": "Retiring a certificate burns it in an EVM contract and writes a public receipt into a Native contract through the Cross-VM bridge, in the same transaction.",
+      "poin": [
+        "Burn first. retire burns the watt-hours, then builds the receipt note from typed fields.",
+        "One bridge call. The bridge at 0x…0901 sends record to qday-receipts, which is on the testnet allowlist: governance proposal 40, code id 865.",
+        "Read the reply. The contract stores the receipt id. An empty reply or an id that is not new reverts the retirement.",
+        "The EVM event names the Native receipt. The Native note names the EVM retirement."
+      ],
+      "kaki": [
+        "contracts/src/Mentari.sol"
+      ]
+    },
+    {
+      "jenis": "biasa",
+      "tajuk": "Atomic execution shown on testnet",
+      "kriteria": "atomic execution shown on testnet",
+      "lead": "If either side fails, neither happens. AtomicityProbe, a separate demo contract, fails on purpose.",
+      "poin": [
+        "B: writes a receipt, then reverts.",
+        "C: asks the Native contract to refuse.",
+        "D: calls a Native contract governance has not approved.",
+        "Each case must leave the receipt count the same before and after."
+      ],
+      "gambar": "img/try-it.png",
+      "kapsyen": "The Try it page, over sample data",
+      "kaki": [
+        "Tested against the bridge mock today. Testnet transaction hashes for each case come with the deployment.",
+        "contracts/src/AtomicityProbe.sol"
+      ]
+    },
+    {
+      "jenis": "biasa",
+      "tajuk": "Post-quantum checks",
+      "kriteria": "Post-quantum: ML-DSA-87 checked on chain",
+      "lead": "Every certificate starts as a solar meter reading signed with ML-DSA-87, and the contract checks it with the pqcVerify precompile.",
+      "poin": [
+        "Minting. A daily reading signed by the meter's ML-DSA-87 key mints watt-hours to the producer. A leaked classical key alone mints nothing.",
+        "Moving. transfer only sends to accounts whose ML-DSA-87 key is registered on chain with proof of possession (pqcKeyStatus).",
+        "No replay. Signed messages include the chain id and the contract address.",
+        "Precompiles: Cross-VM bridge 0x…0901 · pqcVerify 0x…0a01 · pqcKeyStatus 0x…0a02."
+      ],
+      "kaki": [
+        "docs/threat-model.md"
+      ]
+    },
+    {
+      "jenis": "biasa",
+      "tajuk": "Verified features",
+      "kriteria": "Kits and network features: declared and verified",
+      "lead": "What the code uses, and where. Each kit is pinned in package.json.",
+      "poin": [
+        "@qorechain/sdk 0.14.0: deriving the test accounts.",
+        "Bridge, pqcVerify, pqcKeyStatus at 0x…0901 · 0x…0a01 · 0x…0a02: contracts/src/lib.",
+        "qday-receipts, Native contract code id 865: the target of every retirement.",
+        "@qorechain/qorex-rainbowkit 0.1.0: QoreX as the wallet on the Try it page.",
+        "@qorechain/qorex-wallet-mock 0.1.0: QoreX in the browser tests."
+      ],
+      "kaki": [
+        "The project page on the fest site is not created yet, so nothing is declared or verified there yet.",
+        "README.md: Kits and network features"
+      ]
+    },
+    {
+      "jenis": "angka",
+      "tajuk": "Tested, then broken on purpose",
+      "kriteria": "Top-Quality: polished, functional and well-documented",
+      "angka": [
+        {
+          "nilai": "115",
+          "label": "Foundry tests, including fuzz and invariants"
+        },
+        {
+          "nilai": "99 %",
+          "label": "line coverage of contracts/src"
+        },
+        {
+          "nilai": "152",
+          "label": "server tests (vitest)"
+        },
+        {
+          "nilai": "157",
+          "label": "site tests (vitest)"
+        },
+        {
+          "nilai": "10",
+          "label": "browser tests, Chromium and WebKit"
+        }
+      ],
+      "kaki": [
+        "Four invariants hold after every random call, and I broke Mentari.sol on purpose for each one: each break turned its invariant red.",
+        "The site is in English and Bahasa Melayu, and every design decision has a record with how to undo it. README.md: Tests"
+      ]
+    },
+    {
+      "jenis": "biasa",
+      "tajuk": "AI usage",
+      "kriteria": "AI-Native: the workflow, the generated work and the human contribution",
+      "lead": "I built Mentari with AI coding agents (Claude Code). AI_USAGE.md has the full account.",
+      "poin": [
+        "Workflow. Three roles in separate sessions: a planner, a builder that takes one slice at a time, and a reviewer that breaks the code to see a test turn red. A mechanical gate sits between builder and reviewer.",
+        "Generated work. Almost everything: the contracts and their tests, the server, the site, the documents. Up to 22 November 2026 the builder ran 15 sessions; 12 were accepted on the first try and 3 were not.",
+        "Human contribution. Mine: entering the fest, choosing the track, approving the requirements and the visual direction, the accounts and the faucet, and everything published in my name."
+      ],
+      "kaki": [
+        "AI_USAGE.md"
+      ]
+    },
+    {
+      "jenis": "biasa",
+      "tajuk": "Check it in 3 steps",
+      "kriteria": "Check it yourself",
+      "poin": [
+        "Open https://mentari.sasateguh.com. The registry shows the EVM ledger and the Native receipts book side by side.",
+        "Go to Try it. \"Retire now\" retires 500 Wh, and three failure buttons each try a cross-VM call that must fail.",
+        "Read the proof in code: https://github.com/aimanmalib/mentari, contracts/test and the test notes.",
+        "Limits: the meter is simulated; the signatures, contracts and chain are real. Testnet only: the certificates have no value. Not on the testnet yet: the site runs on sample data and says so. No professional audit."
+      ],
+      "kaki": [
+        "Apache-2.0"
+      ]
+    }
+  ]
+}

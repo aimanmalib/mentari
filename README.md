@@ -5,7 +5,7 @@
 <p align="center"><a href="https://github.com/aimanmalib/mentari/actions/workflows/ci.yml"><img src="https://github.com/aimanmalib/mentari/actions/workflows/ci.yml/badge.svg" alt="CI"></a> <a href="https://github.com/aimanmalib/mentari/blob/main/LICENSE"><img src="https://img.shields.io/github/license/aimanmalib/mentari" alt="Licence: Apache-2.0"></a> <img src="https://img.shields.io/badge/QoreChain-Diana%20testnet-22357e" alt="QoreChain Diana testnet"></p>
 
 <p align="center"><b>Solar certificates you can retire only once: burn and public receipt land together, or not at all.</b> · <i>Sijil solar yang hanya boleh dibersarakan sekali: bakar dan resit awam berlaku bersama, atau tidak langsung.</i><br>
-<a href="https://mentari.sasateguh.com"><b>live demo</b></a> · <a href="#check-it-in-3-steps">check it in 3 steps</a> · <a href="#run-it">run it</a> · <a href="#limits">limits</a> · <a href="AI_USAGE.md">AI usage</a> · <a href="deck/mentari-slides.pdf">slides (PDF)</a> · <a href="README.ms.md">Bahasa Melayu</a><br>
+<a href="https://mentari.sasateguh.com"><b>live demo</b></a> · <a href="#check-it-in-3-steps">check it in 3 steps</a> · <a href="#run-it">run it</a> · <a href="#limits">limits</a> · <a href="AI_USAGE.md">AI usage</a> · <a href="docs/deck.pdf">slides (PDF)</a> · <a href="README.ms.md">Bahasa Melayu</a><br>
 Built in Malaysia by <a href="https://aimanmalib.com">Aiman Malib</a> · <a href="https://sasateguh.com">Sasa Teguh</a></p>
 
 <p align="center"><img src="docs/images/screenshot-desktop.png" width="640" alt="The Mentari registry page on desktop: the EVM ledger on the left, the Native receipts book on the right, and a badge in the middle that says both ledgers agree, over sample data"> <img src="docs/images/screenshot-mobile.png" width="180" alt="The same registry page on an iPhone, with the simulated meter label and the sample data note"></p>
@@ -131,7 +131,7 @@ Counted on 22 November 2026 from a local run, the same steps CI runs on every pu
 | --- | --- | --- |
 | Foundry, `contracts/test/` | 115 passed, 0 failed | 98 unit tests, 16 fuzz tests (512 runs each) and one invariant suite holding 4 invariants (128 sequences of 64 calls; forge counts the suite once, so 98 + 16 + 1 = 115); line coverage of `contracts/src` 99 % |
 | vitest, `server/test/` | 152 passed | the `/lcd` allowlist, client IP behind Cloudflare, demo rate limits, the off switch, fallbacks, the wallet grant, the live demo sender on a local node, the daily meter run and its chain job |
-| vitest, `web/test/` | 155 passed | the "both ledgers agree" check, the link preview tags and image sizes, the slide counts match this table, address encoding, the receipts reader, both languages have the same keys, wallet errors |
+| vitest, `web/test/` | 157 passed | the "both ledgers agree" check, the link preview tags and image sizes, the slide counts match this table, the slide PDF is the one printed from the slide source, address encoding, the receipts reader, both languages have the same keys, wallet errors |
 | vitest, `scripts/test/` | 89 passed | account derivation, balances, funding, key registration and EVM windows on the Native lane, simulated meter readings and the bytes a meter signs, deploy, registration and attestation on a local node, the one-command testnet setup, the health watch, the test counter |
 | Playwright, `web/e2e/` | 10 passed | the wallet path with the QoreX wallet mock, 5 cases in Chromium and in WebKit as an iPhone 13 |
 

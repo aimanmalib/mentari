@@ -80,6 +80,7 @@ beforeAll(async () => {
       return { id: Number(r.id), sender: getAddress(r.sender), note: r.note, height: 0 };
     },
     cosmosTxOf: async () => null,
+    cosmosTx: async () => null,
   };
   env = {
     pub: chain.pub,
@@ -194,12 +195,11 @@ describe("evidence", () => {
     ]);
   });
 
-  it("carries case H over untouched when it adds cases", () => {
-    const h = { id: "H", steps: [{ step: 1, cosmos_tx: "AB" }] };
-    const next = mergeEvidence({ ...mergeEvidence(undefined, head, [rec("A")]), nativeEntry: h }, head, [rec("E")]);
-    expect(next.nativeEntry).toEqual(h);
-    expect(next.cases.map((c) => c.id)).toEqual(["A", "E"]);
-    expect("nativeEntry" in mergeEvidence(undefined, head, [])).toBe(false);
+  it("carries case H over untouched, after G, when it adds cases", () => {
+    const h = { id: "H", steps: [{ step: 1, cosmos_tx: "AB" }] } as unknown as CaseRecord;
+    const next = mergeEvidence({ ...head, cases: [h, rec("G"), rec("A")] }, head, [rec("E")]);
+    expect(next.cases.map((c) => c.id)).toEqual(["A", "E", "G", "H"]);
+    expect(next.cases[3]).toBe(h);
   });
 
   it("lists only the cases still to send", () => {

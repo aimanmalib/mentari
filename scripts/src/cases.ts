@@ -221,12 +221,11 @@ export interface TestnetEvidence {
   contracts: Record<string, string>;
   sender: { role: string; evm: string };
   revertReasonFrom: string;
+  /** A–G as `pnpm cases` writes them. Case H, written by `pnpm native-entry` in its own shape, is carried over as is. */
   cases: CaseRecord[];
-  /** Case H (the Native-entry experiment), written by `pnpm native-entry`; carried over untouched. */
-  nativeEntry?: unknown;
 }
 
-/** Adds new records to the evidence; a case already recorded is never replaced. Case H is kept as it was. */
+/** Adds new records to the evidence; a case already recorded is never replaced. Case H stays, after G. */
 export function mergeEvidence(
   prev: Partial<TestnetEvidence> | undefined,
   head: Omit<TestnetEvidence, "cases">,
@@ -235,8 +234,9 @@ export function mergeEvidence(
   const kept = Array.isArray(prev?.cases) ? prev.cases : [];
   const have = new Set(kept.map((c) => c.id));
   const cases = [...kept, ...added.filter((c) => !have.has(c.id))];
-  cases.sort((a, b) => CASE_ORDER.indexOf(a.id) - CASE_ORDER.indexOf(b.id));
-  return prev?.nativeEntry === undefined ? { ...head, cases } : { ...head, cases, nativeEntry: prev.nativeEntry };
+  const rank = (id: string) => (CASE_ORDER.includes(id as CaseId) ? CASE_ORDER.indexOf(id as CaseId) : CASE_ORDER.length);
+  cases.sort((a, b) => rank(a.id) - rank(b.id));
+  return { ...head, cases };
 }
 
 export const REVERT_REASON_FROM =

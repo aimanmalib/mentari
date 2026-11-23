@@ -146,116 +146,116 @@
         "before": 1,
         "after": 1
       }
-    }
-  ],
-  "nativeEntry": {
-    "id": "H",
-    "title": "Calls into Mentari sent from the Native lane (MsgCrossVMCall), with no EVM window open",
-    "sender": {
-      "role": "buyer",
-      "cosmos": "qor14yc6fymv4c9nfyxmu85xfp8wp8m4vlgp5srudw",
-      "evm": "0xA931a4936cAE0B3490DBe1e86484eE09F7567d01"
     },
-    "ranAt": "2026-11-23T11:59:28.270Z",
-    "steps": [
-      {
-        "step": 1,
-        "question": "Does the chain accept a hybrid-signed MsgCrossVMCall into Mentari.attest with no EVM window open?",
-        "function": "attest",
-        "args": [
-          "3",
-          "20777",
-          "54432",
-          "0x156d57f360c024a9…(4627 bytes)"
-        ],
-        "contract_would": "revert AlreadyAttested",
-        "window_before": "closed",
-        "cosmos_tx": "48C756E1F0FA87228077922CF3F7B1D4501A887EEF8D9D79D67A0C0FE1E8C681",
-        "stage": "block",
-        "code": 14,
-        "codespace": "crossvm",
-        "log": "failed to execute message; message index: 0: execution reverted: EVM contract execution failed: EVM contract execution failed",
-        "height": 10612980,
-        "gas_used": 406755,
-        "accepted": false,
-        "revert_reason": "AlreadyAttested(3, 20777)",
-        "event_types": [
-          "pqc_verify",
-          "pqc_hybrid_verify",
-          "ai_anomaly_check",
-          "coin_spent",
-          "coin_received",
-          "transfer",
-          "message",
-          "tx"
-        ],
-        "receipts": {
-          "before": 13,
-          "after": 13
-        },
-        "state": [
-          {
-            "name": "attested(3, 20777)",
-            "before": "true",
-            "after": "true"
-          },
-          {
-            "name": "minted",
-            "before": "344115",
-            "after": "344115"
-          }
-        ]
+    {
+      "id": "H",
+      "title": "Calls into Mentari sent from the Native lane (MsgCrossVMCall), with no EVM window open",
+      "sender": {
+        "role": "buyer",
+        "cosmos": "qor14yc6fymv4c9nfyxmu85xfp8wp8m4vlgp5srudw",
+        "evm": "0xA931a4936cAE0B3490DBe1e86484eE09F7567d01"
       },
-      {
-        "step": 2,
-        "question": "Is the nested bridge call accepted: Mentari.retire, which calls 0x…0901 into the Native receipts book?",
-        "function": "retire",
-        "args": [
-          "500",
-          "Native entry E1"
-        ],
-        "contract_would": "burn the certificates and write one Native receipt",
-        "window_before": "closed",
-        "cosmos_tx": "8E15D319B2971FC5102C027BA8E3C8A8AAF1FDD72AD8E2172CEE2303B453B40A",
-        "stage": "block",
-        "code": 0,
-        "codespace": "",
-        "log": "",
-        "height": 10613003,
-        "gas_used": 1009253,
-        "accepted": true,
-        "revert_reason": null,
-        "event_types": [
-          "pqc_verify",
-          "pqc_hybrid_verify",
-          "ai_anomaly_check",
-          "coin_spent",
-          "coin_received",
-          "transfer",
-          "message",
-          "tx",
-          "execute",
-          "wasm",
-          "crossvm_request",
-          "crossvm_response"
-        ],
-        "receipts": {
-          "before": 13,
-          "after": 14
-        },
-        "state": [
-          {
-            "name": "retirementsCount",
-            "before": "4",
-            "after": "5"
+      "ranAt": "2026-11-23T11:59:28.270Z",
+      "steps": [
+        {
+          "step": 1,
+          "question": "Does the chain accept a hybrid-signed MsgCrossVMCall into Mentari.attest with no EVM window open?",
+          "function": "attest",
+          "args": [
+            "3",
+            "20777",
+            "54432",
+            "0x156d57f360c024a9\u2026(4627 bytes)"
+          ],
+          "contract_would": "revert AlreadyAttested",
+          "window_before": "closed",
+          "cosmos_tx": "48C756E1F0FA87228077922CF3F7B1D4501A887EEF8D9D79D67A0C0FE1E8C681",
+          "stage": "block",
+          "code": 14,
+          "codespace": "crossvm",
+          "log": "failed to execute message; message index: 0: execution reverted: EVM contract execution failed: EVM contract execution failed",
+          "height": 10612980,
+          "gas_used": 406755,
+          "accepted": false,
+          "revert_reason": "AlreadyAttested(3, 20777)",
+          "event_types": [
+            "pqc_verify",
+            "pqc_hybrid_verify",
+            "ai_anomaly_check",
+            "coin_spent",
+            "coin_received",
+            "transfer",
+            "message",
+            "tx"
+          ],
+          "receipts": {
+            "before": 13,
+            "after": 13
           },
-          {
-            "name": "balanceOf(buyer)",
-            "before": "500",
-            "after": "0"
-          }
-        ]
-      }
-    ]
-  }
+          "state": [
+            {
+              "name": "attested(3, 20777)",
+              "before": "true",
+              "after": "true"
+            },
+            {
+              "name": "minted",
+              "before": "344115",
+              "after": "344115"
+            }
+          ]
+        },
+        {
+          "step": 2,
+          "question": "Is the nested bridge call accepted: Mentari.retire, which calls 0x\u20260901 into the Native receipts book?",
+          "function": "retire",
+          "args": [
+            "500",
+            "Native entry E1"
+          ],
+          "contract_would": "burn the certificates and write one Native receipt",
+          "window_before": "closed",
+          "cosmos_tx": "8E15D319B2971FC5102C027BA8E3C8A8AAF1FDD72AD8E2172CEE2303B453B40A",
+          "stage": "block",
+          "code": 0,
+          "codespace": "",
+          "log": "",
+          "height": 10613003,
+          "gas_used": 1009253,
+          "accepted": true,
+          "revert_reason": null,
+          "event_types": [
+            "pqc_verify",
+            "pqc_hybrid_verify",
+            "ai_anomaly_check",
+            "coin_spent",
+            "coin_received",
+            "transfer",
+            "message",
+            "tx",
+            "execute",
+            "wasm",
+            "crossvm_request",
+            "crossvm_response"
+          ],
+          "receipts": {
+            "before": 13,
+            "after": 14
+          },
+          "state": [
+            {
+              "name": "retirementsCount",
+              "before": "4",
+              "after": "5"
+            },
+            {
+              "name": "balanceOf(buyer)",
+              "before": "500",
+              "after": "0"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }

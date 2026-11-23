@@ -1,6 +1,6 @@
 /**
  * native-entry: case H, experiment E1. Call Mentari from the Native lane with no EVM window open, and record what the
- * chain answers in evidence/testnet.json `nativeEntry`.
+ * chain answers in evidence/testnet.json as case H.
  *
  *   pnpm native-entry              send the steps not recorded yet (1: attest, 2: retire)
  *   pnpm native-entry --again 1    send step 1 again and replace its record (e.g. once a day without a reading exists)
@@ -77,8 +77,9 @@ async function main(): Promise<void> {
       signMessage(session.accounts[meterRole]!.pqc.secretKey, attestMessage(app.network.evmChainId, mentari.address, system.id, day, wh)),
   });
 
-  const prev = existsSync(EVIDENCE) ? (JSON.parse(readFileSync(EVIDENCE, "utf8")) as Record<string, unknown>) : {};
-  const prevEntry = prev.nativeEntry as NativeEntryRecord | undefined;
+  const prev = existsSync(EVIDENCE) ? (JSON.parse(readFileSync(EVIDENCE, "utf8")) as { cases?: { id: string }[] }) : {};
+  const others = (prev.cases ?? []).filter((c) => c.id !== "H");
+  const prevEntry = (prev.cases ?? []).find((c) => c.id === "H") as NativeEntryRecord | undefined;
   const done = new Set((prevEntry?.steps ?? []).map((s) => s.step));
   const todo = steps.filter((s) => s.step === again || (again === undefined && !done.has(s.step)));
   if (todo.length === 0) return console.log("case H: every step is recorded; --again 1|2 sends one again");
@@ -149,8 +150,8 @@ async function main(): Promise<void> {
     ranAt: new Date().toISOString(),
     steps: mergeSteps(prevEntry?.steps, records),
   };
-  writeEvidence(EVIDENCE, { ...prev, nativeEntry: entry });
-  console.log("evidence/testnet.json nativeEntry written");
+  writeEvidence(EVIDENCE, { ...prev, cases: [...others, entry] });
+  console.log("evidence/testnet.json case H written");
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {

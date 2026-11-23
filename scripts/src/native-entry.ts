@@ -48,7 +48,7 @@ export interface StepSpec {
   contractWould: string;
 }
 
-/** One step as `evidence/testnet.json` `nativeEntry.steps` records it. */
+/** One step of case H as `evidence/testnet.json` records it. */
 export interface StepRecord {
   step: 1 | 2;
   question: string;
@@ -164,7 +164,7 @@ export function entrySteps(o: {
   ];
 }
 
-/** `evidence/testnet.json` `nativeEntry`. */
+/** Case H in `evidence/testnet.json` `cases`, after A to G. */
 export interface NativeEntryRecord {
   id: "H";
   title: string;

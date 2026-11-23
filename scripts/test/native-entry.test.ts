@@ -42,6 +42,8 @@ function env(over: Partial<StepEnv> & { answer?: Submitted; signed?: SignRequest
     windowLive: async () => false,
     mentari: { address: CONTRACT, abi: ABI },
     probe: async () => ({ retirementsCount: String(reads++) }),
+    receiptsAt: async (h) => h,
+    revertReason: async () => "AlreadyAttested(3, 20777)",
     lane: { denom: "uqor", gasPriceUqor: "0.15" },
     gas: CFG.gas,
     ...over,
@@ -101,17 +103,19 @@ describe("runStep", () => {
     expect(signed[0]!.messages[0]!.typeUrl).toBe(CROSS_VM_CALL_TYPE_URL);
     expect(r).toMatchObject({ accepted: true, stage: "block", height: 77, cosmos_tx: "AB12", event_types: ["tx", "message"] });
     expect(r.state).toEqual([{ name: "retirementsCount", before: "0", after: "1" }]);
+    expect([r.receipts, r.revert_reason]).toEqual([{ before: 76, after: 77 }, null]);
   });
 
   it("records a call that fails in the block as not accepted, with the chain's log", async () => {
     const r = await runStep(env({ answer: included(5, "no EVM window") }), spec);
     expect(r).toMatchObject({ accepted: false, code: 5, codespace: "crossvm", log: "no EVM window" });
+    expect(r.revert_reason).toBe("AlreadyAttested(3, 20777)");
   });
 
   it("records a refusal before any block: no height, not accepted", async () => {
     const answer: Submitted = { ...included(13, "x".repeat(700)), stage: "check", height: null };
     const r = await runStep(env({ answer }), spec);
-    expect([r.accepted, r.stage, r.height]).toEqual([false, "check", null]);
+    expect([r.accepted, r.stage, r.height, r.receipts]).toEqual([false, "check", null, null]);
     expect(r.log).toHaveLength(601);
   });
 

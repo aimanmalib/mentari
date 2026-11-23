@@ -21,6 +21,7 @@ import { writeEvidence } from "./src/evidence.js";
 import { attestMessage, loadMeterConfig, signMessage, simulatedWh } from "./src/meter.js";
 import type { NativeSettings } from "./src/native.js";
 import { entrySteps, mergeSteps, runStep, type NativeEntryConfig, type NativeEntryRecord, type StepSpec } from "./src/native-entry.js";
+import { describeRevert } from "./src/revert.js";
 import { evmClients } from "./src/rpc.js";
 import { nativeSession } from "./src/session.js";
 
@@ -103,11 +104,9 @@ async function main(): Promise<void> {
       const [minted] = await read<readonly [bigint, bigint, bigint]>("totals");
       return { [`attested(${id}, ${day})`]: String(await read<boolean>("attested", [id, day])), minted: String(minted) };
     }
-    const height = Number(await pub.getBlockNumber()) - 1;
     return {
       retirementsCount: String(await read<bigint>("retirementsCount")),
       [`balanceOf(${cfg.role})`]: String(await read<bigint>("balanceOf", [senderEvm])),
-      "receipts book count": String(await book.countAt(height)),
     };
   };
   const actor = session.byRole(cfg.role);
@@ -121,6 +120,15 @@ async function main(): Promise<void> {
         windowLive: async () => (await session.ctx.lane.window(actor.cosmos)).live,
         mentari,
         probe,
+        receiptsAt: (height) => book.countAt(height),
+        revertReason: async (spec) => {
+          try {
+            await pub.simulateContract({ ...mentari, functionName: spec.functionName, args: spec.args, account: senderEvm } as never);
+            return "the same call succeeds as an eth_call";
+          } catch (err) {
+            return describeRevert(err) ?? (err instanceof Error ? err.message.split("\n")[0]! : String(err));
+          }
+        },
         lane: app.nativeLane,
         gas: cfg.gas,
       },
@@ -128,6 +136,8 @@ async function main(): Promise<void> {
     );
     console.log(`step ${r.step} ${r.function}: ${r.accepted ? "accepted" : "not accepted"} (${r.stage}, code ${r.code} ${r.codespace}) ${r.cosmos_tx}`);
     if (!r.accepted) console.log(`  ${r.log}`);
+    if (r.receipts) console.log(`  receipts book count: ${r.receipts.before} -> ${r.receipts.after}`);
+    if (r.revert_reason) console.log(`  eth_call says: ${r.revert_reason}`);
     for (const s of r.state) console.log(`  ${s.name}: ${s.before} -> ${s.after}`);
     records.push(r);
   }

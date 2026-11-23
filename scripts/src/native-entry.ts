@@ -65,7 +65,11 @@ export interface StepRecord {
   height: number | null;
   gas_used: number | null;
   accepted: boolean;
+  /** For a call that did not go through: the reason an `eth_call` of the same call from the sender gives. */
+  revert_reason: string | null;
   event_types: string[];
+  /** Receipts book count at the block before and at the transaction's block (null when it was not in a block). */
+  receipts: { before: number; after: number } | null;
   state: { name: string; before: string; after: string }[];
 }
 
@@ -78,6 +82,10 @@ export interface StepEnv {
   mentari: { address: Address; abi: Abi };
   /** Named contract readings (`attested(3, 20780)`, `retirementsCount`, …) the step should change. */
   probe(spec: StepSpec): Promise<Record<string, string>>;
+  /** Receipts book count at the end of block `height`. */
+  receiptsAt(height: number): Promise<number>;
+  /** Why the same call, made as an `eth_call` from the sender's EVM address, fails. */
+  revertReason(spec: StepSpec): Promise<string>;
   lane: Pick<NativeSettings["nativeLane"], "denom" | "gasPriceUqor">;
   gas: number;
 }
@@ -95,6 +103,8 @@ export async function runStep(env: StepEnv, spec: StepSpec): Promise<StepRecord>
   const bytes = env.actor.sign({ messages: [msg], fee, ...acct, classical: false });
   const r = await env.submitter.submit(bytes);
   const after = await env.probe(spec);
+  const accepted = r.stage === "block" && r.code === 0;
+  const h = r.height;
   return {
     step: spec.step,
     question: spec.question,
@@ -109,8 +119,10 @@ export async function runStep(env: StepEnv, spec: StepSpec): Promise<StepRecord>
     log: r.log.length > LOG_MAX ? `${r.log.slice(0, LOG_MAX)}…` : r.log,
     height: r.height,
     gas_used: r.gasUsed,
-    accepted: r.stage === "block" && r.code === 0,
+    accepted,
+    revert_reason: accepted ? null : await env.revertReason(spec),
     event_types: [...new Set(r.events.map((e) => e.type))],
+    receipts: h === null ? null : { before: await env.receiptsAt(h - 1), after: await env.receiptsAt(h) },
     state: Object.keys(before).map((name) => ({ name, before: before[name]!, after: after[name] ?? "" })),
   };
 }

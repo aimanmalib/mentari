@@ -35,6 +35,9 @@ the language chosen in the browser, so the preview can only carry one language.
   description on the blue ground.
 - Changing the preview wording means editing the locale files; changing the address or image means editing
   `config/app.json`. Both need a rebuild.
+- Checked on the live site after the deploy of 2026-11-23: the page head carries the 12 Open Graph tags, the 5 X card
+  tags and the Apple touch icon link; the page and `/og.png` answer 200 (`text/html`, `image/png`, 54 125 bytes) to the
+  WhatsApp and Telegram crawler user agents; a full-page screenshot before and after the deploy differs by 0 pixels.
 
 ## How to undo
 

@@ -180,6 +180,13 @@ once, the image address is absolute https, values come from config and the defau
 missing `web.share` block or locale key stops the build, and `web/index.html` carries no title, description or preview
 tag of its own. Removing `meta.imageAlt` from `web/locales/ms.json` fails 3 tests.
 
+After a deploy the preview is checked on the live site with the crawlers' own user agents:
+
+```sh
+curl -sI -A 'WhatsApp/2.23' https://mentari.sasateguh.com/og.png    # 200, content-type image/png
+curl -s  -A 'TelegramBot (like TwitterBot)' https://mentari.sasateguh.com/ | grep -o 'property="og:' | wc -l  # 12
+```
+
 ## Script tests
 
 `scripts/test/` runs with vitest and no network beyond a local anvil node. `cd scripts && npx vitest run` reported 89

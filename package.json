@@ -11,6 +11,8 @@
     "testnet": "pnpm --filter @mentari/scripts testnet",
     "native": "pnpm --filter @mentari/scripts native",
     "cases": "pnpm --filter @mentari/scripts cases",
+    "verify": "pnpm --filter @mentari/scripts verify",
+    "demo": "pnpm install --frozen-lockfile --filter @mentari/scripts... && pnpm verify",
     "dev": "pnpm --filter @mentari/web dev",
     "build": "pnpm --filter @mentari/web build && pnpm --filter @mentari/server build",
     "start": "pnpm --filter @mentari/server start",

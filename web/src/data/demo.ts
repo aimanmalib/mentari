@@ -28,8 +28,9 @@ export type DemoOutcome =
       kind: "sent";
       action: DemoAction;
       expect: "success" | "revert";
-      evmTx: string;
-      evmStatus: "success" | "reverted";
+      /** The transaction: an EVM one, or a Native `MsgCrossVMCall` that ran the EVM call inside it ("Retire now"). */
+      tx: { lane: "evm" | "native"; hash: string };
+      txStatus: "success" | "reverted";
       receipts: Counts;
       retirements: Counts;
       asExpected: boolean;
@@ -60,6 +61,14 @@ const isObj = (v: unknown): v is Record<string, unknown> => typeof v === "object
 const isNum = (v: unknown): v is number => typeof v === "number" && Number.isFinite(v);
 const isCounts = (v: unknown): v is Counts => isObj(v) && isNum(v.before) && isNum(v.after);
 const isHash = (v: unknown): v is string => typeof v === "string" && /^0x[0-9a-fA-F]{64}$/.test(v);
+const isCosmosHash = (v: unknown): v is string => typeof v === "string" && /^[0-9A-F]{64}$/.test(v);
+
+/** The sent transaction in a server answer: `evmTx`, or `cosmosTx` for a call sent from the Native lane. */
+function sentTx(body: Record<string, unknown>): { lane: "evm" | "native"; hash: string } | null {
+  if (isHash(body.evmTx) && body.cosmosTx === undefined) return { lane: "evm", hash: body.evmTx };
+  if (isCosmosHash(body.cosmosTx) && body.evmTx === undefined) return { lane: "native", hash: body.cosmosTx };
+  return null;
+}
 
 /** Demo status, or null when the server cannot be reached or answers something else. */
 export async function readStatus(fetchFn: DemoFetch, base: string): Promise<DemoStatus | null> {
@@ -98,16 +107,17 @@ export async function runDemo(fetchFn: DemoFetch, base: string, action: DemoActi
   }
   if (!isObj(body)) return fallback("unavailable");
   if (body.ok === true) {
-    const status = body.evmStatus;
-    if (!isHash(body.evmTx) || (status !== "success" && status !== "reverted") || !isCounts(body.receipts) || !isCounts(body.retirements)) {
+    const status = body.txStatus;
+    const tx = sentTx(body);
+    if (!tx || (status !== "success" && status !== "reverted") || !isCounts(body.receipts) || !isCounts(body.retirements)) {
       return fallback("unavailable");
     }
     return {
       kind: "sent",
       action,
       expect: def.expect,
-      evmTx: body.evmTx,
-      evmStatus: status,
+      tx,
+      txStatus: status,
       receipts: body.receipts,
       retirements: body.retirements,
       asExpected: body.asExpected === true,

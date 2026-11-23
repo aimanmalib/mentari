@@ -293,3 +293,8 @@
     border-radius: 0 0 var(--radius-lane) var(--radius-lane);
   }
 }
+
+.demo-route {
+  max-width: 62ch;
+  font-size: var(--step--1);
+}

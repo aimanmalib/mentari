@@ -32,7 +32,7 @@ describe("runDemo", () => {
     const body = {
       ok: true,
       evmTx: HASH,
-      evmStatus: "success",
+      txStatus: "success",
       receipts: { before: 5, after: 6 },
       retirements: { before: 2, after: 3 },
       asExpected: true,
@@ -40,11 +40,37 @@ describe("runDemo", () => {
     const out = await runDemo(fakeFetch(200, body, seen), "/api/demo", "retire");
     expect(seen.url).toBe("/api/demo/retire");
     expect(seen.init).toMatchObject({ method: "POST", headers: { "content-type": "application/json" } });
-    expect(out).toEqual({ kind: "sent", action: "retire", expect: "success", ...body, ok: undefined, evidenceCase: "A" } as never);
+    expect(out).toEqual({
+      kind: "sent",
+      action: "retire",
+      expect: "success",
+      tx: { lane: "evm", hash: HASH },
+      txStatus: "success",
+      receipts: body.receipts,
+      retirements: body.retirements,
+      asExpected: true,
+      evidenceCase: "A",
+    });
+  });
+
+  it("reads a retirement sent from the Native lane by its Cosmos hash", async () => {
+    const cosmosTx = "8E15D319".padEnd(64, "A");
+    const body = { ok: true, cosmosTx, txStatus: "success", receipts: { before: 5, after: 6 }, retirements: { before: 2, after: 3 }, asExpected: true };
+    const out = await runDemo(fakeFetch(200, body), "/api/demo", "retire");
+    expect(out).toMatchObject({ kind: "sent", tx: { lane: "native", hash: cosmosTx }, txStatus: "success" });
+  });
+
+  it.each([
+    ["no hash", {}],
+    ["both hashes", { evmTx: HASH, cosmosTx: "A".repeat(64) }],
+    ["a lowercase or 0x Cosmos hash", { cosmosTx: `0x${"a".repeat(64)}` }],
+  ])("shows the recorded case for an answer with %s", async (_name, tx) => {
+    const body = { ok: true, ...tx, txStatus: "success", receipts: { before: 5, after: 6 }, retirements: { before: 2, after: 3 }, asExpected: true };
+    expect(await runDemo(fakeFetch(200, body), "/api/demo", "retire")).toMatchObject({ kind: "fallback", reason: "unavailable" });
   });
 
   it("reads asExpected strictly: anything but true is false", async () => {
-    const body = { ok: true, evmTx: HASH, evmStatus: "reverted", receipts: { before: 1, after: 1 }, retirements: { before: 1, after: 1 }, asExpected: "yes" };
+    const body = { ok: true, evmTx: HASH, txStatus: "reverted", receipts: { before: 1, after: 1 }, retirements: { before: 1, after: 1 }, asExpected: "yes" };
     const out = await runDemo(fakeFetch(200, body), "/api/demo", "case-b");
     expect(out.kind === "sent" && out.asExpected).toBe(false);
   });

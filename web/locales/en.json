@@ -104,7 +104,7 @@
     "holder": "Retired by",
     "time": "Time",
     "evmTx": "EVM transaction",
-    "txUnknown": "The EVM node did not return it",
+    "txUnknown": "No EVM transaction found: it was sent from the Native ledger, or the node limits log searches",
     "openAddress": "Open {address} in the explorer",
     "openTx": "Open transaction {hash} in the explorer",
     "openBlock": "Open block {height} in the explorer",
@@ -198,8 +198,15 @@
     "notExpected": "Not what was expected",
     "expectSuccess": "Both ledgers should go up by one.",
     "expectRevert": "Neither ledger should change.",
-    "txSuccess": "Transaction succeeded:",
-    "txReverted": "Transaction reverted:",
+    "txSuccess": {
+      "evm": "Transaction succeeded:",
+      "native": "Native transaction succeeded:"
+    },
+    "txReverted": {
+      "evm": "Transaction reverted:",
+      "native": "Native transaction reverted:"
+    },
+    "nativeRoute": "Sent from the Native ledger as one transaction, signed with both secp256k1 and ML-DSA-87. It ran Mentari.retire on the EVM, which wrote the receipt back on the Native ledger. No EVM access window was needed.",
     "seeRetirements": "See it in Retirements",
     "reason": {
       "disabled": "Live sends are switched off.",

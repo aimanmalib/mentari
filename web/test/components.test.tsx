@@ -54,7 +54,7 @@ describe("RecordPair", () => {
         />,
       ),
     );
-    expect(html).toContain("The EVM node did not return it");
+    expect(html).toContain("No EVM transaction found: it was sent from the Native ledger, or the node limits log searches");
     expect(html).toContain("The Native ledger has no receipt with this id.");
     expect(html).toContain("no receipt");
     expect(html).not.toContain("Check this one");
@@ -113,8 +113,8 @@ describe("Try it", () => {
     kind: "sent",
     action: "case-b",
     expect: "revert",
-    evmTx: HASH,
-    evmStatus: "reverted",
+    tx: { lane: "evm", hash: HASH },
+    txStatus: "reverted",
     receipts: { before: 6, after: 6 },
     retirements: { before: 3, after: 3 },
     asExpected: true,
@@ -128,6 +128,16 @@ describe("Try it", () => {
     expect(html).toMatch(/EVM retirements 3 → becomes 3 Unchanged/);
     expect(html).toMatch(/Native receipts 6 → becomes 6 Unchanged/);
     expect(html).toContain("Transaction reverted:");
+    expect(html).not.toContain("Sent from the Native ledger");
+  });
+
+  it("names a Native transaction and says how it was sent", () => {
+    const tx = { lane: "native" as const, hash: "8E15D319".padEnd(64, "A") };
+    const outcome: DemoOutcome = { ...sent, action: "retire", expect: "success", tx, txStatus: "success", asExpected: true };
+    const html = text(render(<DemoResult outcome={outcome} recorded={null} recheck={null} />));
+    expect(html).toContain("Native transaction succeeded:");
+    expect(html).toContain("Sent from the Native ledger as one transaction");
+    expect(html).toContain("8E15D319");
   });
 
   it("shows the change on a successful retirement", () => {

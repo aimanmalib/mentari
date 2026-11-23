@@ -68,11 +68,12 @@ export function DemoResult({
         </div>
         <CountsBoard retirements={outcome.retirements} receipts={outcome.receipts} />
         <p className="demo-tx">
-          {outcome.evmStatus === "success" ? t("tryit.txSuccess") : t("tryit.txReverted")}{" "}
-          <ChainLink href={links.tx(outcome.evmTx)} label={t("records.openTx", { hash: outcome.evmTx })}>
-            {shorten(outcome.evmTx, 8, 6)}
+          {outcome.txStatus === "success" ? t(`tryit.txSuccess.${outcome.tx.lane}`) : t(`tryit.txReverted.${outcome.tx.lane}`)}{" "}
+          <ChainLink href={links.tx(outcome.tx.hash)} label={t("records.openTx", { hash: outcome.tx.hash })}>
+            {shorten(outcome.tx.hash, 8, 6)}
           </ChainLink>
         </p>
+        {outcome.tx.lane === "native" && <p className="demo-route">{t("tryit.nativeRoute")}</p>}
         {outcome.action === "retire" && (
           <Link className="button" href={routes.retirements}>
             {t("tryit.seeRetirements")}

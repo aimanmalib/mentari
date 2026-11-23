@@ -104,7 +104,7 @@
     "holder": "Dipersarakan oleh",
     "time": "Masa",
     "evmTx": "Transaksi EVM",
-    "txUnknown": "Nod EVM tidak memulangkannya",
+    "txUnknown": "Tiada transaksi EVM ditemui: ia dihantar dari lejar Native, atau nod mengehadkan carian log",
     "openAddress": "Buka {address} dalam penjelajah",
     "openTx": "Buka transaksi {hash} dalam penjelajah",
     "openBlock": "Buka blok {height} dalam penjelajah",
@@ -198,8 +198,15 @@
     "notExpected": "Bukan seperti dijangka",
     "expectSuccess": "Kedua-dua lejar sepatutnya naik satu.",
     "expectRevert": "Kedua-dua lejar sepatutnya tidak berubah.",
-    "txSuccess": "Transaksi berjaya:",
-    "txReverted": "Transaksi berbalik:",
+    "txSuccess": {
+      "evm": "Transaksi berjaya:",
+      "native": "Transaksi Native berjaya:"
+    },
+    "txReverted": {
+      "evm": "Transaksi berbalik:",
+      "native": "Transaksi Native berbalik:"
+    },
+    "nativeRoute": "Dihantar dari lejar Native sebagai satu transaksi, ditandatangani dengan secp256k1 dan ML-DSA-87. Ia menjalankan Mentari.retire di EVM, yang menulis resit kembali di lejar Native. Tiada tetingkap akses EVM diperlukan.",
     "seeRetirements": "Lihat dalam Persaraan",
     "reason": {
       "disabled": "Hantaran langsung dimatikan.",

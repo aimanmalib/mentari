@@ -93,6 +93,21 @@ describe("loadServerConfig", () => {
     expect(() => loadServerConfig(copy((_l, a) => delete a.native.notAllowlistedTarget))).toThrow(/notAllowlistedTarget/);
   });
 
+  it("loads the Native route switches and refuses a bad switch, gas limit or gas price", () => {
+    const c = loadServerConfig();
+    expect(typeof c.nativeRoute.demoRetire).toBe("boolean");
+    expect(typeof c.nativeRoute.meter).toBe("boolean");
+    expect(c.nativeRoute.lane.rest).toBe(c.restOrigin);
+    expect(c.nativeRoute.lane.waitMs).toBeGreaterThan(c.nativeRoute.lane.pollMs);
+    for (const g of [c.nativeRoute.retireGas, c.nativeRoute.attestGas]) expect(Number.isInteger(g) && g > 0).toBe(true);
+    const off = loadServerConfig(copy((_l, a) => ((a.nativeRoute.demoRetire = false), (a.nativeRoute.meter = true))));
+    expect(off.nativeRoute).toMatchObject({ demoRetire: false, meter: true });
+    expect(() => loadServerConfig(copy((_l, a) => delete a.nativeRoute))).toThrow(/nativeRoute/);
+    expect(() => loadServerConfig(copy((_l, a) => (a.nativeRoute.demoRetire = "on")))).toThrow(/nativeRoute.demoRetire/);
+    expect(() => loadServerConfig(copy((_l, a) => (a.nativeRoute.retireGas = 0)))).toThrow(/nativeRoute.retireGas/);
+    expect(() => loadServerConfig(copy((_l, a) => (a.nativeLane.gasPriceUqor = 0.15)))).toThrow(/gasPriceUqor/);
+  });
+
   it("fills the receipts book into the smart-query prefix", () => {
     const c = loadServerConfig(copy((_l, app) => (app.native.receiptsBook = "qor1test")));
     expect(c.lcd.allowedPrefixes).toContain("/cosmwasm/wasm/v1/contract/qor1test/smart/");

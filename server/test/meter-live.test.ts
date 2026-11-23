@@ -16,7 +16,8 @@ import { attestMessage } from "../../scripts/src/meter.js";
 import { startAnvil, type LocalChain } from "../../scripts/test/lib/anvil.js";
 import { mentariMeterAbi } from "../src/abi.js";
 import { METER_KEYS_FILE } from "../src/meter/keys.js";
-import { chainMeterJob, liveMeterJob, meterSigner, plansFromChain } from "../src/meter/live.js";
+import { chainMeterJob, liveMeterJob, meterSigner, nativeSend, plansFromChain } from "../src/meter/live.js";
+import type { NativeCall, NativeCaller } from "../src/native.js";
 import { meterModel } from "./fixture.js";
 
 // Each test sends real transactions to a local node; shared CI machines can be slow.
@@ -65,6 +66,24 @@ describe("chainMeterJob", () => {
     expect(await job.run()).toBe(0);
   });
 
+  it("sends each attest through the Native route when the run has one, after the same simulation", async () => {
+    const run = await registered(2);
+    const sent: string[] = [];
+    // Stands in for the chain running the MsgCrossVMCall: the same call, from the same account.
+    run.send = async (functionName, args) => {
+      const { wallet } = run;
+      const call = { address: run.mentari, abi: mentariMeterAbi, functionName, args, account: wallet.account, chain: wallet.chain };
+      const hash = await wallet.writeContract(call as never);
+      await chain.pub.waitForTransactionReceipt({ hash });
+      sent.push(functionName);
+      return `COSMOS${sent.length}`;
+    };
+    const job = chainMeterJob({ cfg: CFG, run, meters: new Set(meters), windowDays: 1 });
+    expect(await job.run()).toBe(CFG.systems.length);
+    expect(sent).toEqual(CFG.systems.map(() => "attest"));
+    expect(await attested(run, CFG.systems[0]!.id, (await chainDay(chain.pub)) - 1)).toBe(true);
+  });
+
   it("reads each system's meter and producer from the chain", async () => {
     const run = await registered(1);
     const plans = await plansFromChain(run, CFG);
@@ -106,6 +125,31 @@ describe("meterSigner", () => {
   });
 });
 
+describe("nativeSend", () => {
+  const at = "0x00000000000000000000000000000000000000c3";
+  const caller = (status: "success" | "reverted") => {
+    const calls: NativeCall[] = [];
+    const c: NativeCaller = {
+      address: "qor1fixture",
+      call: async (call) => {
+        calls.push(call);
+        return { cosmosTx: "ABC", status, height: 5, gasUsed: 1 };
+      },
+    };
+    return { calls, c };
+  };
+
+  it("sends the call to Mentari with the configured gas and returns the Cosmos hash", async () => {
+    const { calls, c } = caller("success");
+    expect(await nativeSend(c, at, 2_000_000)("attest", [1, 20779, 100n, "0x"])).toBe("ABC");
+    expect(calls).toEqual([{ contract: at, abi: mentariMeterAbi, functionName: "attest", args: [1, 20779, 100n, "0x"], gas: 2_000_000 }]);
+  });
+
+  it("throws on a call that reverted in its block, so the run is tried again", async () => {
+    await expect(nativeSend(caller("reverted").c, at, 1)("attest", [])).rejects.toThrow(/attest ABC reverted/);
+  });
+});
+
 describe("liveMeterJob", () => {
   const dirs: string[] = [];
   afterAll(() => {
@@ -135,6 +179,14 @@ describe("liveMeterJob", () => {
     expect(liveMeterJob(opts(at, undefined)).ready()).toBe(false);
     expect(liveMeterJob(opts(at, folder())).ready()).toBe(false);
     expect(liveMeterJob(opts(at, folder(keyFile))).ready()).toBe(true);
+  });
+
+  it("keeps the EVM route and says so when the Native route is on but the file has no sender ML-DSA-87 key", () => {
+    const lines: string[] = [];
+    const lane = { chainId: "fixture-1", rest: "https://rest.example.test", denom: "uqor", gasPriceUqor: "0.15", waitMs: 1, pollMs: 1 };
+    const job = liveMeterJob({ ...opts(at, folder(keyFile), (l) => lines.push(l)), native: { lane, enabled: true, gas: 1 } });
+    expect(job.ready()).toBe(true);
+    expect(lines).toEqual(["daily meter keys: no sender ML-DSA-87 key, so attest stays on the EVM route"]);
   });
 
   it("logs a broken key file once without its contents and stays off", () => {

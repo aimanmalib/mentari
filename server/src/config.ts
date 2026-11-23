@@ -4,6 +4,7 @@ import { validateMeterConfig, type MeterConfig } from "../../scripts/src/meter.j
 import { parseRunAt, type DailySchedule } from "./meter/daily.js";
 import type { DemoChainConfig } from "./demo/live.js";
 import type { MeterChain } from "./meter/live.js";
+import type { NativeLaneConfig } from "./native.js";
 
 /** Everything the server reads from `config/`. Code never holds these values. */
 export interface ServerConfig {
@@ -30,6 +31,18 @@ export interface ServerConfig {
   meter: DailySchedule;
   /** What the live meter job needs: the simulated meter model, how far back it looks, and the contract. */
   meterJob: { model: MeterConfig; windowDays: number; chain: MeterChain };
+  /** Which jobs send from the Native lane, and how (block `nativeRoute` of `config/app.json`, decision 0026). */
+  nativeRoute: NativeRoute;
+}
+
+export interface NativeRoute {
+  lane: NativeLaneConfig;
+  /** "Retire now" is sent as a `MsgCrossVMCall`. The failure buttons stay EVM transactions. */
+  demoRetire: boolean;
+  /** The daily meter job's `attest` calls are sent as `MsgCrossVMCall`s. */
+  meter: boolean;
+  retireGas: number;
+  attestGas: number;
 }
 
 /** Limits and switches for `/api/demo` (block `demo` of `config/limits.json`). */
@@ -162,6 +175,28 @@ function meterJob(meter: Record<string, unknown>, app: Record<string, unknown>, 
   return { model, windowDays: windowDays as number, chain };
 }
 
+function nativeRoute(app: Record<string, unknown>, network: Record<string, unknown>, restOrigin: string): NativeRoute {
+  const r = obj(app.nativeRoute, "config/app.json nativeRoute");
+  const lane = obj(app.nativeLane, "config/app.json nativeLane");
+  const price = lane.gasPriceUqor;
+  if (typeof price !== "string" || !/^\d+(\.\d+)?$/.test(price))
+    throw new Error("config/app.json nativeLane.gasPriceUqor: expected a decimal string");
+  return {
+    lane: {
+      chainId: str(network.chainId, "config/app.json network.chainId"),
+      rest: restOrigin,
+      denom: str(lane.denom, "config/app.json nativeLane.denom"),
+      gasPriceUqor: price,
+      waitMs: posInt(lane.waitSeconds, "nativeLane.waitSeconds") * 1000,
+      pollMs: posInt(lane.pollSeconds, "nativeLane.pollSeconds") * 1000,
+    },
+    demoRetire: bool(r.demoRetire, "nativeRoute.demoRetire"),
+    meter: bool(r.meter, "nativeRoute.meter"),
+    retireGas: posInt(r.retireGas, "nativeRoute.retireGas"),
+    attestGas: posInt(r.attestGas, "nativeRoute.attestGas"),
+  };
+}
+
 function strList(v: unknown, where: string): string[] {
   if (!Array.isArray(v) || v.length === 0) throw new Error(`${where}: expected a non-empty list`);
   return v.map((x, i) => str(x, `${where}[${i}]`));
@@ -213,5 +248,6 @@ export function loadServerConfig(dir: string = CONFIG_DIR): ServerConfig {
     demoChain: demoChain(job.chain, app, native, limits.demo, rest.origin, lcdTimeoutMs),
     meter: dailySchedule(meter.daily),
     meterJob: job,
+    nativeRoute: nativeRoute(app, network, rest.origin),
   };
 }

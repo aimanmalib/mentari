@@ -3,6 +3,7 @@
  *
  *   pnpm testnet          run every step that is still missing, then write the addresses to config/app.json
  *                         and the meter and demo sender key files to MENTARI_SECRETS_DIR (when set)
+ *   pnpm testnet --keys   only write the two key files to MENTARI_SECRETS_DIR; send nothing
  *
  * Accounts come from the shared accounts file (MENTARI_ACCOUNTS) by the roles in config/app.json. The
  * deployer pays gas. Each registration is signed with the registrar's ML-DSA-87 key and each reading with
@@ -40,6 +41,21 @@ async function main(): Promise<void> {
   const registrar = await account("registrar");
   const producer = await account("producer");
   const meterAccounts = await Promise.all(meters.systems.map((s) => account(`meter ${s.label}`)));
+  const writeKeys = async (dir: string) => {
+    writeMeterKeys(dir, repoRoot, {
+      sender: registrar.privateKey as Hex,
+      senderPqc: registrar.pqc,
+      meters: meterAccounts.map((a) => ({ address: getAddress(a.evm), pqcSecretKey: a.pqc.secretKey })),
+    });
+    const demo = await account("demo sender");
+    writeDemoKey(dir, repoRoot, demo.privateKey as Hex, demo.pqc);
+    console.log("wrote the meter keys and demo sender key files to the key folder");
+  };
+  if (process.argv.includes("--keys")) {
+    const dir = process.env.MENTARI_SECRETS_DIR;
+    if (!dir) throw new Error("MENTARI_SECRETS_DIR is not set");
+    return writeKeys(dir);
+  }
 
   // Each signing account by its EVM address; the keys stay in this process.
   const pqcKeys = new Map<Address, Uint8Array>(
@@ -83,12 +99,7 @@ async function main(): Promise<void> {
   }
   const dir = process.env.MENTARI_SECRETS_DIR;
   if (dir) {
-    writeMeterKeys(dir, repoRoot, {
-      sender: registrar.privateKey as Hex,
-      meters: meterAccounts.map((a) => ({ address: getAddress(a.evm), pqcSecretKey: a.pqc.secretKey })),
-    });
-    writeDemoKey(dir, repoRoot, (await account("demo sender")).privateKey as Hex);
-    console.log("wrote the meter keys and demo sender key files to the key folder");
+    await writeKeys(dir);
   } else {
     console.log("MENTARI_SECRETS_DIR is not set: no key files written");
   }

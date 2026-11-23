@@ -2,13 +2,15 @@ import { formatEther, getAddress, isAddress, type Address, type Hash, type Publi
 import type { Wallet } from "../../../scripts/src/chain.js";
 import { mentariDemoAbi, probeDemoAbi } from "../abi.js";
 import { evmClients } from "../evm.js";
+import { nativeCaller, type NativeCaller, type NativeLaneConfig } from "../native.js";
 import { unconfiguredChain, type DemoAction, type DemoChain, type SendResult } from "./chain.js";
 import { readDemoKey } from "./keys.js";
 
 /**
  * The live demo sender (decision 0017): the account 7 key from the read-only key folder sends each button's
- * transaction with viem and waits for it to be mined. The HTTP rules around it (limits, deadline, fallback) are
- * in `api.ts` and do not change.
+ * transaction and waits for it to be mined. "Retire now" goes from the Native lane as one hybrid-signed
+ * `MsgCrossVMCall` when that route is on (decision 0026); the failure buttons and grants are EVM transactions sent
+ * with viem. The HTTP rules around it (limits, deadline, fallback) are in `api.ts` and do not change.
  */
 
 /** What the buttons send (`demo` block of `config/limits.json`, `native.notAllowlistedTarget` of `config/app.json`). */
@@ -65,6 +67,8 @@ export function chainDemo(opts: {
   probe: Address;
   receipts: () => Promise<number>;
   send: DemoSendConfig;
+  /** Send "Retire now" from the Native lane with this caller (same account) and gas limit. */
+  nativeRetire?: { caller: NativeCaller; gas: number } | undefined;
 }): DemoChain {
   const { pub, wallet, mentari, probe, send } = opts;
   const me = wallet.account.address;
@@ -111,7 +115,19 @@ export function chainDemo(opts: {
       ]);
       return { receipts, retirements: Number(retirements) };
     },
-    send: async (action, { retireWh }) => mined(await sendAction(action, retireWh)),
+    send: async (action, { retireWh }) => {
+      const native = opts.nativeRetire;
+      if (action !== "retire" || !native) return mined(await sendAction(action, retireWh));
+      await needCertificates(retireWh);
+      const r = await native.caller.call({
+        contract: mentari,
+        abi: mentariDemoAbi,
+        functionName: "retire",
+        args: [BigInt(retireWh), send.retireMemo],
+        gas: native.gas,
+      });
+      return { cosmosTx: r.cosmosTx, status: r.status };
+    },
     isQuantumReady: (account) =>
       pub.readContract({ address: mentari, abi: mentariDemoAbi, functionName: "isQuantumReady", args: [getAddress(account)] }),
     grant: async (to, wh) => {
@@ -136,6 +152,8 @@ export function chainDemo(opts: {
 export function liveDemoChain(opts: {
   chain: DemoChainConfig;
   keysDir: string | undefined;
+  /** The Native route for "Retire now" (`nativeRoute` of config/app.json). Off or no ML-DSA-87 key = EVM route. */
+  native?: { lane: NativeLaneConfig; enabled: boolean; gas: number } | undefined;
   log?: ((line: string) => void) | undefined;
 }): DemoChain {
   const log = opts.log ?? ((line: string) => console.log(line));
@@ -149,12 +167,17 @@ export function liveDemoChain(opts: {
     return unconfiguredChain;
   }
   if (!key) return unconfiguredChain;
+  const n = opts.native;
+  if (n?.enabled && !key.pqc) log("demo sender key: no ML-DSA-87 key, so Retire now stays on the EVM route");
+  const nativeRetire =
+    n?.enabled && key.pqc ? { caller: nativeCaller(n.lane, { privateKey: key.privateKey, pqc: key.pqc }), gas: n.gas } : undefined;
 
   return chainDemo({
-    ...evmClients(c.evmRpc, c.evmChainId, key),
+    ...evmClients(c.evmRpc, c.evmChainId, key.privateKey),
     mentari: getAddress(c.mentari),
     probe: getAddress(c.atomicityProbe),
     receipts: restReceiptsCount({ rest: c.rest, book: c.receiptsBook, timeoutMs: c.restTimeoutMs }),
     send: c,
+    nativeRetire,
   });
 }

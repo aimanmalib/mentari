@@ -97,6 +97,11 @@ export interface MeterRun {
   mentari: Address;
   abi: Abi;
   sign: PqcSigner;
+  /**
+   * Sends one simulated contract call another way and resolves with its transaction hash once it succeeded (the
+   * server's Native route, decision 0026). Without it, `wallet` sends an EVM transaction.
+   */
+  send?: (functionName: string, args: readonly unknown[]) => Promise<string>;
   /** Log line per transaction: public data only (ids, days, amounts, hashes). */
   log?: (line: string) => void;
 }
@@ -106,7 +111,8 @@ export interface Sent {
   id: number;
   day: number;
   wh?: number;
-  tx: Hex;
+  /** EVM transaction hash, or the Cosmos one when `send` sent it from the Native lane. */
+  tx: string;
 }
 
 /** The UTC day the contract sees now: latest block timestamp / 1 day. */
@@ -230,7 +236,7 @@ async function sameBytes(run: MeterRun, fn: string, args: readonly unknown[], lo
     throw new Error(`${fn}: bytes built here differ from the contract's`);
 }
 
-async function write(run: MeterRun, fn: string, args: readonly unknown[]): Promise<Hex> {
+async function write(run: MeterRun, fn: string, args: readonly unknown[]): Promise<string> {
   const { request } = await run.pub.simulateContract({
     address: run.mentari,
     abi: run.abi,
@@ -238,6 +244,7 @@ async function write(run: MeterRun, fn: string, args: readonly unknown[]): Promi
     args,
     account: run.wallet.account,
   });
+  if (run.send) return run.send(fn, args);
   const tx = await run.wallet.writeContract(request);
   const receipt = await run.pub.waitForTransactionReceipt({ hash: tx });
   if (receipt.status !== "success") throw new Error(`${fn} ${tx} reverted`);

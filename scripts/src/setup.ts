@@ -139,19 +139,40 @@ function writeKeyFile(dir: string, repoRoot: string, file: string, body: unknown
   return path;
 }
 
-/** The daily meter job's keys: the sender that pays gas and each meter's ML-DSA-87 key. */
+/** An ML-DSA-87 key pair as the key files hold it: two hex fields. */
+function pqcFields(pqc: { secretKey: Uint8Array; publicKey: Uint8Array }) {
+  return { pqcSecretKey: bytesToHex(pqc.secretKey), pqcPublicKey: bytesToHex(pqc.publicKey) };
+}
+
+/**
+ * The daily meter job's keys: the sender that pays gas and each meter's ML-DSA-87 key. With `senderPqc`, the
+ * sender's own ML-DSA-87 key too, so the job can send from the Native lane (decision 0026).
+ */
 export function writeMeterKeys(
   dir: string,
   repoRoot: string,
-  keys: { sender: Hex; meters: readonly { address: Address; pqcSecretKey: Uint8Array }[] },
+  keys: {
+    sender: Hex;
+    senderPqc?: { secretKey: Uint8Array; publicKey: Uint8Array };
+    meters: readonly { address: Address; pqcSecretKey: Uint8Array }[];
+  },
 ): string {
   return writeKeyFile(dir, repoRoot, METER_KEYS_FILE, {
     sender: keys.sender,
+    ...(keys.senderPqc ? { senderPqc: pqcFields(keys.senderPqc) } : {}),
     meters: keys.meters.map((m) => ({ address: getAddress(m.address), pqcSecretKey: bytesToHex(m.pqcSecretKey) })),
   });
 }
 
-/** The demo sender's EVM key (account 7), which sends the site's demo buttons. */
-export function writeDemoKey(dir: string, repoRoot: string, privateKey: Hex): string {
-  return writeKeyFile(dir, repoRoot, DEMO_KEY_FILE, { privateKey });
+/**
+ * The demo sender's keys (account 7), which send the site's demo buttons: its EVM key and, with `pqc`, its
+ * ML-DSA-87 key, which "Retire now" needs to send from the Native lane (decision 0026).
+ */
+export function writeDemoKey(
+  dir: string,
+  repoRoot: string,
+  privateKey: Hex,
+  pqc?: { secretKey: Uint8Array; publicKey: Uint8Array },
+): string {
+  return writeKeyFile(dir, repoRoot, DEMO_KEY_FILE, { privateKey, ...(pqc ? pqcFields(pqc) : {}) });
 }

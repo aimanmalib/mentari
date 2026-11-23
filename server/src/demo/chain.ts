@@ -1,11 +1,15 @@
 /** What a visitor can ask the demo sender to do. Each maps to one recorded case in `evidence/testnet.json`. */
 export type DemoAction = "retire" | "case-b" | "case-c" | "case-d";
 
-export interface SendResult {
-  /** EVM transaction hash. */
-  evmTx: string;
-  /** Mined status. A failure case is expected to come back `reverted`. */
-  status: "success" | "reverted";
+/**
+ * One sent transaction: an EVM transaction, or a Native one (`MsgCrossVMCall`, decision 0026) that ran the EVM
+ * call inside it. `status` is the mined status; a failure case is expected to come back `reverted`.
+ */
+export type SendResult = { evmTx: string; status: "success" | "reverted" } | { cosmosTx: string; status: "success" | "reverted" };
+
+/** The hash field of a result, as the API answers it. */
+export function txField(sent: SendResult): { evmTx: string } | { cosmosTx: string } {
+  return "cosmosTx" in sent ? { cosmosTx: sent.cosmosTx } : { evmTx: sent.evmTx };
 }
 
 /** Both ledgers at one moment: Native receipts in the receipts book and EVM retirements in `Mentari`. */

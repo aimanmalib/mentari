@@ -24,8 +24,21 @@ describe("readDemoKey", () => {
     expect(readDemoKey(folder())).toBeNull();
   });
 
-  it("reads the private key", () => {
-    expect(readDemoKey(folder(JSON.stringify({ privateKey: KEY })))).toBe(KEY);
+  it("reads the private key, with no ML-DSA-87 key when the file has none", () => {
+    expect(readDemoKey(folder(JSON.stringify({ privateKey: KEY })))).toEqual({
+      privateKey: KEY,
+      pqc: null,
+    });
+  });
+
+  it("reads the ML-DSA-87 key pair beside it", () => {
+    const pqc = {
+      pqcSecretKey: `0x${"5a".repeat(4896)}`,
+      pqcPublicKey: `0x${"5b".repeat(2592)}`,
+    };
+    const key = readDemoKey(folder(JSON.stringify({ privateKey: KEY, ...pqc })));
+    expect(key?.pqc?.secretKey).toHaveLength(4896);
+    expect(key?.pqc?.publicKey).toHaveLength(2592);
   });
 });
 
@@ -36,6 +49,14 @@ describe("parseDemoKey", () => {
     ["no key", "{}", /privateKey: expected a 32-byte hex key/],
     ["a short key", JSON.stringify({ privateKey: "0x1234" }), /privateKey/],
     ["a key without 0x", JSON.stringify({ privateKey: "2e".repeat(32) }), /privateKey/],
+    [
+      "half an ML-DSA-87 pair",
+      JSON.stringify({
+        privateKey: KEY,
+        pqcSecretKey: `0x${"2e".repeat(4896)}`,
+      }),
+      /pqcPublicKey: expected 2592 bytes/,
+    ],
   ])("refuses %s and never repeats the value", (_name, raw, message) => {
     let err: Error | undefined;
     try {

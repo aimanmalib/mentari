@@ -144,6 +144,13 @@ describe("writeMeterKeys", () => {
     const parsed = parseMeterKeys(readFileSync(path, "utf8"));
     expect(parsed.sender).toBe(keys.sender);
     expect([...parsed.meters.values()][0]).toEqual(keys.meters[0]!.pqcSecretKey);
+    expect(parsed.senderPqc).toBeNull();
+  });
+
+  it("writes the sender's own ML-DSA-87 key pair when given one", () => {
+    const senderPqc = { secretKey: new Uint8Array(4896).fill(3), publicKey: new Uint8Array(2592).fill(4) };
+    const path = writeMeterKeys(join(tempDir(), "keys"), "/nonexistent-repo", { ...keys, senderPqc });
+    expect(parseMeterKeys(readFileSync(path, "utf8")).senderPqc).toEqual(senderPqc);
   });
 
   it("replaces an older file", () => {
@@ -168,7 +175,13 @@ describe("writeDemoKey", () => {
     const path = writeDemoKey(dir, "/nonexistent-repo", key);
     expect(path).toBe(join(dir, DEMO_KEY_FILE));
     expect(statSync(path).mode & 0o777).toBe(0o600);
-    expect(parseDemoKey(readFileSync(path, "utf8"))).toBe(key);
+    expect(parseDemoKey(readFileSync(path, "utf8"))).toEqual({ privateKey: key, pqc: null });
+  });
+
+  it("writes the ML-DSA-87 key pair beside it when given one, in the fields the server reads", () => {
+    const pqc = { secretKey: new Uint8Array(4896).fill(7), publicKey: new Uint8Array(2592).fill(8) };
+    const path = writeDemoKey(join(tempDir(), "keys"), "/nonexistent-repo", key, pqc);
+    expect(parseDemoKey(readFileSync(path, "utf8"))).toEqual({ privateKey: key, pqc });
   });
 
   it("uses the file names the server looks for", () => {

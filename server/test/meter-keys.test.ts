@@ -34,6 +34,18 @@ describe("readMeterKeys", () => {
     expect(keys.sender).toBe(SENDER);
     expect([...keys.meters.keys()]).toEqual(["0x00000000000000000000000000000000000000A1"]);
     expect(keys.meters.get("0x00000000000000000000000000000000000000A1")!.length).toBe(4896);
+    expect(keys.senderPqc).toBeNull();
+  });
+
+  it("reads the sender's own ML-DSA-87 key pair when the file has one", () => {
+    const senderPqc = { pqcSecretKey: `0x${"5a".repeat(4896)}`, pqcPublicKey: `0x${"5b".repeat(2592)}` };
+    const keys = readMeterKeys(folder(valid({ senderPqc })))!;
+    expect(keys.senderPqc?.secretKey).toHaveLength(4896);
+    expect(keys.senderPqc?.publicKey).toHaveLength(2592);
+    expect(() => parseMeterKeys(valid({ senderPqc: { pqcSecretKey: senderPqc.pqcSecretKey } }))).toThrow(
+      /senderPqc.pqcPublicKey: expected 2592 bytes/,
+    );
+    expect(() => parseMeterKeys(valid({ senderPqc: "yes" }))).toThrow(/senderPqc.pqcSecretKey/);
   });
 });
 

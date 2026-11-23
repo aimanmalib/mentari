@@ -11,6 +11,7 @@ import { unconfiguredChain, type DemoAction, type DemoChain } from "../src/demo/
 import { DEMO_KEY_FILE } from "../src/demo/keys.js";
 import { chainDemo, liveDemoChain, restReceiptsCount, type DemoSendConfig } from "../src/demo/live.js";
 import { evmClients } from "../src/evm.js";
+import type { NativeCall, NativeCaller } from "../src/native.js";
 import { meterModel, testConfig } from "./fixture.js";
 
 // Each test sends real transactions to a local node; shared CI machines can be slow.
@@ -75,8 +76,45 @@ describe("chainDemo", () => {
     const sent = await demo.send("retire", { retireWh: 500 });
     const after = await demo.counts();
     expect(sent.status).toBe("success");
-    expect(sent.evmTx).toMatch(/^0x[0-9a-f]{64}$/);
+    expect(sent).toMatchObject({ evmTx: expect.stringMatching(/^0x[0-9a-f]{64}$/) });
     expect(after).toEqual({ receipts: before.receipts + 1, retirements: before.retirements + 1 });
+  });
+
+  it("sends Retire now through the Native route when it has one; the failure buttons stay EVM transactions", async () => {
+    const index = chain.accounts.indexOf(demoAccount);
+    const key = mnemonicToAccount(ANVIL_MNEMONIC, { addressIndex: index }).getHdKey().privateKey!;
+    const { wallet } = evmClients(chain.rpcUrl, 9800, `0x${Buffer.from(key).toString("hex")}`);
+    const calls: NativeCall[] = [];
+    // Stands in for the chain running the MsgCrossVMCall: the same call, from the same account.
+    const caller: NativeCaller = {
+      address: "qor1fixturedemo",
+      call: async (c) => {
+        calls.push(c);
+        const call = { address: c.contract, abi: c.abi, functionName: c.functionName, args: c.args, account: wallet.account, chain: wallet.chain };
+        const hash = await wallet.writeContract(call as never);
+        const r = await chain.pub.waitForTransactionReceipt({ hash });
+        return { cosmosTx: "C0FFEE".padEnd(64, "0"), status: r.status, height: Number(r.blockNumber), gasUsed: Number(r.gasUsed) };
+      },
+    };
+    const demo = chainDemo({ pub: chain.pub, wallet, mentari, probe, receipts, send: SEND, nativeRetire: { caller, gas: 1_300_000 } });
+    const before = await demo.counts();
+    const sent = await demo.send("retire", { retireWh: 500 });
+    expect(sent).toEqual({ cosmosTx: "C0FFEE".padEnd(64, "0"), status: "success" });
+    expect(calls).toEqual([{ contract: mentari, abi: expect.any(Array), functionName: "retire", args: [500n, SEND.retireMemo], gas: 1_300_000 }]);
+    expect(asExpected({ expect: "success" }, sent, before, await demo.counts())).toBe(true);
+
+    expect(await demo.send("case-c", { retireWh: 500 })).toMatchObject({ evmTx: expect.stringMatching(/^0x/), status: "reverted" });
+    expect(calls).toHaveLength(1);
+  });
+
+  it("checks the certificates before a Native retirement too, and sends nothing without them", async () => {
+    const caller: NativeCaller = { address: "qor1fixture", call: vi.fn() };
+    const index = chain.accounts.indexOf(stranger);
+    const key = mnemonicToAccount(ANVIL_MNEMONIC, { addressIndex: index }).getHdKey().privateKey!;
+    const { wallet } = evmClients(chain.rpcUrl, 9800, `0x${Buffer.from(key).toString("hex")}`);
+    const demo = chainDemo({ pub: chain.pub, wallet, mentari, probe, receipts, send: SEND, nativeRetire: { caller, gas: 1 } });
+    await expect(demo.send("retire", { retireWh: 500 })).rejects.toThrow(/holds 0 Wh/);
+    expect(caller.call).not.toHaveBeenCalled();
   });
 
   it.each<[DemoAction, string]>([
@@ -89,7 +127,7 @@ describe("chainDemo", () => {
     const sent = await demo.send(action, { retireWh: 500 });
     const after = await demo.counts();
     expect(sent.status).toBe("reverted");
-    expect(await chain.pub.getTransactionReceipt({ hash: sent.evmTx as `0x${string}` })).toMatchObject({ status: "reverted" });
+    expect(await chain.pub.getTransactionReceipt({ hash: (sent as { evmTx: `0x${string}` }).evmTx })).toMatchObject({ status: "reverted" });
     expect(asExpected({ expect: "revert" }, sent, before, after)).toBe(true);
   });
 
@@ -142,6 +180,17 @@ describe("liveDemoChain", () => {
     expect(liveDemoChain({ chain: deployed, keysDir: folder() })).toBe(unconfiguredChain);
     expect(liveDemoChain({ chain: deployed, keysDir: undefined })).toBe(unconfiguredChain);
     expect(liveDemoChain({ chain: deployed, keysDir: keys }).ready()).toBe(true);
+  });
+
+  it("keeps Retire now on the EVM route, and says so, when the Native route is on but the key file has no ML-DSA-87 key", () => {
+    const lines: string[] = [];
+    const native = { lane: testConfig().nativeRoute.lane, enabled: true, gas: 1 };
+    const demo = liveDemoChain({ chain: deployed, keysDir: folder(JSON.stringify({ privateKey: KEY })), native, log: (l) => lines.push(l) });
+    expect(demo.ready()).toBe(true);
+    expect(lines).toEqual(["demo sender key: no ML-DSA-87 key, so Retire now stays on the EVM route"]);
+    const off = liveDemoChain({ chain: deployed, keysDir: folder(JSON.stringify({ privateKey: KEY })), native: { ...native, enabled: false }, log: (l) => lines.push(l) });
+    expect(off.ready()).toBe(true);
+    expect(lines).toHaveLength(1);
   });
 
   it("logs a broken key file once without its contents and stays on the recorded cases", () => {

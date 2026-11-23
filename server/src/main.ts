@@ -16,7 +16,13 @@ const host = process.env.HOST ?? "0.0.0.0";
 
 // The demo sends live once both contract addresses are set and the demo sender's key file is in the read-only key
 // folder; until then every demo request answers with the recorded case to show.
-const demo = new DemoApi(cfg.demo, liveDemoChain({ chain: cfg.demoChain, keysDir: process.env.MENTARI_SECRETS_DIR }));
+const native = cfg.nativeRoute;
+const demoChain = liveDemoChain({
+  chain: cfg.demoChain,
+  keysDir: process.env.MENTARI_SECRETS_DIR,
+  native: { lane: native.lane, enabled: native.demoRetire, gas: native.retireGas },
+});
+const demo = new DemoApi(cfg.demo, demoChain);
 const server = createServer(createHandler({ cfg, lcd: new LcdProxy(cfg), demo, site: new StaticSite(webDist) }));
 server.listen(port, host, () => {
   console.log(`mentari server on http://${host}:${port} (site ${webDist})`);
@@ -29,6 +35,7 @@ const meterJob = liveMeterJob({
   chain: cfg.meterJob.chain,
   keysDir: process.env.MENTARI_SECRETS_DIR,
   windowDays: cfg.meterJob.windowDays,
+  native: { lane: native.lane, enabled: native.meter, gas: native.attestGas },
 });
 const meter = new DailyMeter(meterJob, cfg.meter);
 void meter.start();

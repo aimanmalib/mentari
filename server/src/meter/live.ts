@@ -9,6 +9,7 @@ import {
 import { signMessage, type MeterConfig } from "../../../scripts/src/meter.js";
 import { mentariMeterAbi } from "../abi.js";
 import { evmClients } from "../evm.js";
+import { nativeCaller, type NativeCaller, type NativeLaneConfig } from "../native.js";
 import { unconfiguredMeter, type DailyJob } from "./daily.js";
 import { readMeterKeys, type MeterKeys } from "./keys.js";
 
@@ -74,6 +75,21 @@ export function chainMeterJob(opts: {
   };
 }
 
+/** `MeterRun.send` over the Native route: one `MsgCrossVMCall` per call; a call that reverts in its block throws. */
+export function nativeSend(caller: NativeCaller, contract: Address, gas: number): NonNullable<MeterRun["send"]> {
+  return async (functionName, args) => {
+    const r = await caller.call({
+      contract,
+      abi: mentariMeterAbi,
+      functionName,
+      args,
+      gas,
+    });
+    if (r.status !== "success") throw new Error(`${functionName} ${r.cosmosTx} reverted`);
+    return r.cosmosTx;
+  };
+}
+
 /**
  * The job the server runs. It stays off (and says why in the log) until the contract address is set and the
  * key file exists. A key file that is there but wrong is logged once and also leaves the run off, so the site
@@ -84,6 +100,8 @@ export function liveMeterJob(opts: {
   chain: MeterChain;
   keysDir: string | undefined;
   windowDays: number;
+  /** The Native route for `attest` (`nativeRoute` of config/app.json). Off or no sender ML-DSA-87 key = EVM route. */
+  native?: { lane: NativeLaneConfig; enabled: boolean; gas: number } | undefined;
   log?: ((line: string) => void) | undefined;
 }): DailyJob {
   const log = opts.log ?? ((line: string) => console.log(line));
@@ -98,13 +116,18 @@ export function liveMeterJob(opts: {
   if (!keys) return unconfiguredMeter;
 
   const { pub, wallet } = evmClients(opts.chain.evmRpc, opts.chain.evmChainId, keys.sender);
+  const mentari = getAddress(opts.chain.mentari);
+  const n = opts.native;
+  if (n?.enabled && !keys.senderPqc) log("daily meter keys: no sender ML-DSA-87 key, so attest stays on the EVM route");
   const run: MeterRun = {
     pub,
     wallet,
-    mentari: getAddress(opts.chain.mentari),
+    mentari,
     abi: mentariMeterAbi,
     sign: meterSigner(keys.meters),
     log: (line) => log(`daily meter: ${line}`),
   };
+  if (n?.enabled && keys.senderPqc)
+    run.send = nativeSend(nativeCaller(n.lane, { privateKey: keys.sender, pqc: keys.senderPqc }), mentari, n.gas);
   return chainMeterJob({ cfg: opts.cfg, run, meters: new Set(keys.meters.keys()), windowDays: opts.windowDays });
 }

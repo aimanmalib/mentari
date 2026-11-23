@@ -44,6 +44,13 @@
     "waitSeconds": 90,
     "pollSeconds": 2
   },
+  "nativeRoute": {
+    "_comment": "Contract calls sent from the Native lane as one hybrid-signed MsgCrossVMCall each, with no EVM window (decision 0026). true = that job uses this route; false = it sends EVM transactions through its scoped window. The fee is the whole gas limit at nativeLane.gasPriceUqor. retireGas: Mentari.retire used 1009253 gas this way (case H).",
+    "demoRetire": true,
+    "meter": false,
+    "retireGas": 1300000,
+    "attestGas": 2000000
+  },
   "funding": {
     "funder": "funder and deployer",
     "keepOnFunderQor": "20",

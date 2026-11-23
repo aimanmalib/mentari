@@ -42,6 +42,13 @@ export function testConfig(over: Partial<ServerConfig["lcd"]> = {}): ServerConfi
     },
     meter: { enabled: true, runAtMinute: 20, retryMinutes: 30 },
     meterJob: { model: meterModel(), windowDays: 1, chain: { evmRpc: "https://evm.example.test/", evmChainId: 9800, mentari: "" } },
+    nativeRoute: {
+      lane: { chainId: "fixture-1", rest: ORIGIN, denom: "uqor", gasPriceUqor: "0.15", waitMs: 1000, pollMs: 10 },
+      demoRetire: true,
+      meter: false,
+      retireGas: 1300000,
+      attestGas: 2000000,
+    },
   };
 }
 

@@ -1,6 +1,6 @@
 import type { DemoLimits } from "../config.js";
 import { json, methodNotAllowed, notFound, type Reply } from "../http.js";
-import type { DemoAction, DemoChain, LedgerCounts, SendResult } from "./chain.js";
+import { txField, type DemoAction, type DemoChain, type LedgerCounts, type SendResult } from "./chain.js";
 import { DemoLimiter, type Refusal } from "./limits.js";
 
 export const DEMO_MOUNT = "/api/demo";
@@ -47,6 +47,7 @@ class TimedOut extends Error {}
 interface RefusalExtra {
   retryAfterSeconds?: number | undefined;
   evmTx?: string | undefined;
+  cosmosTx?: string | undefined;
 }
 
 /** A send that did not happen. `evidenceCase` names the recorded case the site shows instead, when there is one. */
@@ -103,18 +104,18 @@ export class DemoApi {
   }
 
   /** One demo transaction: a ledger send (`route`) or a grant. Shares the limits, the funds check and the deadline. */
-  async #run(ip: string, evidenceCase: string | undefined, work: (commit: () => void, sent: (tx: string) => void) => Promise<Reply>): Promise<Reply> {
+  async #run(ip: string, evidenceCase: string | undefined, work: (commit: () => void, sent: (tx: SendResult) => void) => Promise<Reply>): Promise<Reply> {
     if (!this.#chain.ready()) return refuse("unavailable", {}, evidenceCase);
     const start = this.#limiter.tryStart(ip);
     if (!start.ok) return refuse(start.reason, { retryAfterSeconds: start.retryAfterSeconds }, evidenceCase);
     const { ticket } = start;
-    let evmTx: string | undefined;
+    let sentTx: SendResult | undefined;
     const running = (async (): Promise<Reply> => {
       if ((await this.#chain.senderBalanceQor()) < this.#limits.minSenderBalanceQor) return refuse("low-funds", {}, evidenceCase);
       return work(
         () => ticket.commit(),
         (tx) => {
-          evmTx = tx;
+          sentTx = tx;
         },
       );
     })().finally(() => ticket.release());
@@ -128,7 +129,7 @@ export class DemoApi {
     } catch (err) {
       running.catch(() => undefined);
       const reason = err instanceof TimedOut ? "timeout" : "send-failed";
-      return refuse(reason, evmTx === undefined ? {} : { evmTx }, evidenceCase);
+      return refuse(reason, sentTx === undefined ? {} : txField(sentTx), evidenceCase);
     } finally {
       clearTimeout(timer);
     }
@@ -139,14 +140,14 @@ export class DemoApi {
       const before = await this.#chain.counts();
       commit();
       const sent = await this.#chain.send(route.action, { retireWh: this.#limits.retireWh });
-      sentTx(sent.evmTx);
+      sentTx(sent);
       const after = await this.#chain.counts();
       return json(200, {
         ok: true,
         action: route.action,
         expect: route.expect,
-        evmTx: sent.evmTx,
-        evmStatus: sent.status,
+        ...txField(sent),
+        txStatus: sent.status,
         receipts: { before: before.receipts, after: after.receipts },
         retirements: { before: before.retirements, after: after.retirements },
         asExpected: asExpected(route, sent, before, after),
@@ -164,9 +165,9 @@ export class DemoApi {
       if (!(await this.#chain.isQuantumReady(to))) return refuse("not-quantum-ready");
       commit();
       const sent = await this.#chain.grant(to, this.#limits.grantWh);
-      sentTx(sent.evmTx);
-      if (sent.status !== "success") return refuse("send-failed", { evmTx: sent.evmTx });
-      return json(200, { ok: true, action: "grant", to, wh: this.#limits.grantWh, evmTx: sent.evmTx });
+      sentTx(sent);
+      if (sent.status !== "success") return refuse("send-failed", txField(sent));
+      return json(200, { ok: true, action: "grant", to, wh: this.#limits.grantWh, ...txField(sent) });
     });
   }
 

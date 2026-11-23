@@ -1,6 +1,7 @@
-import { ML_DSA_87_SECRET_KEY_LENGTH } from "@qorechain/sdk";
+import { ML_DSA_87_SECRET_KEY_LENGTH, type PqcKeypair } from "@qorechain/sdk";
 import { getAddress, hexToBytes, isHex, type Address, type Hex } from "viem";
 import { evmKey, keyFileObject, readKeyFile } from "../keyfile.js";
+import { pqcKeypair } from "../native.js";
 
 /**
  * Keys for the daily meter run. They live in one file in the read-only key folder (`MENTARI_SECRETS_DIR`),
@@ -8,16 +9,20 @@ import { evmKey, keyFileObject, readKeyFile } from "../keyfile.js";
  *
  * {
  *   "sender": "0x<32-byte EVM private key that pays gas for the attest calls>",
+ *   "senderPqc": { "pqcSecretKey": "0x<the sender's ML-DSA-87 secret key>", "pqcPublicKey": "0x<its public key>" },
  *   "meters": [{ "address": "0x<meter account>", "pqcSecretKey": "0x<ML-DSA-87 secret key of that account>" }]
  * }
  *
  * The sender only pays gas: `attest` checks the meter's ML-DSA-87 signature, not who sends it. It must not be the
- * demo sender, so the two never race for the same nonce. Errors name the field, never the value.
+ * demo sender, so the two never race for the same nonce. `senderPqc` is optional and needed only to send the
+ * attest calls from the Native lane (decision 0026). Errors name the field, never the value.
  */
 export const METER_KEYS_FILE = "meter-keys.json";
 
 export interface MeterKeys {
   sender: Hex;
+  /** The sender's ML-DSA-87 key pair, or null when the file has none (the Native route is then not available). */
+  senderPqc: PqcKeypair | null;
   /** Checksummed meter address to its ML-DSA-87 secret key. */
   meters: Map<Address, Uint8Array>;
 }
@@ -49,5 +54,12 @@ export function parseMeterKeys(raw: string): MeterKeys {
     if (meters.has(address)) throw new Error(`${where}.address: listed twice`);
     meters.set(address, hexToBytes(key));
   });
-  return { sender, meters };
+  const senderPqc =
+    o.senderPqc === undefined
+      ? null
+      : pqcKeypair(
+          typeof o.senderPqc === "object" && o.senderPqc !== null ? (o.senderPqc as Record<string, unknown>) : {},
+          `${METER_KEYS_FILE} senderPqc`,
+        );
+  return { sender, senderPqc, meters };
 }

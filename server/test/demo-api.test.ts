@@ -28,7 +28,7 @@ describe("DemoApi sends", () => {
       action: "retire",
       expect: "success",
       evmTx: `0x${"a".repeat(64)}`,
-      evmStatus: "success",
+      txStatus: "success",
       receipts: { before: 10, after: 11 },
       retirements: { before: 4, after: 5 },
       asExpected: true,
@@ -40,10 +40,22 @@ describe("DemoApi sends", () => {
   it.each(["b", "c", "d"])("runs failure case %s and shows the ledgers unchanged", async (c) => {
     const { api, chain } = setup();
     const out = body(await api.handle(req(`/api/demo/case/${c}`)));
-    expect(out).toMatchObject({ ok: true, action: `case-${c}`, expect: "revert", evmStatus: "reverted", asExpected: true });
+    expect(out).toMatchObject({ ok: true, action: `case-${c}`, expect: "revert", txStatus: "reverted", asExpected: true });
     expect(out.receipts).toEqual({ before: 10, after: 10 });
     expect(out.evidenceCase).toBe(c.toUpperCase());
     expect(chain.sends[0]?.action).toBe(`case-${c}`);
+  });
+
+  it("answers a retirement sent from the Native lane with its Cosmos hash and no EVM hash", async () => {
+    const { api, chain } = setup();
+    const cosmosTx = "8E15D319".padEnd(64, "A");
+    chain.onSend = async () => {
+      chain.ledgers = { receipts: chain.ledgers.receipts + 1, retirements: chain.ledgers.retirements + 1 };
+      return { cosmosTx, status: "success" };
+    };
+    const out = body(await api.handle(req("/api/demo/retire")));
+    expect(out).toMatchObject({ ok: true, cosmosTx, txStatus: "success", asExpected: true });
+    expect(out).not.toHaveProperty("evmTx");
   });
 
   it("flags a failure case that changed a ledger as not expected", async () => {

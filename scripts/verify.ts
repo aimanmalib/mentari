@@ -18,14 +18,14 @@ import { loadAppConfig } from "./src/config.js";
 import { writeEvidence } from "./src/evidence.js";
 import { mentariReader } from "./src/mentari-reader.js";
 import { publicClient } from "./src/rpc.js";
-import { formatReport, runVerify, summarise, type RecordedCase } from "./src/verify.js";
+import { formatReport, runVerify, summarise, type RecordedCase, type RecordedEntry } from "./src/verify.js";
 
 const repoRoot = fileURLToPath(new URL("..", import.meta.url));
 const CONCURRENCY = 4;
 
 async function main(): Promise<void> {
   const app = loadAppConfig() as ReturnType<typeof loadAppConfig> & { native: { receiptsBook: string } };
-  const testnet = JSON.parse(readFileSync(join(repoRoot, "evidence", "testnet.json"), "utf8")) as { cases: RecordedCase[] };
+  const testnet = JSON.parse(readFileSync(join(repoRoot, "evidence", "testnet.json"), "utf8")) as { cases: (RecordedCase | RecordedEntry)[] };
   const pub = publicClient(app.network.evmRpc, app.network.evmChainId);
   const book = bookReader({ rest: app.network.rest, book: app.native.receiptsBook });
   const mentariNative = evmToQor(app.contracts.mentari);

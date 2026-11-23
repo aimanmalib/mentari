@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { BookReader, Receipt } from "../src/book.js";
-import { formatReport, noteFor, runVerify, summarise, type EvmReader, type RecordedCase, type TxResult, type VerifyInput } from "../src/verify.js";
+import { formatReport, noteFor, runVerify, summarise, type EvmReader, type RecordedCase, type RecordedEntry, type TxResult, type VerifyInput } from "../src/verify.js";
 
 const MENTARI = "0x00000000000000000000000000000000000000aa";
 const PROBE = "0x00000000000000000000000000000000000000bb";
@@ -16,6 +16,8 @@ interface World {
   /** Receipts count by block height; a missing height throws like a pruned node. */
   counts: Map<number, number>;
   cosmos: Map<string, string>;
+  /** Cosmos transactions by hash: result code and block. */
+  native: Map<string, { code: number; height: number }>;
   code: Set<string>;
   book: string;
 }
@@ -39,6 +41,7 @@ function world(): World {
     ]),
     counts: new Map([[99, 7], [100, 8], [199, 8], [200, 8]]),
     cosmos: new Map([["0xa", "COSMOSA"], ["0xb", "COSMOSB"]]),
+    native: new Map(),
     code: new Set([MENTARI, PROBE]),
     book: BOOK,
   };
@@ -73,15 +76,16 @@ function readers(w: World): { evm: EvmReader; book: BookReader } {
         return r;
       },
       cosmosTxOf: async (h) => w.cosmos.get(h) ?? null,
+      cosmosTx: async (h) => w.native.get(h) ?? null,
     },
   };
 }
 
-async function run(change: (w: World) => void = () => {}) {
+async function run(change: (w: World) => void = () => {}, cases: VerifyInput["cases"] = CASES) {
   const w = world();
   change(w);
   const { evm, book } = readers(w);
-  const checks = await runVerify(evm, book, input);
+  const checks = await runVerify(evm, book, { ...input, cases });
   return { checks, summary: summarise(checks), failed: checks.filter((c) => c.outcome === "fail").map((c) => c.name) };
 }
 
@@ -133,5 +137,48 @@ describe("verify", () => {
     expect(text.split("\n")).toHaveLength(checks.length + 2);
     expect(text).toContain(`FAIL retirements retirement 2 matches receipt 11 (receipt not read: HTTP 500)`);
     expect(text.trim().split("\n").at(-1)).toBe(`${checks.length - 1} of ${checks.length} checks passed, 1 failed.`);
+  });
+
+  describe("case H", () => {
+    const H: RecordedEntry = {
+      id: "H",
+      steps: [
+        { step: 1, function: "attest", cosmos_tx: "H1", height: 300, accepted: false },
+        { step: 2, function: "retire", cosmos_tx: "H2", height: 400, accepted: true },
+      ],
+    };
+    const chainH = (w: World) => {
+      w.native.set("H1", { code: 14, height: 300 });
+      w.native.set("H2", { code: 0, height: 400 });
+      for (const [h, c] of [[299, 8], [300, 8], [399, 8], [400, 9]] as const) w.counts.set(h, c);
+    };
+    const runH = (change: (w: World) => void = () => {}) =>
+      run((w) => {
+        chainH(w);
+        change(w);
+      }, [...CASES, H]);
+
+    it("passes when each step's Cosmos transaction and the receipts book match the record", async () => {
+      const { summary, checks } = await runH();
+      expect(summary.failed).toBe(0);
+      expect(checks.filter((c) => c.name.startsWith("case H")).map((c) => c.name)).toEqual([
+        "case H step 1 attest Cosmos transaction not accepted",
+        "case H step 1 attest receipts book unchanged at block 300",
+        "case H step 2 retire Cosmos transaction accepted",
+        "case H step 2 retire receipts book gained a receipt at block 400",
+      ]);
+    });
+
+    it("fails a step whose outcome or block differs, or whose book count does not match", async () => {
+      expect((await runH((w) => w.native.set("H1", { code: 0, height: 300 }))).failed).toEqual(["case H step 1 attest Cosmos transaction not accepted"]);
+      expect((await runH((w) => w.native.set("H2", { code: 0, height: 401 }))).failed).toEqual(["case H step 2 retire Cosmos transaction accepted"]);
+      expect((await runH((w) => w.counts.set(300, 9))).failed).toEqual(["case H step 1 attest receipts book unchanged at block 300"]);
+      expect((await runH((w) => w.counts.set(400, 10))).failed).toEqual(["case H step 2 retire receipts book gained a receipt at block 400"]);
+    });
+
+    it("reports a transaction the node no longer finds as unavailable", async () => {
+      const r = await runH((w) => w.native.delete("H2"));
+      expect([r.summary.failed, r.summary.unavailable]).toEqual([0, 1]);
+    });
   });
 });

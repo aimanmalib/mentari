@@ -48,6 +48,14 @@ export interface RecordedCase {
   receipt?: { id: number; sender: string; note: string };
 }
 
+/** Case H as `pnpm native-entry` records it: Native transactions only, no EVM transaction of its own. */
+export interface RecordedEntry {
+  id: "H";
+  steps: readonly { step: number; function: string; cosmos_tx: string; height: number | null; accepted: boolean }[];
+}
+
+const isEntry = (c: RecordedCase | RecordedEntry): c is RecordedEntry => Array.isArray((c as RecordedEntry).steps);
+
 export interface VerifyInput {
   mentari: string;
   atomicityProbe: string;
@@ -55,7 +63,7 @@ export interface VerifyInput {
   mentariNative: string;
   /** The receipts book the configuration names; the contract's own value must match it. */
   receiptsBook: string;
-  cases: readonly RecordedCase[];
+  cases: readonly (RecordedCase | RecordedEntry)[];
   /** Retirements read at once. */
   concurrency: number;
 }
@@ -196,9 +204,43 @@ async function caseChecks(evm: EvmReader, book: BookReader, input: VerifyInput, 
   return out;
 }
 
+/** Each step of case H: the node has its Cosmos transaction with the recorded outcome, and the book moved to match. */
+async function entryChecks(book: BookReader, c: RecordedEntry): Promise<Check[]> {
+  const out: Check[] = [];
+  for (const s of c.steps) {
+    const label = `case H step ${s.step} ${s.function}`;
+    const want = s.accepted ? "accepted" : "not accepted";
+    let tx: { code: number; height: number } | null = null;
+    try {
+      tx = await book.cosmosTx(s.cosmos_tx);
+    } catch {
+      // reported as unavailable below
+    }
+    const txName = `${label} Cosmos transaction ${want}`;
+    if (!tx) out.push({ group: "cases", name: txName, outcome: "unavailable", detail: "the node did not find it" });
+    else
+      out.push(
+        (tx.code === 0) === s.accepted && tx.height === s.height
+          ? pass("cases", txName, s.cosmos_tx)
+          : fail("cases", txName, `code ${tx.code} at block ${tx.height}`),
+      );
+    if (s.height === null) continue;
+    const bookName = `${label} receipts book ${s.accepted && s.function === "retire" ? "gained a receipt" : "unchanged"} at block ${s.height}`;
+    const counts = await countsAround(book, s.height);
+    if (!counts) {
+      out.push({ group: "cases", name: bookName, outcome: "unavailable", detail: "the node does not keep state that old" });
+      continue;
+    }
+    const [before, after] = counts;
+    const ok = s.accepted && s.function === "retire" ? after === before + 1 : after === before;
+    out.push(ok ? pass("cases", bookName, `${before} -> ${after}`) : fail("cases", bookName, `${before} -> ${after}`));
+  }
+  return out;
+}
+
 export async function runVerify(evm: EvmReader, book: BookReader, input: VerifyInput): Promise<Check[]> {
   const checks = [...(await contractChecks(evm, input)), ...(await retirementChecks(evm, book, input))];
-  const perCase = await Promise.all(input.cases.map((c) => caseChecks(evm, book, input, c)));
+  const perCase = await Promise.all(input.cases.map((c) => (isEntry(c) ? entryChecks(book, c) : caseChecks(evm, book, input, c))));
   return [...checks, ...perCase.flat()];
 }
 

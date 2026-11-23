@@ -35,7 +35,7 @@
   "links": []
  },
  {
-  "text": "Mentari · Build Before Q-Day · Cross-VM track\nTop-Quality: polished, functional and well-documented\nTested, then broken on purpose\n115\nFoundry tests, including fuzz and invariants\n99 %\nline coverage of contracts/src\n152\nserver tests (vitest)\n157\nsite tests (vitest)\n10\nbrowser tests, Chromium and WebKit\n\nFour invariants hold after every random call, and I broke Mentari.sol on purpose for each one: each break turned its invariant red.\n\nThe site is in English and Bahasa Melayu, and every design decision has a record with how to undo it. README.md: Tests",
+  "text": "Mentari · Build Before Q-Day · Cross-VM track\nTop-Quality: polished, functional and well-documented\nTested, then broken on purpose\n115\nFoundry tests, including fuzz and invariants\n99 %\nline coverage of contracts/src\n171\nserver tests (vitest)\n162\nsite tests (vitest)\n10\nbrowser tests, Chromium and WebKit\n\nFour invariants hold after every random call, and I broke Mentari.sol on purpose for each one: each break turned its invariant red.\n\nThe site is in English and Bahasa Melayu, and every design decision has a record with how to undo it. README.md: Tests",
   "links": []
  },
  {

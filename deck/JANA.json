@@ -1,16 +1,16 @@
 {
   "enjin": "pakej-juri",
   "versi": "ccbb90b49c8b",
-  "masa": "2026-11-23T13:31:35Z",
+  "masa": "2026-11-23T18:29:39Z",
   "pdf": "docs/deck.pdf",
-  "sha256_pdf": "f452dc7ea6dd06457e43abeb73273a70eaef37728b9ecf0e92b5e747a92850c3",
-  "bait_pdf": 286293,
+  "sha256_pdf": "bb1a83aa5cb408a38dd62a1c828137c49d41ce0ba263057803e5643df8f30668",
+  "bait_pdf": 285658,
   "html": "deck/index.html",
   "slaid": 8,
   "pptx": null,
   "kandungan": {
     "fail": "deck/kandungan.json",
-    "sha256": "c7e3ca27b53422edf59a9a939c4ccade7e49a448342db02ed539946881d80b39"
+    "sha256": "17818c23b8fa35c306462d88dfaa8f989a6a744344a519ec29b9808d62e7ff7f"
   },
   "sumber": [
     "README.md",

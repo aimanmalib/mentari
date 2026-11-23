@@ -154,7 +154,7 @@ Each guard was removed from a copy of the code to check that a test notices:
 
 ## Web tests
 
-`web/test/` runs with vitest in Node and no network. `cd web && npx vitest run` reported 162 passed on 2026-11-23.
+`web/test/` runs with vitest in Node and no network. `cd web && npx vitest run` reported 165 passed on 2026-11-23.
 
 They cover the check behind the "both ledgers agree" badge (sender, note, receipt id, nothing checked), the EVM to
 Native address encoding, the receipts book reader (a missing receipt is `null`, any other failure throws so the page
@@ -192,6 +192,11 @@ The link preview adds tests for `web/share-meta.ts` over a frozen config: every 
 once, the image address is absolute https, values come from config and the default locale, `& < > "` are escaped, a
 missing `web.share` block or locale key stops the build, and `web/index.html` carries no title, description or preview
 tag of its own. Removing `meta.imageAlt` from `web/locales/ms.json` fails 3 tests.
+
+The cover image adds tests for `web/og/cover.ts` over a frozen config: every slot of `web/og/cover.html` is filled and
+escaped, the page shot is embedded as a data URL with its aspect ratio, and an unknown slot or a missing `cover` text
+stops the render. The committed `brand/mentari-cover.png` must have the size `web.cover` names and stay under its
+byte limit.
 
 After a deploy the preview is checked on the live site with the crawlers' own user agents:
 

@@ -153,10 +153,30 @@ Each one was checked by breaking `Mentari.sol` on purpose; each break turns its 
 ([`docs/TESTING.md`](docs/TESTING.md)). The fuzz tests check that no memo can put `"`, `\` or a control character into the
 JSON note, and that the note never passes 140 characters.
 
+## Post-quantum: what is signed, and where
+
+| Action | Post-quantum signature | Checked by |
+| --- | --- | --- |
+| Register a system, mint a daily reading | Registrar's or meter's ML-DSA-87 signature | `Mentari` itself, with `pqcVerify` |
+| Retire now, the failure buttons, `grant`, the daily meter call | Hybrid (secp256k1 + ML-DSA-87), sent from the Native lane with no EVM window | The chain |
+| Any EVM transaction signed with secp256k1 alone | None | The chain refuses it unless the account has an open, scoped EVM window |
+
+`retire` and `transfer` act for `msg.sender`; they take no post-quantum signature of their own. So the contract comment
+"not from `msg.sender`" is true for minting and registration, not for those two. The chain closes the gap: in case I,
+a `retire` signed with the buyer's classical key alone was refused ("has no open EVM authorisation window"), nonce 6
+before and after. The same `retire` from the Native lane then went through
+([`97A5C807…CEA38`](https://explore.qore.network/tx/97A5C80786442EC1C3866D0A890FE0E21915DB22B227F675A92F9873AE4CEA38)).
+The explorer, switched to Testnet, labels it like this:
+
+<p align="center"><img src="docs/images/explorer-quantum-safe.png" width="640" alt="QoreChain explorer: a MsgCrossVMCall into the EVM contract, signature security quantum-safe and verified on-chain, ML-DSA-87"></p>
+
+The early EVM lane transactions (cases A to D, the deploys) show "not quantum-safe". Details and the untested case (a
+classical key inside an open window): [`docs/threat-model.md`](docs/threat-model.md#who-may-call-retire-and-transfer-t12).
+
 ## Threat model, in short
 
 - **A leaked classical key.** Minting needs the meter's ML-DSA-87 signature, checked on chain. A classical key alone
-  mints nothing.
+  mints nothing, and the chain refuses its EVM transactions while the account has no open window (case I).
 - **Receivers without a post-quantum key.** An account with no registered key can be claimed by whoever breaks its
   classical key first. So `transfer` refuses such accounts.
 - **JSON injection through the memo.** The memo is limited to 40 characters from `[A-Za-z0-9 .:/#-]` and the note is

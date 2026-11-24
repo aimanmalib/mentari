@@ -101,10 +101,31 @@ Dikira pada 22 November 2026, dan ujian pelayan, laman serta skrip pada 24 Novem
 Empat invarian: dicetak tolak dibersara sama dengan bekalan; bilangan persaraan sama dengan bilangan resit yang jambatan
 terima daripada kontrak; id resit setiap persaraan unik dan menaik; tiada baki pada alamat tanpa kunci pasca-kuantum.
 
+## Pasca-kuantum: apa ditandatangani, dan di mana
+
+| Tindakan | Tandatangan pasca-kuantum | Disemak oleh |
+| --- | --- | --- |
+| Daftar sistem, cetak bacaan harian | Tandatangan ML-DSA-87 pendaftar atau meter | `Mentari` sendiri, dengan `pqcVerify` |
+| Retire now, butang gagal, `grant`, panggilan meter harian | Hibrid (secp256k1 + ML-DSA-87), dihantar dari lorong Native tanpa tetingkap EVM | Rantai |
+| Mana-mana transaksi EVM bertandatangan secp256k1 sahaja | Tiada | Rantai menolaknya kecuali akaun ada tetingkap EVM berskop yang terbuka |
+
+`retire` dan `transfer` bertindak untuk `msg.sender`; kedua-duanya tidak mengambil tandatangan pasca-kuantum sendiri.
+Jadi komen kontrak "not from `msg.sender`" benar untuk pencetakan dan pendaftaran, bukan untuk dua fungsi itu. Rantai
+menutup jurang itu: dalam kes I, `retire` bertandatangan kunci klasik pembeli sahaja ditolak ("has no open EVM
+authorisation window"), nonce 6 sebelum dan selepas. `retire` yang sama dari lorong Native kemudian diterima
+([`97A5C807…CEA38`](https://explore.qore.network/tx/97A5C80786442EC1C3866D0A890FE0E21915DB22B227F675A92F9873AE4CEA38)).
+Penjelajah, selepas ditukar ke Testnet, melabelnya begini:
+
+<p align="center"><img src="docs/images/explorer-quantum-safe.png" width="640" alt="Penjelajah QoreChain: MsgCrossVMCall ke kontrak EVM, keselamatan tandatangan quantum-safe dan verified on-chain, ML-DSA-87"></p>
+
+Transaksi lorong EVM yang awal (kes A hingga D, deploy) dilabel "not quantum-safe". Butiran dan kes yang belum diuji
+(kunci klasik dalam tetingkap yang terbuka, dalam bahasa Inggeris):
+[`docs/threat-model.md`](docs/threat-model.md#who-may-call-retire-and-transfer-t12).
+
 ## Model ancaman, ringkas
 
 - **Kunci klasik yang bocor.** Cetakan perlu tandatangan ML-DSA-87 meter, disemak dalam rantai. Kunci klasik sahaja
-  tidak mencetak apa-apa.
+  tidak mencetak apa-apa, dan rantai menolak transaksi EVMnya selagi akaun tiada tetingkap terbuka (kes I).
 - **Penerima tanpa kunci pasca-kuantum.** Akaun tanpa kunci berdaftar boleh dituntut oleh sesiapa yang memecahkan kunci
   klasiknya dahulu. Jadi `transfer` menolak akaun begitu.
 - **Suntikan JSON melalui memo.** Memo dihadkan kepada 40 aksara daripada `[A-Za-z0-9 .:/#-]` dan nota dibina daripada

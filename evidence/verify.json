@@ -1,10 +1,10 @@
 {
-  "readAt": "2026-11-24T00:46:22.709Z",
+  "readAt": "2026-11-24T07:10:22.379Z",
   "evmRpc": "https://evm-testnet.qore.host",
   "rest": "https://api-testnet.qore.host",
-  "evmBlock": 10637947,
-  "checks": 73,
-  "passed": 73,
+  "evmBlock": 10653907,
+  "checks": 92,
+  "passed": 92,
   "failed": 0,
   "unavailable": 0,
   "checkList": [
@@ -105,17 +105,37 @@
     },
     {
       "group": "retirements",
-      "name": "receipt ids rise with the retirement number (16 retirements)",
+      "name": "retirement 17 matches receipt 26",
+      "outcome": "pass"
+    },
+    {
+      "group": "retirements",
+      "name": "retirement 18 matches receipt 27",
+      "outcome": "pass"
+    },
+    {
+      "group": "retirements",
+      "name": "retirement 19 matches receipt 28",
+      "outcome": "pass"
+    },
+    {
+      "group": "retirements",
+      "name": "retirement 20 matches receipt 29",
+      "outcome": "pass"
+    },
+    {
+      "group": "retirements",
+      "name": "receipt ids rise with the retirement number (20 retirements)",
       "outcome": "pass"
     },
     {
       "group": "totals",
-      "name": "minted 393197 - retired 8000 = supply 385197",
+      "name": "minted 449963 - retired 10000 = supply 439963",
       "outcome": "pass"
     },
     {
       "group": "totals",
-      "name": "the 16 retirements add up to retired 8000 Wh",
+      "name": "the 20 retirements add up to retired 10000 Wh",
       "outcome": "pass"
     },
     {
@@ -317,7 +337,32 @@
     },
     {
       "group": "live",
-      "name": "Retire now succeeded 5 times in a row",
+      "name": "run 9 retire (chromium 1440x1000 en) both ledgers up by one",
+      "outcome": "pass"
+    },
+    {
+      "group": "live",
+      "name": "run 10 case-b (chromium 1440x1000 en) both ledgers unchanged",
+      "outcome": "pass"
+    },
+    {
+      "group": "live",
+      "name": "run 11 case-c (webkit 390x664 (iPhone 13) en) both ledgers unchanged",
+      "outcome": "pass"
+    },
+    {
+      "group": "live",
+      "name": "run 12 case-d (webkit 390x664 (iPhone 13) ms) both ledgers unchanged",
+      "outcome": "pass"
+    },
+    {
+      "group": "live",
+      "name": "run 13 retire (webkit 320x700 ms) both ledgers up by one",
+      "outcome": "pass"
+    },
+    {
+      "group": "live",
+      "name": "Retire now succeeded 7 times in a row",
       "outcome": "pass"
     },
     {
@@ -388,6 +433,61 @@
     {
       "group": "live",
       "name": "run 8 retire (webkit 320x700 en) receipts book gained a receipt at block 10623214",
+      "outcome": "pass"
+    },
+    {
+      "group": "live",
+      "name": "run 9 retire (chromium 1440x1000 en) Cosmos transaction accepted",
+      "outcome": "pass",
+      "detail": "922C6AF21D20019EB82E332396DA3EC9E696B3BFFF0B6011BA2BFE0415D3F946"
+    },
+    {
+      "group": "live",
+      "name": "run 9 retire (chromium 1440x1000 en) receipts book gained a receipt at block 10653781",
+      "outcome": "pass"
+    },
+    {
+      "group": "live",
+      "name": "run 10 case-b (chromium 1440x1000 en) Native transaction reverted inside the EVM call",
+      "outcome": "pass",
+      "detail": "4F9B5F8D45472307558019A22A72DCF2BEB79B3599E572E8BAE6EA8D11396703"
+    },
+    {
+      "group": "live",
+      "name": "run 10 case-b (chromium 1440x1000 en) receipts book unchanged at block 10653787",
+      "outcome": "pass"
+    },
+    {
+      "group": "live",
+      "name": "run 11 case-c (webkit 390x664 (iPhone 13) en) Native transaction reverted inside the EVM call",
+      "outcome": "pass",
+      "detail": "7D69CA4FCB6A3D21639E8A703E050D76E39E29348D7A7D151CCDD73F164FF89A"
+    },
+    {
+      "group": "live",
+      "name": "run 11 case-c (webkit 390x664 (iPhone 13) en) receipts book unchanged at block 10653792",
+      "outcome": "pass"
+    },
+    {
+      "group": "live",
+      "name": "run 12 case-d (webkit 390x664 (iPhone 13) ms) Native transaction reverted inside the EVM call",
+      "outcome": "pass",
+      "detail": "C003B67FFB655EB48A19965F0B7FD6E3A8C49A3C63FB2B2C85FCC0308DC4E07B"
+    },
+    {
+      "group": "live",
+      "name": "run 12 case-d (webkit 390x664 (iPhone 13) ms) receipts book unchanged at block 10653798",
+      "outcome": "pass"
+    },
+    {
+      "group": "live",
+      "name": "run 13 retire (webkit 320x700 ms) Cosmos transaction accepted",
+      "outcome": "pass",
+      "detail": "3449E5913A0FE37E00FC47A3133ED45769D907BBE5AC2C118A9EBA15DD727B07"
+    },
+    {
+      "group": "live",
+      "name": "run 13 retire (webkit 320x700 ms) receipts book gained a receipt at block 10653804",
       "outcome": "pass"
     }
   ]

@@ -1,7 +1,7 @@
 {
   "site": "https://mentari.sasateguh.com/try",
   "method": "Each run opened the page in a new browser context and pressed one button. The server answer and what the page showed are recorded as they were.",
-  "retireStreak": 5,
+  "retireStreak": 7,
   "runs": [
     {
       "n": 1,
@@ -171,6 +171,116 @@
       "retirements": {
         "before": 13,
         "after": 14
+      },
+      "asExpected": true,
+      "consoleErrors": 0,
+      "overflowPx": 0
+    },
+    {
+      "n": 9,
+      "at": "2026-11-24T07:07:21.607Z",
+      "action": "retire",
+      "browser": "chromium",
+      "viewport": "1440x1000",
+      "lang": "en",
+      "cosmosTx": "922C6AF21D20019EB82E332396DA3EC9E696B3BFFF0B6011BA2BFE0415D3F946",
+      "height": 10653781,
+      "txStatus": "success",
+      "receipts": {
+        "before": 27,
+        "after": 28
+      },
+      "retirements": {
+        "before": 18,
+        "after": 19
+      },
+      "asExpected": true,
+      "consoleErrors": 0,
+      "overflowPx": 0
+    },
+    {
+      "n": 10,
+      "at": "2026-11-24T07:07:29.014Z",
+      "action": "case-b",
+      "browser": "chromium",
+      "viewport": "1440x1000",
+      "lang": "en",
+      "cosmosTx": "4F9B5F8D45472307558019A22A72DCF2BEB79B3599E572E8BAE6EA8D11396703",
+      "height": 10653787,
+      "txStatus": "reverted",
+      "receipts": {
+        "before": 28,
+        "after": 28
+      },
+      "retirements": {
+        "before": 19,
+        "after": 19
+      },
+      "asExpected": true,
+      "consoleErrors": 0,
+      "overflowPx": 0
+    },
+    {
+      "n": 11,
+      "at": "2026-11-24T07:07:37.193Z",
+      "action": "case-c",
+      "browser": "webkit",
+      "viewport": "390x664 (iPhone 13)",
+      "lang": "en",
+      "cosmosTx": "7D69CA4FCB6A3D21639E8A703E050D76E39E29348D7A7D151CCDD73F164FF89A",
+      "height": 10653792,
+      "txStatus": "reverted",
+      "receipts": {
+        "before": 28,
+        "after": 28
+      },
+      "retirements": {
+        "before": 19,
+        "after": 19
+      },
+      "asExpected": true,
+      "consoleErrors": 0,
+      "overflowPx": 0
+    },
+    {
+      "n": 12,
+      "at": "2026-11-24T07:07:45.124Z",
+      "action": "case-d",
+      "browser": "webkit",
+      "viewport": "390x664 (iPhone 13)",
+      "lang": "ms",
+      "cosmosTx": "C003B67FFB655EB48A19965F0B7FD6E3A8C49A3C63FB2B2C85FCC0308DC4E07B",
+      "height": 10653798,
+      "txStatus": "reverted",
+      "receipts": {
+        "before": 28,
+        "after": 28
+      },
+      "retirements": {
+        "before": 19,
+        "after": 19
+      },
+      "asExpected": true,
+      "consoleErrors": 0,
+      "overflowPx": 0
+    },
+    {
+      "n": 13,
+      "at": "2026-11-24T07:07:54.254Z",
+      "action": "retire",
+      "browser": "webkit",
+      "viewport": "320x700",
+      "lang": "ms",
+      "cosmosTx": "3449E5913A0FE37E00FC47A3133ED45769D907BBE5AC2C118A9EBA15DD727B07",
+      "height": 10653804,
+      "txStatus": "success",
+      "receipts": {
+        "before": 28,
+        "after": 29
+      },
+      "retirements": {
+        "before": 19,
+        "after": 20
       },
       "asExpected": true,
       "consoleErrors": 0,

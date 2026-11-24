@@ -144,15 +144,15 @@ pnpm build && pnpm start        # laman di http://localhost:8080, membaca testne
 
 ## Ujian
 
-Dikira pada 22 November 2026, dan ujian pelayan, laman serta skrip pada 24 November, daripada larian tempatan, langkah yang sama dengan CI.
+Dikira pada 24 November 2026 daripada larian CI pada komit `1577e46` (suite Foundry kali terakhir berubah pada 22 November). CI menjalankan langkah yang sama pada setiap tolakan; `bash scripts/gerbang-ujian.sh` menjalankannya secara tempatan.
 
 | Suite | Hasil |
 | --- | --- |
 | Foundry, `contracts/test/` | 115 lulus: 98 ujian unit, 16 ujian fuzz (512 larian setiap satu) dan satu suite invarian yang memegang 4 invarian (forge mengira suite itu sekali, jadi 98 + 16 + 1 = 115); liputan baris `contracts/src` 99 % |
-| vitest, `server/test/` | 214 lulus |
-| vitest, `web/test/` | 187 lulus |
-| vitest, `scripts/test/` | 140 lulus |
-| Playwright, `web/e2e/` | 10 lulus: laluan dompet dengan dompet tiruan QoreX, 5 kes dalam Chromium dan WebKit sebagai iPhone 13 |
+| vitest, `server/test/` | 223 lulus |
+| vitest, `web/test/` | 240 lulus |
+| vitest, `scripts/test/` | 172 lulus |
+| Playwright, `web/e2e/` | 12 lulus: halaman utama dan tindakan Retire now, serta laluan dompet dengan dompet tiruan QoreX, 6 kes dalam Chromium dan WebKit sebagai iPhone 13 |
 
 Empat invarian: dicetak tolak dibersara sama dengan bekalan; bilangan persaraan sama dengan bilangan resit yang jambatan
 terima daripada kontrak; id resit setiap persaraan unik dan menaik; tiada baki pada alamat tanpa kunci pasca-kuantum.

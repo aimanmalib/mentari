@@ -96,15 +96,15 @@
           "label": "line coverage of contracts/src"
         },
         {
-          "nilai": "214",
+          "nilai": "223",
           "label": "server tests (vitest)"
         },
         {
-          "nilai": "187",
+          "nilai": "240",
           "label": "site tests (vitest)"
         },
         {
-          "nilai": "10",
+          "nilai": "12",
           "label": "browser tests, Chromium and WebKit"
         }
       ],

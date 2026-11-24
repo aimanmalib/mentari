@@ -185,15 +185,15 @@ cd contracts && forge test
 
 ## Tests
 
-Counted on 22 November 2026, and the server, site and script tests on 24 November, from a local run, the same steps CI runs on every push.
+Counted on 24 November 2026 from the CI run on commit `1577e46` (the Foundry suite was last changed on 22 November). CI runs the same steps on every push; `bash scripts/gerbang-ujian.sh` runs them locally.
 
 | Suite | Result | What it covers |
 | --- | --- | --- |
 | Foundry, `contracts/test/` | 115 passed, 0 failed | 98 unit tests, 16 fuzz tests (512 runs each) and one invariant suite holding 4 invariants (128 sequences of 64 calls; forge counts the suite once, so 98 + 16 + 1 = 115); line coverage of `contracts/src` 99 % |
-| vitest, `server/test/` | 214 passed | the `/lcd` allowlist, client IP behind Cloudflare, demo rate limits, the off switch, fallbacks, the wallet grant, the live demo sender on a local node, the hybrid-signed Native route for "Retire now", the daily meter run and its chain job, the `/go/tx` and `/go/receipt` explorer redirects |
-| vitest, `web/test/` | 187 passed | the "both ledgers agree" check, the link preview tags, preview and cover image sizes, the slide counts match this table, the session counts in AI_USAGE.md add up and match the slides, its test counts match this table, the slide PDF is the one printed from the slide source, address encoding, the receipts reader, both languages have the same keys, wallet errors, the event search split into ranges the public node accepts |
-| vitest, `scripts/test/` | 140 passed | account derivation, balances, funding, key registration and EVM windows on the Native lane, the Native-entry experiment (case H), simulated meter readings and the bytes a meter signs, deploy, registration and attestation on a local node, the one-command testnet setup, the health watch, the low-funds watch, the account evidence file, the live Try it record, the test counter |
-| Playwright, `web/e2e/` | 10 passed | the wallet path with the QoreX wallet mock, 5 cases in Chromium and in WebKit as an iPhone 13 |
+| vitest, `server/test/` | 223 passed | the `/lcd` allowlist, client IP behind Cloudflare, demo rate limits, the off switch, fallbacks, the wallet grant, the live demo sender on a local node, the hybrid-signed Native route for "Retire now", the daily meter run and its chain job, the `/go/tx` and `/go/receipt` explorer redirects, the failure buttons sent on the Native lane and the honest demo status |
+| vitest, `web/test/` | 240 passed | the "both ledgers agree" check, the ML-DSA-87 re-check in the browser against real testnet signatures and a one-byte change, the home page story, the Native-lane finding, the link preview tags, preview and cover image sizes, the slide counts match this table, the session counts in AI_USAGE.md add up and match the slides, its test counts match this table, the slide PDF is the one printed from the slide source, address encoding, the receipts reader, both languages have the same keys, wallet errors, the event search split into ranges the public node accepts, the stale phrases guard, the README numbers and links |
+| vitest, `scripts/test/` | 172 passed | account derivation, balances, funding, key registration and EVM windows on the Native lane, the Native-entry experiment (case H), simulated meter readings and the bytes a meter signs, deploy, registration and attestation on a local node, the one-command testnet setup, the health watch, the low-funds watch, the account evidence file, the live Try it record, the test counter, the classic-key refusal (case I), the bank transfer and retire in one transaction (cases J and J2), the live self-test, the deploy freeze |
+| Playwright, `web/e2e/` | 12 passed | the home page and its Retire now action, and the wallet path with the QoreX wallet mock: 6 cases in Chromium and in WebKit as an iPhone 13 |
 
 The four invariants hold after every random call:
 

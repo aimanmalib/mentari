@@ -88,7 +88,7 @@ Foundry saves a failing sequence under `contracts/cache/` and replays it first o
 
 `server/test/` runs with vitest and no internet: the upstream `fetch` is a fake, the config is a frozen fixture, so
 changing `config/` never breaks a test, and the live meter job talks only to a local anvil node (as in the chain driver
-tests). `cd server && npx vitest run` reported 214 passed on 2026-11-24.
+tests). `cd server && npx vitest run` reported 223 passed on 2026-11-24.
 
 They cover the `/lcd` allowlist (other paths, other contracts, `//host`, `@host`, dot segments and `%2e` are refused
 without an upstream call), methods other than `GET` (405), the 5 second cache, joined concurrent requests, 502 on
@@ -170,7 +170,7 @@ Each guard was removed from a copy of the code to check that a test notices:
 
 ## Web tests
 
-`web/test/` runs with vitest in Node and no network. `cd web && npx vitest run` reported 187 passed on 2026-11-24.
+`web/test/` runs with vitest in Node and no network. `cd web && npx vitest run` reported 240 passed on 2026-11-24 in CI.
 
 They cover the check behind the "both ledgers agree" badge (sender, note, receipt id, nothing checked), the EVM to
 Native address encoding, the receipts book reader (a missing receipt is `null`, any other failure throws so the page
@@ -234,7 +234,7 @@ curl -s  -A 'TelegramBot (like TwitterBot)' https://mentari.sasateguh.com/ | gre
 
 ## Script tests
 
-`scripts/test/` runs with vitest and no network beyond a local anvil node. `cd scripts && npx vitest run` reported 140
+`scripts/test/` runs with vitest and no network beyond a local anvil node. `cd scripts && npx vitest run` reported 172
 passed on 2026-11-24.
 
 `scripts/src/meter.ts` makes the simulated meter readings and the bytes a meter or the registrar signs. The meter tests
@@ -351,11 +351,12 @@ Changes checked to fail:
 `web/e2e/` runs with Playwright in Chromium and in WebKit as an iPhone 13 (`playwright.config.ts`). The site is built
 with `vite build --mode e2e`, which only sets a test contract address, and served by `vite preview`.
 `@qorechain/qorex-wallet-mock` 0.1.0 is injected into the page, and a fake EVM node inside the test answers the chain
-calls (`web/e2e/fake-chain.ts`); nothing reaches the testnet. `pnpm exec playwright test` reported 10 passed (5 cases in
-2 browsers) on 2026-11-22.
+calls (`web/e2e/fake-chain.ts`); nothing reaches the testnet. `pnpm exec playwright test` reported 12 passed (6 cases in
+2 browsers) in CI on 2026-11-24.
 
 | Case | What it checks |
 |---|---|
+| home page (`web/e2e/home.e2e.ts`) | the first screen shows the Retire now action, the story has its sections, and the action presses Retire now once |
 | QoreX today (`current` profile) | connect, the account's addresses and key status, get 500 Wh, then the wallet refuses `eth_sendTransaction` and the page says nothing was sent; the fake node received no transaction |
 | QoreX as announced (`planned` profile) | the wallet signs and sends one transaction to the contract, decoded as `retire(500, "from QoreX")`, and the page links retirement 7 |
 | declined in the wallet | nothing is sent and the page says so |

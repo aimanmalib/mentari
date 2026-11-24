@@ -36,5 +36,9 @@
   },
   "explorer": {
     "redirectCacheSeconds": 86400
+  },
+  "evm": {
+    "logWindowBlocks": 10000,
+    "logMaxWindows": 60
   }
 }

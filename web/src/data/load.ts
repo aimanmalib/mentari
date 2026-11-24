@@ -37,7 +37,11 @@ export async function readers(cfg: SiteConfig, mode: DataMode): Promise<Readers>
   return {
     source: "live",
     contract: cfg.contract,
-    evm: mentariReader(cfg.evmRpc, cfg.contract, cfg.deployBlock),
+    evm: mentariReader(cfg.evmRpc, cfg.contract, {
+      deployBlock: cfg.deployBlock,
+      windowBlocks: cfg.logWindowBlocks,
+      maxWindows: cfg.logMaxWindows,
+    }),
     book: new ReceiptsBook(cfg.lcdBase, cfg.receiptsBook, (url, init) => fetch(url, init)),
     txStatus: txStatusReader(cfg.evmRpc),
   };

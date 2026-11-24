@@ -14,6 +14,9 @@ export interface SiteConfig {
   probe: string;
   /** EVM block to start searching for `Retired` events; 0 means from the first block. */
   deployBlock: number;
+  /** `Retired` log search: blocks per `eth_getLogs` call and the most calls per lookup (config/limits.json `evm`). */
+  logWindowBlocks: number;
+  logMaxWindows: number;
   refreshSeconds: number;
   agreeCheckLatest: number;
   retirementsPageSize: number;
@@ -44,6 +47,8 @@ export const siteConfig: SiteConfig = {
   contract: app.contracts.mentari,
   probe: app.contracts.atomicityProbe,
   deployBlock: app.contracts.mentariDeployBlock,
+  logWindowBlocks: limits.evm.logWindowBlocks,
+  logMaxWindows: limits.evm.logMaxWindows,
   refreshSeconds: app.web.refreshSeconds,
   agreeCheckLatest: app.web.agreeCheckLatest,
   retirementsPageSize: app.web.retirementsPageSize,

@@ -1,5 +1,6 @@
 import { createPublicClient, http, type Address, type PublicClient } from "viem";
 import { mentariReadAbi, retiredEvent } from "./abi.js";
+import { findInWindows, type LogWindowOptions } from "./logWindows.js";
 import type { MentariReader } from "./registry.js";
 
 /** Live reader for the Mentari contract over the public EVM JSON-RPC endpoint. */
@@ -20,7 +21,10 @@ export function txStatusReader(rpcUrl: string): (hash: string) => Promise<"succe
   };
 }
 
-export function mentariReader(rpcUrl: string, contract: string, deployBlock = 0): MentariReader {
+/** How `retiredTxs` pages its log search; `windowBlocks` and `maxWindows` come from config/limits.json `evm`. */
+export type LogSearch = Omit<LogWindowOptions, "fromBlock"> & { deployBlock: number };
+
+export function mentariReader(rpcUrl: string, contract: string, search: LogSearch): MentariReader {
   const c = client(rpcUrl);
   const address = contract as Address;
   const read = <T>(functionName: string, args: readonly unknown[] = []) =>
@@ -38,17 +42,16 @@ export function mentariReader(rpcUrl: string, contract: string, deployBlock = 0)
       return { n, holder: r.holder, wh: r.wh, receiptId: Number(r.receiptId), timestamp: Number(r.timestamp) };
     },
     async retiredTxs(ns) {
-      const out = new Map<number, string>();
-      if (ns.length === 0) return out;
-      const logs = await c.getLogs({
-        address,
-        event: retiredEvent,
-        args: { n: ns.map(BigInt) },
-        fromBlock: BigInt(deployBlock),
-        toBlock: "latest",
+      if (ns.length === 0) return new Map();
+      const getLogs = async (fromBlock: bigint, toBlock: bigint) => {
+        const logs = await c.getLogs({ address, event: retiredEvent, args: { n: ns.map(BigInt) }, fromBlock, toBlock });
+        return logs.flatMap((l) => (l.args.n !== undefined && l.transactionHash ? [{ n: Number(l.args.n), txHash: l.transactionHash }] : []));
+      };
+      return findInWindows(ns, await c.getBlockNumber(), getLogs, {
+        windowBlocks: search.windowBlocks,
+        maxWindows: search.maxWindows,
+        fromBlock: BigInt(search.deployBlock),
       });
-      for (const log of logs) if (log.args.n !== undefined && log.transactionHash) out.set(Number(log.args.n), log.transactionHash);
-      return out;
     },
     async system(id, label) {
       try {

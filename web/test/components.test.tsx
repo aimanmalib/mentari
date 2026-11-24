@@ -182,6 +182,10 @@ describe("Try it", () => {
     );
     const html = text(raw);
     expect(raw).toContain(`href="${siteConfig.explorer.tx.replace("{hash}", COSMOS)}"`);
+    // The text and the label name the hash the link opens, not the EVM hash the explorer cannot read.
+    expect(raw).toContain(`aria-label="Open transaction ${COSMOS} in the explorer"`);
+    expect(raw).toContain(`<code>${COSMOS.slice(0, 8)}`);
+    expect(raw).not.toContain(HASH.slice(0, 8));
     expect(html).toContain("Press Testnet at the top of its page");
     expect(html).toContain("You have used this hour's live sends.");
     expect(html).toContain("Try again in about 2 min.");

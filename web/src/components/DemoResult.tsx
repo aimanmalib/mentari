@@ -86,6 +86,8 @@ export function DemoResult({
     );
   }
 
+  // The link opens the Cosmos hash when the case has one, so the text names that hash too.
+  const recordedHash = recorded ? (recorded.cosmos_tx ?? recorded.evm_tx) : "";
   const wait = outcome.retryAfterSeconds !== undefined ? Math.ceil(outcome.retryAfterSeconds / 60) : null;
   return (
     <div className="demo-result demo-fallback" role="status">
@@ -97,11 +99,8 @@ export function DemoResult({
           <CountsBoard retirements={recorded.retirements} receipts={recorded.receipts} />
           <p className="demo-tx">
             {t("tryit.recordedTx")}{" "}
-            <ChainLink
-              href={links.tx(recorded.cosmos_tx ?? recorded.evm_tx)}
-              label={t("records.openTx", { hash: recorded.evm_tx })}
-            >
-              {shorten(recorded.evm_tx, 8, 6)}
+            <ChainLink href={links.tx(recordedHash)} label={t("records.openTx", { hash: recordedHash })}>
+              {shorten(recordedHash, 8, 6)}
             </ChainLink>
           </p>
           <ExplorerNote />

@@ -7,7 +7,8 @@
     "rpc": "https://rpc-testnet.qore.host",
     "evmDecimals": 18,
     "symbol": "QOR",
-    "crossVmBridge": "0x0000000000000000000000000000000000000901"
+    "crossVmBridge": "0x0000000000000000000000000000000000000901",
+    "pqcKeyRegistry": "0x0000000000000000000000000000000000000a02"
   },
   "accounts": {
     "0": "funder and deployer",
@@ -113,6 +114,7 @@
     ],
     "retirementsPageSize": 20,
     "demoApi": "/api/demo",
+    "readingsApi": "/api/readings",
     "explorer": {
       "tx": "https://explore.qore.network/tx/{hash}",
       "evmTx": "/go/tx/{hash}",

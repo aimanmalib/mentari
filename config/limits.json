@@ -40,5 +40,12 @@
   "evm": {
     "logWindowBlocks": 10000,
     "logMaxWindows": 60
+  },
+  "readings": {
+    "_comment": "GET /api/readings (decision 0037): the newest meter readings the chain accepted from the Native lane, for the in-browser ML-DSA-87 check on Verify. max: readings listed. pageSize and maxPages: REST transactions per page and the most pages one refresh reads (every Native call into the contract is on those pages, not only readings). cacheSeconds: how long the list is reused; a new reading arrives once a day per system.",
+    "max": 6,
+    "pageSize": 15,
+    "maxPages": 6,
+    "cacheSeconds": 120
   }
 }

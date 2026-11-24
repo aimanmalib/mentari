@@ -238,7 +238,32 @@
     "passed": "lulus",
     "failed": "gagal",
     "copy": "Salin pautan",
-    "copied": "Pautan disalin"
+    "copied": "Pautan disalin",
+    "pq": {
+      "title": "Tandatangan pasca-kuantum, disemak semula dalam pelayar anda",
+      "lede": "Setiap sijil dicetak daripada bacaan meter yang ditandatangani dengan ML-DSA-87, dan rantai menyemak setiap tandatangan dengan prakompil pqcVerify sebelum mencetak. Pelayar anda kini menyemak semula tandatangan yang terbaharu. Ia membina semula bait yang ditandatangani setiap meter, membaca kunci awam meter daripada daftar kunci rantai dan mengesahkannya dengan @noble/post-quantum. Laman ini hanya mencari transaksi; semakan berlaku di sini.",
+      "loading": "Menyemak tandatangan dalam pelayar anda",
+      "error": "Bacaan tidak dapat dibaca daripada testnet.",
+      "empty": "Testnet belum ada bacaan yang dihantar dari lorong Native.",
+      "timing": "Disemak dalam {ms} ms pada peranti ini",
+      "summary": "{valid} daripada {total} tandatangan sah dalam pelayar anda",
+      "agree": "Pelayar anda dan rantai bersetuju pada setiap bacaan.",
+      "disagree": "Pelayar anda dan rantai tidak bersetuju pada sekurang-kurangnya satu bacaan.",
+      "listLabel": "Bacaan meter",
+      "reading": "Sistem {id} · {date}",
+      "wh": "{wh} Wh",
+      "sig": {
+        "valid": "Tandatangan ML-DSA-87 sah dalam pelayar anda",
+        "invalid": "Tandatangan ditolak dalam pelayar anda",
+        "no-key": "Meter tiada kunci ML-DSA-87 di rantai"
+      },
+      "chainYes": "Kontrak merekod bacaan ini",
+      "chainNo": "Kontrak tiada rekod bacaan ini",
+      "tx": "Transaksi Native",
+      "tamper": "Semak salinan yang diusik",
+      "tamperRejected": "Satu bait tandatangan terbaharu diubah. Pelayar anda menolaknya.",
+      "tamperAccepted": "Satu bait diubah dan tandatangan masih lulus. Semakan ini rosak."
+    }
   },
   "tryit": {
     "title": "Cuba di testnet",

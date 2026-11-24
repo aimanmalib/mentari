@@ -238,7 +238,32 @@
     "passed": "passed",
     "failed": "failed",
     "copy": "Copy link",
-    "copied": "Link copied"
+    "copied": "Link copied",
+    "pq": {
+      "title": "Post-quantum signatures, re-checked in your browser",
+      "lede": "Every certificate is minted from a meter reading signed with ML-DSA-87, and the chain checked each signature with its pqcVerify precompile before it minted. Your browser now checks the newest of those signatures again. It rebuilds the bytes each meter signed, reads the meter's public key from the chain's key registry and verifies with @noble/post-quantum. This site only finds the transactions; the check runs here.",
+      "loading": "Checking signatures in your browser",
+      "error": "Could not read the readings from the testnet.",
+      "empty": "The testnet has no readings sent from the Native lane yet.",
+      "timing": "Checked in {ms} ms on this device",
+      "summary": "{valid} of {total} signatures valid in your browser",
+      "agree": "Your browser and the chain agree on every reading.",
+      "disagree": "Your browser and the chain disagree on at least one reading.",
+      "listLabel": "Meter readings",
+      "reading": "System {id} · {date}",
+      "wh": "{wh} Wh",
+      "sig": {
+        "valid": "ML-DSA-87 signature valid in your browser",
+        "invalid": "Signature rejected in your browser",
+        "no-key": "The meter has no ML-DSA-87 key on chain"
+      },
+      "chainYes": "The contract recorded this reading",
+      "chainNo": "The contract has no record of this reading",
+      "tx": "Native transaction",
+      "tamper": "Check a tampered copy",
+      "tamperRejected": "One byte of the newest signature changed. Your browser rejects it.",
+      "tamperAccepted": "One byte changed and the signature still passed. This check is broken."
+    }
   },
   "tryit": {
     "title": "Try it on testnet",

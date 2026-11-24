@@ -9,6 +9,8 @@ export interface SiteConfig {
   lcdBase: string;
   receiptsBook: string;
   bridge: string;
+  /** The chain's post-quantum key registry precompile (`pqcKeyStatus`), read for the in-browser signature check. */
+  pqcKeyRegistry: string;
   nativePrefix: string;
   contract: string;
   probe: string;
@@ -21,6 +23,8 @@ export interface SiteConfig {
   agreeCheckLatest: number;
   retirementsPageSize: number;
   demoApi: string;
+  /** This server's list of the newest accepted meter readings (decision 0037). */
+  readingsApi: string;
   /** Watt-hours the "Retire now" button retires (config/limits.json `demo.retireWh`). */
   demoRetireWh: number;
   /** Watt-hours the demo account sends to a visitor's wallet (config/limits.json `demo.grantWh`). */
@@ -53,6 +57,7 @@ export const siteConfig: SiteConfig = {
   lcdBase: app.web.lcdBase,
   receiptsBook: app.native.receiptsBook,
   bridge: app.network.crossVmBridge,
+  pqcKeyRegistry: app.network.pqcKeyRegistry,
   nativePrefix: app.web.nativeAddressPrefix,
   contract: app.contracts.mentari,
   probe: app.contracts.atomicityProbe,
@@ -63,6 +68,7 @@ export const siteConfig: SiteConfig = {
   agreeCheckLatest: app.web.agreeCheckLatest,
   retirementsPageSize: app.web.retirementsPageSize,
   demoApi: app.web.demoApi,
+  readingsApi: app.web.readingsApi,
   demoRetireWh: limits.demo.retireWh,
   demoGrantWh: limits.demo.grantWh,
   wallet: app.web.wallet,

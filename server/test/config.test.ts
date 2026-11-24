@@ -77,6 +77,10 @@ describe("loadServerConfig", () => {
     const set = loadServerConfig(copy((_l, a, m) => ((a.contracts.mentari = at), (m.daily.windowDays = 2))));
     expect(set.meterJob).toMatchObject({ windowDays: 2, chain: { mentari: at } });
     expect(loadServerConfig(copy((_l, a) => (a.contracts.mentari = ""))).meterJob.chain.mentari).toBe("");
+    expect(set.readings.contract).toBe(at);
+    expect(c.readings.max).toBeGreaterThan(0);
+    expect(() => loadServerConfig(copy((l) => (l.readings.pageSize = 0)))).toThrow(/readings.pageSize/);
+    expect(() => loadServerConfig(copy((l) => delete l.readings))).toThrow(/limits.json readings/);
     expect(() => loadServerConfig(copy((_l, _a, m) => (m.daily.windowDays = 0)))).toThrow(/daily.windowDays/);
     expect(() => loadServerConfig(copy((_l, _a, m) => (m.daily.windowDays = m.backfillDays + 1)))).toThrow(
       /daily.windowDays/,

@@ -55,6 +55,7 @@ export function testConfig(over: Partial<ServerConfig["lcd"]> = {}): ServerConfi
       revertCodespace: "crossvm",
     },
     explorer: { txTemplate: "https://explorer.example.test/tx/{hash}", cacheSeconds: 600, receiptsBook: "qor1booktest" },
+    readings: { contract: "0xF5cb2c6048a7CE8c5A7ACcc66eB8efc33942a448", max: 2, pageSize: 2, maxPages: 3, cacheSeconds: 60 },
   };
 }
 

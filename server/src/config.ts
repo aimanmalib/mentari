@@ -6,6 +6,7 @@ import type { DemoChainConfig } from "./demo/live.js";
 import type { MeterChain } from "./meter/live.js";
 import { EXPLORER_MOUNT, RECEIPT_MOUNT } from "./explorer.js";
 import type { NativeLaneConfig } from "./native.js";
+import type { ReadingsConfig } from "./readings.js";
 
 /** Everything the server reads from `config/`. Code never holds these values. */
 export interface ServerConfig {
@@ -36,6 +37,8 @@ export interface ServerConfig {
   nativeRoute: NativeRoute;
   /** `/go/tx/<hash>` and `/go/receipt/<id>` redirects (decisions 0033, 0034): explorer page shape, cache time, book. */
   explorer: { txTemplate: string; cacheSeconds: number; receiptsBook: string };
+  /** `/api/readings` (decision 0037): the contract whose `attest` calls are listed, and how many, how often. */
+  readings: Omit<ReadingsConfig, "restOrigin">;
 }
 
 export interface NativeRoute {
@@ -269,7 +272,17 @@ export function loadServerConfig(dir: string = CONFIG_DIR): ServerConfig {
     meterJob: job,
     nativeRoute: nativeRoute(app, network, rest.origin),
     explorer: explorerLinks(app, limits),
+    readings: readingsConfig(app, limits),
   };
+}
+
+/** The `/api/readings` list: the Mentari contract (empty = no list) from config/app.json, sizes and cache time from config/limits.json. */
+function readingsConfig(app: Record<string, unknown>, limits: Record<string, unknown>): ServerConfig["readings"] {
+  // Empty until the contract is deployed; `meterJob` already refuses any other shape.
+  const contract = String(obj(app.contracts, "config/app.json contracts").mentari ?? "");
+  const r = obj(limits.readings, "config/limits.json readings");
+  const n = (k: string) => posInt(r[k], `readings.${k}`);
+  return { contract, max: n("max"), pageSize: n("pageSize"), maxPages: n("maxPages"), cacheSeconds: n("cacheSeconds") };
 }
 
 /** Explorer redirect settings. `web.explorer.evmTx` and `receiptTx` must point at this server's own routes. */

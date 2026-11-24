@@ -5,6 +5,7 @@ import { EXPLORER_MOUNT, RECEIPT_MOUNT, type ExplorerLinks } from "./explorer.js
 import { json, methodNotAllowed, notFound, type Reply } from "./http.js";
 import { CidrSet, clientIp, type ClientIpRules } from "./ip.js";
 import { LCD_MOUNT, type LcdProxy } from "./lcd.js";
+import { READINGS_MOUNT, type Readings } from "./readings.js";
 import type { StaticSite } from "./static.js";
 
 const SECURITY_HEADERS: Record<string, string> = {
@@ -18,6 +19,7 @@ export interface AppParts {
   lcd: LcdProxy;
   explorer: ExplorerLinks;
   demo: DemoApi;
+  readings: Readings;
   site: StaticSite;
 }
 
@@ -42,6 +44,7 @@ export async function route(info: RequestInfo, parts: AppParts): Promise<Reply> 
   if (isMount(url, EXPLORER_MOUNT)) return parts.explorer.handle(method, url);
   if (isMount(url, RECEIPT_MOUNT)) return parts.explorer.handleReceipt(method, url);
   if (isMount(url, DEMO_MOUNT)) return parts.demo.handle(info);
+  if (url === READINGS_MOUNT || url.startsWith(`${READINGS_MOUNT}?`)) return parts.readings.handle(method);
   if (isMount(url, "/api")) return notFound();
   return parts.site.handle(method, url);
 }

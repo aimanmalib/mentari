@@ -8,6 +8,7 @@ import { createHandler } from "../src/app.js";
 import { DemoApi } from "../src/demo/api.js";
 import { ExplorerLinks } from "../src/explorer.js";
 import { LcdProxy } from "../src/lcd.js";
+import { Readings } from "../src/readings.js";
 import { StaticSite } from "../src/static.js";
 import { fakeFetch, FakeChain, ORIGIN, testConfig } from "./fixture.js";
 
@@ -27,7 +28,8 @@ beforeAll(async () => {
   const demo = new DemoApi(cfg.demo, new FakeChain());
   const lcd = new LcdProxy(cfg, upstream.fn);
   const explorer = new ExplorerLinks({ ...cfg.explorer, restOrigin: cfg.restOrigin }, lcd);
-  server = createServer(createHandler({ cfg, lcd, explorer, demo, site: new StaticSite(dir) }));
+  const readings = new Readings({ ...cfg.readings, restOrigin: cfg.restOrigin }, lcd);
+  server = createServer(createHandler({ cfg, lcd, explorer, demo, readings, site: new StaticSite(dir) }));
   await new Promise<void>((ok) => server.listen(0, "127.0.0.1", ok));
   base = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
 });
@@ -106,6 +108,15 @@ describe("server", () => {
   it("does not treat /lcdx as the proxy and keeps /api closed", async () => {
     expect((await fetch(`${base}/lcdx`)).headers.get("content-type")).toMatch(/^text\/html/);
     expect((await fetch(`${base}/api/anything`)).status).toBe(404);
+  });
+
+  it("routes /api/readings to the readings list and keeps other /api paths closed", async () => {
+    const r = await fetch(`${base}/api/readings`);
+    expect(r.status).toBe(200);
+    expect(r.headers.get("content-type")).toMatch(/^application\/json/);
+    expect(await r.json()).toEqual({ readings: [], complete: true });
+    expect((await fetch(`${base}/api/readings`, { method: "POST" })).status).toBe(405);
+    expect((await fetch(`${base}/api/readingsx`)).status).toBe(404);
   });
 
   it("routes /api/demo through the real socket with the content-type header", async () => {

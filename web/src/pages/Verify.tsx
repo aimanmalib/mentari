@@ -1,5 +1,6 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { SourceNotice } from "../components/Chrome.js";
+import { PqRecheck } from "../components/PqRecheck.js";
 import { VerifyResult } from "../components/VerifyReport.js";
 import { siteConfig } from "../config.js";
 import { parseVerifyQuery, verify, verifySearch, type VerifyQuery } from "../data/records.js";
@@ -120,6 +121,7 @@ export function Verify() {
           </>
         )}
       </section>
+      {siteMode === "live" && <PqRecheck />}
     </>
   );
 }

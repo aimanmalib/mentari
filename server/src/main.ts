@@ -6,6 +6,7 @@ import { DemoApi } from "./demo/api.js";
 import { liveDemoChain } from "./demo/live.js";
 import { ExplorerLinks } from "./explorer.js";
 import { LcdProxy } from "./lcd.js";
+import { Readings } from "./readings.js";
 import { DailyMeter } from "./meter/daily.js";
 import { liveMeterJob } from "./meter/live.js";
 import { StaticSite } from "./static.js";
@@ -34,7 +35,8 @@ const demoChain = liveDemoChain({
 const demo = new DemoApi(cfg.demo, demoChain);
 const lcd = new LcdProxy(cfg);
 const explorer = new ExplorerLinks({ ...cfg.explorer, restOrigin: cfg.restOrigin }, lcd);
-const server = createServer(createHandler({ cfg, lcd, explorer, demo, site: new StaticSite(webDist) }));
+const readings = new Readings({ ...cfg.readings, restOrigin: cfg.restOrigin }, lcd);
+const server = createServer(createHandler({ cfg, lcd, explorer, demo, readings, site: new StaticSite(webDist) }));
 server.listen(port, host, () => {
   console.log(`mentari server on http://${host}:${port} (site ${webDist})`);
 });

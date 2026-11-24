@@ -61,6 +61,12 @@ describe("server", () => {
     expect(r.headers.get("location")).toBe(`https://explorer.example.test/tx/${hash.toUpperCase()}`);
   });
 
+  it("routes /go/receipt/<id> to the receipt lookup, not the page shell", async () => {
+    const r = await fetch(`${base}/go/receipt/x`, { redirect: "manual" });
+    expect(r.status).toBe(404);
+    expect(r.headers.get("content-type")).not.toMatch(/^text\/html/);
+  });
+
   it("falls back to index.html for client routes but not for missing files", async () => {
     const route = await fetch(`${base}/verify`);
     expect(route.status).toBe(200);

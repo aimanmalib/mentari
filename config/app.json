@@ -116,6 +116,7 @@
     "explorer": {
       "tx": "https://explore.qore.network/tx/{hash}",
       "evmTx": "/go/tx/{hash}",
+      "receiptTx": "/go/receipt/{id}",
       "block": "https://explore.qore.network/block/{height}",
       "address": "https://explore.qore.network/address/{address}"
     },

@@ -31,6 +31,8 @@ describe("loadServerConfig", () => {
     expect(c.explorer.txTemplate).toMatch(/^https:\/\/.+\{hash\}/);
     expect(c.explorer.cacheSeconds).toBeGreaterThan(0);
     expect(() => loadServerConfig(copy((_l, app) => (app.web.explorer.evmTx = "/elsewhere/{hash}")))).toThrow(/evmTx/);
+    expect(c.explorer.receiptsBook).toMatch(/^qor1/);
+    expect(() => loadServerConfig(copy((_l, app) => (app.web.explorer.receiptTx = "https://x.test/{id}")))).toThrow(/receiptTx/);
     expect(() => loadServerConfig(copy((_l, app) => (app.web.explorer.tx = "http://x.test/tx/{hash}")))).toThrow(/explorer\.tx/);
     expect(() => loadServerConfig(copy((l) => delete l.explorer))).toThrow(/limits\.json explorer/);
   });

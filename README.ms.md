@@ -88,7 +88,7 @@ pnpm build && pnpm start        # laman di http://localhost:8080, membaca testne
 
 ## Ujian
 
-Dikira pada 22 November 2026 (ujian skrip pada 23 November) daripada larian tempatan, langkah yang sama dengan CI.
+Dikira pada 22 November 2026, dan ujian pelayan, laman serta skrip pada 24 November, daripada larian tempatan, langkah yang sama dengan CI.
 
 | Suite | Hasil |
 | --- | --- |

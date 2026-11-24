@@ -132,7 +132,7 @@ cd contracts && forge test
 
 ## Tests
 
-Counted on 22 November 2026 (the script tests on 23 November) from a local run, the same steps CI runs on every push.
+Counted on 22 November 2026, and the server, site and script tests on 24 November, from a local run, the same steps CI runs on every push.
 
 | Suite | Result | What it covers |
 | --- | --- | --- |

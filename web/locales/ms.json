@@ -104,7 +104,7 @@
     "holder": "Dipersarakan oleh",
     "time": "Masa",
     "evmTx": "Transaksi EVM",
-    "txUnknown": "Tiada transaksi EVM ditemui: ia dihantar dari lejar Native, atau nod mengehadkan carian log",
+    "txUnknown": "Tiada: ia dihantar dari lejar Native. Transaksinya dipaut di bawah resit.",
     "openAddress": "Buka {address} dalam penjelajah",
     "openTx": "Buka transaksi {hash} dalam penjelajah",
     "openBlock": "Buka blok {height} dalam penjelajah",
@@ -113,6 +113,9 @@
     "mismatch": "Tidak sepadan",
     "receipt": "Resit #{id}",
     "height": "Blok",
+    "nativeTx": "Transaksi",
+    "nativeTxView": "Lihat",
+    "openReceiptTx": "Buka transaksi yang menulis resit {id} dalam penjelajah",
     "noReceipt": "Lejar Native tiada resit dengan id ini.",
     "verifyThis": "Semak yang ini"
   },

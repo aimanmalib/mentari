@@ -8,7 +8,7 @@ import type { PairCheck, Receipt, Retirement } from "./types.js";
 export interface RetirementRecord {
   retirement: Retirement;
   receipt: Receipt | null;
-  /** Null when the EVM node did not return the `Retired` event (some public nodes limit log searches). */
+  /** Null when no `Retired` log was found: Native-lane retirements emit none the EVM node indexes (decision 0034). */
   evmTx: string | null;
   check: PairCheck;
 }

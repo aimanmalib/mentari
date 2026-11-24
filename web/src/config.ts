@@ -27,8 +27,11 @@ export interface SiteConfig {
   demoGrantWh: number;
   /** Wallet path: memo on wallet retirements, and the wallet dialog's locale for each site locale. */
   wallet: { memo: string; modalLocales: Record<string, string> };
-  /** `tx` takes a Cosmos hash; `evmTx` is this server's redirect for an EVM hash (decision 0033). */
-  explorer: { tx: string; evmTx: string; block: string; address: string };
+  /**
+   * `tx` takes a Cosmos hash; `evmTx` is this server's redirect for an EVM hash (decision 0033) and `receiptTx` its
+   * redirect for the transaction that wrote a receipt (decision 0034).
+   */
+  explorer: { tx: string; evmTx: string; receiptTx: string; block: string; address: string };
   /** Footer links: the public repository and the slides PDF. */
   links: { source: string; slides: string };
   defaultLocale: string;

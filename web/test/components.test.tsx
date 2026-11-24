@@ -41,6 +41,7 @@ describe("RecordPair", () => {
     expect(text(html)).not.toContain("Press Testnet");
     expect(html).toContain(siteConfig.explorer.address.replace("{address}", HOLDER));
     expect(html).toContain(siteConfig.explorer.block.replace("{height}", "10501234"));
+    expect(html).toContain(`href="${siteConfig.explorer.receiptTx.replace("{id}", "42")}"`);
     expect(html).toContain(explorerOrigin);
     expect(html).toContain('rel="noopener noreferrer"');
     expect(text(html)).toContain(RECORD.receipt!.note);
@@ -57,10 +58,17 @@ describe("RecordPair", () => {
         />,
       ),
     );
-    expect(html).toContain("No EVM transaction found: it was sent from the Native ledger, or the node limits log searches");
+    expect(html).toContain("None: it was sent from the Native ledger. Its transaction is linked under the receipt.");
     expect(html).toContain("The Native ledger has no receipt with this id.");
     expect(html).toContain("no receipt");
     expect(html).not.toContain("Check this one");
+  });
+
+  it("links the Native transaction under the receipt when there is no EVM transaction", () => {
+    const html = render(<RecordPair record={{ ...RECORD, evmTx: null }} />);
+    expect(html).toContain(`href="${siteConfig.explorer.receiptTx.replace("{id}", "42")}"`);
+    expect(html).not.toContain(siteConfig.explorer.evmTx.replace("{hash}", HASH));
+    expect(text(render(<RecordPair record={{ ...RECORD, evmTx: null }} />, "ms"))).toContain("Transaksinya dipaut di bawah resit");
   });
 
   it("renders in Bahasa Melayu", () => {

@@ -55,6 +55,7 @@ describe("explorer", () => {
     const x = explorer({
       tx: "https://x.test/tx/{hash}",
       evmTx: "/go/tx/{hash}",
+      receiptTx: "/go/receipt/{id}",
       block: "https://x.test/block/{height}",
       address: "https://x.test/a/{address}",
     });
@@ -62,6 +63,7 @@ describe("explorer", () => {
     expect(x.tx("0xab")).toBe("/go/tx/0xab");
     expect(x.tx("0XAB")).toBe("/go/tx/0XAB");
     expect(x.block(12)).toBe("https://x.test/block/12");
+    expect(x.receiptTx(14)).toBe("/go/receipt/14");
     expect(x.address("a/b?c")).toBe("https://x.test/a/a%2Fb%3Fc");
   });
 });

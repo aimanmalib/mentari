@@ -96,6 +96,14 @@ export function RecordPair({ record, showVerify = true }: { record: RetirementRe
                   </ChainLink>
                 </dd>
               </div>
+              <div>
+                <dt>{t("records.nativeTx")}</dt>
+                <dd>
+                  <ChainLink href={links.receiptTx(receipt.id)} label={t("records.openReceiptTx", { id: receipt.id })}>
+                    {t("records.nativeTxView")}
+                  </ChainLink>
+                </dd>
+              </div>
             </dl>
           </>
         ) : (

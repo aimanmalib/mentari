@@ -104,7 +104,7 @@
     "holder": "Retired by",
     "time": "Time",
     "evmTx": "EVM transaction",
-    "txUnknown": "No EVM transaction found: it was sent from the Native ledger, or the node limits log searches",
+    "txUnknown": "None: it was sent from the Native ledger. Its transaction is linked under the receipt.",
     "openAddress": "Open {address} in the explorer",
     "openTx": "Open transaction {hash} in the explorer",
     "openBlock": "Open block {height} in the explorer",
@@ -113,6 +113,9 @@
     "mismatch": "No match",
     "receipt": "Receipt #{id}",
     "height": "Block",
+    "nativeTx": "Transaction",
+    "nativeTxView": "View",
+    "openReceiptTx": "Open the transaction that wrote receipt {id} in the explorer",
     "noReceipt": "The Native ledger has no receipt with this id.",
     "verifyThis": "Check this one"
   },

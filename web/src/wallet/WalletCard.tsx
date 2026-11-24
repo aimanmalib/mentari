@@ -134,6 +134,7 @@ export function WalletCard() {
   return (
     <section className="wallet" aria-labelledby="wallet-title">
       <div className="wallet-head">
+        <p className="wallet-preview">{t("wallet.preview")}</p>
         <h2 id="wallet-title">{t("wallet.title")}</h2>
         <p>{t("wallet.lede", { wh: num(siteConfig.demoGrantWh) })}</p>
         <p className="wallet-note">{t("wallet.honest")}</p>

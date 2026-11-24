@@ -52,6 +52,57 @@
       "wrong-note": "note does not match"
     }
   },
+  "home": {
+    "cta": "Retire {wh} Wh now",
+    "ctaSub": "One press sends a real testnet transaction. No wallet needed.",
+    "howLink": "How it works",
+    "posterAlt": "The Mentari cover: the registry page with both ledgers and the check that they agree.",
+    "posterCaption": "Mentari on the QoreChain testnet",
+    "watch": "Watch the demo video",
+    "proofTitle": "Live on the testnet now",
+    "proofLede": "These numbers are read from the chain each time the page loads. Every retirement has a receipt on the other ledger, and the page checks each pair.",
+    "latest": "Latest retirement #{n} wrote receipt #{id}.",
+    "latestLink": "Open its Native transaction",
+    "latestLabel": "Open the Native transaction that wrote receipt {id} in the explorer",
+    "stepsTitle": "How one retirement works",
+    "steps": {
+      "meter": {
+        "title": "A meter signs a reading",
+        "text": "Each solar meter signs its daily reading with an ML-DSA-87 key. The contract checks that signature on chain and mints one certificate per watt-hour."
+      },
+      "retire": {
+        "title": "You retire watt-hours",
+        "text": "Retiring burns the certificates on the EVM ledger, so the same watt-hour can never be claimed twice."
+      },
+      "receipt": {
+        "title": "The Native ledger writes a receipt",
+        "text": "The same transaction crosses to the Native ledger and writes a public receipt. If either side fails, neither changes."
+      }
+    },
+    "faqTitle": "Questions",
+    "faq": {
+      "meter": {
+        "q": "Are the solar meters real?",
+        "a": "No. The meters are simulated. Each one has its own ML-DSA-87 key and signs its readings the way a real meter would, but the readings do not come from real panels."
+      },
+      "network": {
+        "q": "Is this on mainnet?",
+        "a": "No. Everything runs on the QoreChain testnet. The certificates have no money value."
+      },
+      "audit": {
+        "q": "Has the code been audited?",
+        "a": "No. The repository has tests and a threat model, but no professional audit."
+      },
+      "quantum": {
+        "q": "Where does post-quantum signing come in?",
+        "a": "Meter keys and readings use ML-DSA-87, and the contract checks them. Retire now is sent from the Native lane with a hybrid signature, and the public explorer labels those transactions quantum-safe."
+      },
+      "fail": {
+        "q": "What happens if one side fails?",
+        "a": "Neither ledger changes. Try it has three buttons built to fail. Each one reaches the Native side, reverts, and the page shows both counts before and after."
+      }
+    }
+  },
   "systems": {
     "title": "Solar systems",
     "note": "These meters are simulated. Readings come from a seeded model, are signed with ML-DSA-87 keys and are checked by the contract like real readings.",
@@ -238,6 +289,7 @@
     "idle": "Results appear here. To look up any past retirement, use"
   },
   "wallet": {
+    "preview": "Preview: QoreX cannot sign this step yet",
     "title": "Retire from your own wallet",
     "lede": "Connect QoreX, ask the demo account for {wh} Wh of certificates, then retire them yourself. Your transaction writes the receipt to the Native ledger, the same way Retire now does.",
     "honest": "QoreX signs Native transactions today. It does not sign EVM transactions yet, so it may refuse the last step. Retire now above needs no wallet.",

@@ -31,9 +31,13 @@ export function useSearch(): string {
   return useLocationPart(readSearch);
 }
 
-export function navigate(to: string, opts: { keepScroll?: boolean } = {}): void {
-  if (to === location.pathname + location.search) return;
-  history.pushState(null, "", to);
+/**
+ * `state` rides in history.state, not the URL, so a crawler that follows links never carries it (the home page's
+ * "Retire now" button uses it to ask the Try it page for one press).
+ */
+export function navigate(to: string, opts: { keepScroll?: boolean; state?: unknown } = {}): void {
+  if (to === location.pathname + location.search && opts.state === undefined) return;
+  history.pushState(opts.state ?? null, "", to);
   dispatchEvent(new PopStateEvent("popstate"));
   if (!opts.keepScroll) scrollTo(0, 0);
 }

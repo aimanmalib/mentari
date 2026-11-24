@@ -213,8 +213,20 @@
       "maxRedirectChecks": 40
     },
     "links": {
+      "_comment": "source and slides are footer links. video is the demo video page (YouTube); empty = the home page shows the poster without a play link.",
       "source": "https://github.com/aimanmalib/mentari",
-      "slides": "https://github.com/aimanmalib/mentari/blob/main/docs/deck.pdf"
+      "slides": "https://github.com/aimanmalib/mentari/blob/main/docs/deck.pdf",
+      "video": ""
+    },
+    "home": {
+      "_comment": "The home page (decision 0035). faq lists the questions in order; each id has home.faq.<id>.q and .a in web/locales. poster is drawn from brand/mentari-cover.png at build time.",
+      "faq": [
+        "meter",
+        "network",
+        "audit",
+        "quantum",
+        "fail"
+      ]
     }
   },
   "cases": {

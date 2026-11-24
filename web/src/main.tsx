@@ -12,6 +12,7 @@ import "./styles/records.css";
 import "./styles/verify.css";
 import "./styles/try.css";
 import "./styles/wallet.css";
+import "./styles/home.css";
 import { App } from "./App.js";
 import { I18nProvider } from "./i18n/I18n.js";
 

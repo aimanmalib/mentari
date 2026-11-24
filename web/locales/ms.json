@@ -52,6 +52,57 @@
       "wrong-note": "nota tidak sepadan"
     }
   },
+  "home": {
+    "cta": "Persarakan {wh} Wh sekarang",
+    "ctaSub": "Satu tekan menghantar transaksi testnet sebenar. Tiada dompet diperlukan.",
+    "howLink": "Cara ia berfungsi",
+    "posterAlt": "Kulit Mentari: halaman daftar dengan kedua-dua lejar dan semakan bahawa kedua-duanya sepadan.",
+    "posterCaption": "Mentari di testnet QoreChain",
+    "watch": "Tonton video demo",
+    "proofTitle": "Hidup di testnet sekarang",
+    "proofLede": "Angka ini dibaca dari rantai setiap kali halaman dimuat. Setiap persaraan ada resit di lejar yang satu lagi, dan halaman menyemak setiap pasangan.",
+    "latest": "Persaraan terkini #{n} menulis resit #{id}.",
+    "latestLink": "Buka transaksi Native-nya",
+    "latestLabel": "Buka transaksi Native yang menulis resit {id} dalam penjelajah",
+    "stepsTitle": "Bagaimana satu persaraan berlaku",
+    "steps": {
+      "meter": {
+        "title": "Meter menandatangani bacaan",
+        "text": "Setiap meter solar menandatangani bacaan hariannya dengan kunci ML-DSA-87. Kontrak menyemak tandatangan itu di rantai dan mencetak satu sijil bagi setiap watt-jam."
+      },
+      "retire": {
+        "title": "Anda bersarakan watt-jam",
+        "text": "Persaraan membakar sijil di lejar EVM, jadi watt-jam yang sama tidak boleh dituntut dua kali."
+      },
+      "receipt": {
+        "title": "Lejar Native menulis resit",
+        "text": "Transaksi yang sama menyeberang ke lejar Native dan menulis resit awam. Jika mana-mana bahagian gagal, kedua-duanya tidak berubah."
+      }
+    },
+    "faqTitle": "Soalan",
+    "faq": {
+      "meter": {
+        "q": "Adakah meter solar itu sebenar?",
+        "a": "Tidak. Meter itu simulasi. Setiap satu ada kunci ML-DSA-87 sendiri dan menandatangani bacaannya seperti meter sebenar, tetapi bacaannya bukan dari panel sebenar."
+      },
+      "network": {
+        "q": "Adakah ini di mainnet?",
+        "a": "Tidak. Semuanya berjalan di testnet QoreChain. Sijil itu tiada nilai wang."
+      },
+      "audit": {
+        "q": "Adakah kod ini sudah diaudit?",
+        "a": "Tidak. Repositori ada ujian dan model ancaman, tetapi tiada audit profesional."
+      },
+      "quantum": {
+        "q": "Di mana tandatangan pasca-kuantum digunakan?",
+        "a": "Kunci dan bacaan meter guna ML-DSA-87, dan kontrak menyemaknya. Persarakan sekarang dihantar dari lorong Native dengan tandatangan hibrid, dan penjelajah awam melabel transaksi itu quantum-safe."
+      },
+      "fail": {
+        "q": "Apa berlaku jika satu bahagian gagal?",
+        "a": "Kedua-dua lejar tidak berubah. Cuba ada tiga butang yang dibina untuk gagal. Setiap satu sampai ke bahagian Native, berbalik, dan halaman menunjukkan kedua-dua kiraan sebelum dan selepas."
+      }
+    }
+  },
   "systems": {
     "title": "Sistem solar",
     "note": "Meter ini simulasi. Bacaan datang dari model berbenih, ditandatangani dengan kunci ML-DSA-87 dan disemak oleh kontrak seperti bacaan sebenar.",
@@ -238,6 +289,7 @@
     "idle": "Hasil muncul di sini. Untuk mencari persaraan lepas, guna"
   },
   "wallet": {
+    "preview": "Pratonton: QoreX belum boleh menandatangani langkah ini",
     "title": "Bersarakan dari dompet anda sendiri",
     "lede": "Sambung QoreX, minta {wh} Wh sijil daripada akaun demo, kemudian bersarakan sendiri. Transaksi anda menulis resit ke lejar Native, sama seperti Persarakan sekarang.",
     "honest": "QoreX menandatangani transaksi Native hari ini. Ia belum menandatangani transaksi EVM, jadi ia mungkin menolak langkah terakhir. Persarakan sekarang di atas tidak memerlukan dompet.",

@@ -4,6 +4,7 @@ import { siteConfig } from "../config.js";
 import { DEMO_ACTIONS, knownFallback, readStatus, runDemo, type DemoAction, type DemoOutcome, type DemoStatus } from "../data/demo.js";
 import { recheckCase, type EvidenceCase, type Recheck } from "../data/evidence.js";
 import { evidenceCases } from "../data/evidenceSource.js";
+import { takePressRequest } from "../data/pressOnOpen.js";
 import { getReaders, siteMode } from "../data/useReaders.js";
 import { useI18n } from "../i18n/I18n.js";
 import { Link, routes } from "../router.js";
@@ -58,6 +59,13 @@ export function TryIt() {
       setRecheck(await recheckCase(rec, readers ? readers.txStatus : null));
     }
   };
+
+  // The home page's "Retire now" button asks for one press here; it runs once the status is known.
+  useEffect(() => {
+    if (status === "loading") return;
+    const asked = takePressRequest();
+    if (asked) void press(asked);
+  }, [status]);
 
   const steps = [
     t("tryit.step1", { wh: num(siteConfig.demoRetireWh) }),

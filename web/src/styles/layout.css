@@ -99,7 +99,8 @@ main {
   max-width: var(--measure);
 }
 
-.intro h1 {
+.intro h1,
+.hero h1 {
   font-size: var(--step-4);
   font-weight: 700;
   font-stretch: 84%;

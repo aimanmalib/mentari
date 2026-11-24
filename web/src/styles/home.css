@@ -1,0 +1,273 @@
+/* The home page: hero with one action and the framed product, the live proof, three steps and the questions. */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+  align-items: center;
+  gap: var(--space-7);
+}
+
+.hero-text {
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.hero-actions {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+
+/* The same noon slab as Retire now on Try it, so the action looks the same on both pages. */
+.hero-cta {
+  max-width: 100%;
+  min-height: 3.5rem;
+  padding: var(--space-3) var(--space-6);
+  border: 0;
+  border-radius: var(--radius-lane);
+  background: var(--noon);
+  color: var(--ink);
+  font: 700 var(--step-2) / 1.1 var(--font-display);
+  font-stretch: 84%;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: inset 0 -6px 0 rgb(107 72 0 / 0.25);
+}
+
+.hero-cta:hover {
+  box-shadow: inset 0 -10px 0 rgb(107 72 0 / 0.3);
+}
+
+.hero-cta-sub {
+  color: var(--muted);
+  font-size: var(--step--1);
+}
+
+.hero-how {
+  font-weight: 600;
+}
+
+/* The cover in a panel frame: silicon cells around the picture, the noon sun rising behind its lower edge. */
+.poster {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  min-width: 0;
+}
+
+.poster-frame {
+  position: relative;
+  padding: var(--space-3);
+  border-radius: var(--radius-lane);
+  background-color: var(--silicon-deep);
+  background-image:
+    repeating-linear-gradient(90deg, transparent 0 calc(25% - 1px), var(--busbar-on-silicon) calc(25% - 1px) 25%),
+    repeating-linear-gradient(0deg, transparent 0 11px, var(--busbar-on-silicon) 11px 12px);
+  isolation: isolate;
+}
+
+.poster-frame::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  right: 10%;
+  top: calc(-1 * var(--space-6));
+  width: 22%;
+  aspect-ratio: 2 / 1;
+  border-radius: 999px 999px 0 0;
+  background: var(--noon);
+}
+
+.poster img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-small);
+}
+
+.poster-play {
+  position: relative;
+  display: block;
+  border-radius: var(--radius-small);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.poster-button {
+  position: absolute;
+  left: var(--space-4);
+  bottom: var(--space-4);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: 0 var(--space-4) 0 var(--space-3);
+  border-radius: 999px;
+  background: var(--noon);
+  font-weight: 700;
+  box-shadow: var(--shadow-seal);
+}
+
+.poster-button svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: currentColor;
+}
+
+.poster figcaption {
+  color: var(--muted);
+  font-size: var(--step--1);
+}
+
+/* Live proof. */
+.proof {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.proof-head {
+  display: grid;
+  gap: var(--space-3);
+  max-width: var(--measure);
+}
+
+.proof h2,
+.home-steps h2,
+.faq h2 {
+  font-size: var(--step-2);
+  font-stretch: 86%;
+}
+
+.proof-head > p {
+  color: var(--muted);
+}
+
+.latest {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.latest-link {
+  font-weight: 600;
+}
+
+/* Three steps in order. The first two belong to the EVM side, the last to the Native ledger. */
+.home-steps {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.home-steps ol {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+}
+
+.step {
+  display: grid;
+  align-content: start;
+  gap: var(--space-2);
+  padding-top: var(--space-4);
+  border-top: 4px solid var(--silicon);
+  counter-increment: step;
+}
+
+.step::before {
+  content: counter(step);
+  font: 700 var(--step-3) / 1 var(--font-display);
+  font-stretch: 84%;
+  color: var(--silicon);
+}
+
+.step-receipt {
+  border-top-color: var(--noon);
+}
+
+.step-receipt::before {
+  color: var(--noon-ink);
+}
+
+.step h3 {
+  font-size: var(--step-1);
+  font-stretch: 88%;
+}
+
+.step p {
+  color: var(--muted);
+  max-width: 40ch;
+}
+
+/* Questions. */
+.faq {
+  display: grid;
+  gap: var(--space-4);
+  max-width: var(--measure);
+}
+
+.faq-list {
+  border-top: var(--rule);
+}
+
+.faq details {
+  border-bottom: var(--rule);
+}
+
+.faq summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-4);
+  min-height: 44px;
+  padding-block: var(--space-3);
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+.faq summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq summary::after {
+  content: "+";
+  flex: none;
+  font: 700 var(--step-1) / 1 var(--font-display);
+  color: var(--silicon);
+  transition: transform 160ms ease-out;
+}
+
+.faq details[open] summary::after {
+  transform: rotate(45deg);
+}
+
+.faq details p {
+  padding-bottom: var(--space-4);
+  color: var(--muted);
+}
+
+/* The wallet panel on Try it is a preview until QoreX signs EVM transactions. */
+.wallet-preview {
+  justify-self: start;
+  padding: var(--space-1) var(--space-3);
+  border-radius: 999px;
+  background: var(--noon-wash);
+  color: var(--noon-ink);
+  font-size: var(--step--1);
+  font-weight: 600;
+}
+
+@media (max-width: 56rem) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-6);
+  }
+
+  .home-steps ol {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

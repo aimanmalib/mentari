@@ -32,8 +32,10 @@ export interface SiteConfig {
    * redirect for the transaction that wrote a receipt (decision 0034).
    */
   explorer: { tx: string; evmTx: string; receiptTx: string; block: string; address: string };
-  /** Footer links: the public repository and the slides PDF. */
-  links: { source: string; slides: string };
+  /** Footer links (the public repository and the slides PDF) and the demo video page; an empty video means none yet. */
+  links: { source: string; slides: string; video: string };
+  /** The home page: the FAQ question ids, in order (text in web/locales `home.faq.<id>`). */
+  home: { faq: string[] };
   defaultLocale: string;
   locales: string[];
   simulatedMeters: boolean;
@@ -61,6 +63,7 @@ export const siteConfig: SiteConfig = {
   wallet: app.web.wallet,
   explorer: app.web.explorer,
   links: app.web.links,
+  home: app.web.home,
   defaultLocale: app.web.defaultLocale,
   locales: app.web.locales,
   simulatedMeters: meter.simulated,

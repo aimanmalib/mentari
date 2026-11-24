@@ -48,10 +48,14 @@ export interface RecordedCase {
   receipt?: { id: number; sender: string; note: string };
 }
 
-/** Case H as `pnpm native-entry` records it: Native transactions only, no EVM transaction of its own. */
+/**
+ * Case H as `pnpm native-entry` records it: Native transactions only, no EVM transaction of its own. Case I as
+ * `pnpm classic-only` records it: the same steps, plus `classic`, an EVM transaction the chain refused.
+ */
 export interface RecordedEntry {
-  id: "H";
+  id: "H" | "I";
   steps: readonly { step: number; function: string; cosmos_tx: string; height: number | null; accepted: boolean }[];
+  classic?: { evm_tx: string; refused: boolean };
 }
 
 const isEntry = (c: RecordedCase | RecordedEntry): c is RecordedEntry => Array.isArray((c as RecordedEntry).steps);
@@ -204,11 +208,20 @@ async function caseChecks(evm: EvmReader, book: BookReader, input: VerifyInput, 
   return out;
 }
 
-/** Each step of case H: the node has its Cosmos transaction with the recorded outcome, and the book moved to match. */
-async function entryChecks(book: BookReader, c: RecordedEntry): Promise<Check[]> {
-  const out: Check[] = [];
+/** Case I step 1: a transaction recorded as refused must still have no receipt on the EVM lane. */
+async function classicCheck(evm: EvmReader, c: RecordedEntry): Promise<Check[]> {
+  if (!c.classic) return [];
+  const name = `case ${c.id} classic-key EVM transaction ${c.classic.refused ? "never ran" : "ran"}`;
+  const tx = await evm.tx(c.classic.evm_tx);
+  if ((tx === null) === c.classic.refused) return [pass("cases", name, c.classic.evm_tx)];
+  return [fail("cases", name, tx === null ? "the node has no receipt" : `the node has a receipt: ${tx.status}`)];
+}
+
+/** Each Native step of case H or I: the node has its Cosmos transaction with the recorded outcome, and the book moved to match. */
+async function entryChecks(evm: EvmReader, book: BookReader, c: RecordedEntry): Promise<Check[]> {
+  const out: Check[] = await classicCheck(evm, c);
   for (const s of c.steps) {
-    const label = `case H step ${s.step} ${s.function}`;
+    const label = `case ${c.id} step ${s.step} ${s.function}`;
     const want = s.accepted ? "accepted" : "not accepted";
     let tx: { code: number; height: number } | null = null;
     try {
@@ -240,7 +253,7 @@ async function entryChecks(book: BookReader, c: RecordedEntry): Promise<Check[]>
 
 export async function runVerify(evm: EvmReader, book: BookReader, input: VerifyInput): Promise<Check[]> {
   const checks = [...(await contractChecks(evm, input)), ...(await retirementChecks(evm, book, input))];
-  const perCase = await Promise.all(input.cases.map((c) => (isEntry(c) ? entryChecks(book, c) : caseChecks(evm, book, input, c))));
+  const perCase = await Promise.all(input.cases.map((c) => (isEntry(c) ? entryChecks(evm, book, c) : caseChecks(evm, book, input, c))));
   return [...checks, ...perCase.flat()];
 }
 

@@ -8,6 +8,7 @@
     "native": "tsx native.ts",
     "cases": "tsx cases.ts",
     "native-entry": "tsx native-entry.ts",
+    "classic-only": "tsx classic-only.ts",
     "verify": "tsx verify.ts",
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json"

@@ -304,6 +304,14 @@ changes were each made once, and each turned at least one test red: removing the
 block as accepted, dropping case H in `mergeEvidence`, treating a refusal before any block as included, and signing
 classical instead of hybrid.
 
+`scripts/src/classic-only.ts` runs case I (ADR 0038). Its tests use a fake node. They check that the EVM transaction
+is signed at the sender's pending nonce and sent once; that a refused send is recorded with the node's first line and
+counts as refused only with no receipt and nonce and holdings unchanged; that a taken transaction is watched for
+`waitSeconds` and a receipt, even a reverted one, is not called refused; and that nothing is sent while the sender has
+a live EVM window. `pnpm verify` fails case I when the node has a receipt for the refused hash. Three changes were each
+made once, and each turned a test red: dropping the unchanged-state condition, dropping the case I check in verify, and
+polling for the whole wait after a refused send.
+
 `scripts/src/native.ts` gets the accounts ready on the Native lane (ADR 0016). Its tests run against an in-memory
 lane that applies bank sends, key registrations and windows, and refuses a hybrid transaction from an account with no
 key or a classical transaction that is not a key registration. They check that a top-up sends only what is short, in

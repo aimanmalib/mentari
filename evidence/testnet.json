@@ -300,6 +300,94 @@
           ]
         }
       ]
+    },
+    {
+      "id": "I",
+      "title": "A classical key alone cannot spend certificates: an EVM retire signed with secp256k1 only, then the same retire from the Native lane",
+      "sender": {
+        "role": "buyer",
+        "cosmos": "qor14yc6fymv4c9nfyxmu85xfp8wp8m4vlgp5srudw",
+        "evm": "0xA931a4936cAE0B3490DBe1e86484eE09F7567d01"
+      },
+      "ranAt": "2026-11-24T09:09:16.752Z",
+      "classic": {
+        "question": "Can an account's secp256k1 key alone retire its certificates? An EVM transaction calling Mentari.retire, signed without ML-DSA-87, with no EVM window open.",
+        "function": "retire",
+        "args": [
+          "500",
+          "Case I"
+        ],
+        "signed_with": "secp256k1 only",
+        "window_before": "closed",
+        "evm_tx": "0x3c297530cadcd180945ca7ee06f292c20077b9a0b7bab683c037641c1d6ca515",
+        "eth_call": "the same call succeeds as an eth_call",
+        "rpc_error": "failed to broadcast transaction: account qor14yc6fymv4c9nfyxmu85xfp8wp8m4vlgp5srudw has no open EVM authorisation window; open one with MsgOpenEVMWindow, signed on the Cosmos lane with the account's post-quantum key: no open EVM authorisation window: no open EVM authorisation window [cosmossdk.io/errors@v1.0.2/errors.go:77]",
+        "receipt_found": false,
+        "receipt_status": null,
+        "refused": true,
+        "before": {
+          "nonce": 6,
+          "certificates": "1000",
+          "retirementsCount": "21"
+        },
+        "after": {
+          "nonce": 6,
+          "certificates": "1000",
+          "retirementsCount": "21"
+        }
+      },
+      "steps": [
+        {
+          "step": 2,
+          "question": "The same account and the same retire, sent as a hybrid-signed (secp256k1 + ML-DSA-87) MsgCrossVMCall from the Native lane.",
+          "function": "retire",
+          "args": [
+            "500",
+            "Case I"
+          ],
+          "contract_would": "burn the certificates and write one Native receipt",
+          "window_before": "closed",
+          "cosmos_tx": "97A5C80786442EC1C3866D0A890FE0E21915DB22B227F675A92F9873AE4CEA38",
+          "stage": "block",
+          "code": 0,
+          "codespace": "",
+          "log": "",
+          "height": 10658815,
+          "gas_used": 1001213,
+          "accepted": true,
+          "revert_reason": null,
+          "event_types": [
+            "pqc_verify",
+            "pqc_hybrid_verify",
+            "ai_anomaly_check",
+            "coin_spent",
+            "coin_received",
+            "transfer",
+            "message",
+            "tx",
+            "execute",
+            "wasm",
+            "crossvm_request",
+            "crossvm_response"
+          ],
+          "receipts": {
+            "before": 30,
+            "after": 31
+          },
+          "state": [
+            {
+              "name": "retirementsCount",
+              "before": "21",
+              "after": "22"
+            },
+            {
+              "name": "balanceOf(buyer)",
+              "before": "1000",
+              "after": "500"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

@@ -79,6 +79,16 @@ counts (runs 10 to 12 in `evidence/live.json`): Write, then revert `4F9B5F8D4547
 `C003B67FFB655EB48A19965F0B7FD6E3A8C49A3C63FB2B2C85FCC0308DC4E07B`. The explorer shows these presses as "failed
 (code 14)" with the signature marked quantum-safe, ML-DSA-87. The daily meter uses the route too (decision 0031).
 
+## Case I: the classical key alone
+
+`Mentari.retire` acts for `msg.sender`, so I asked what a stolen secp256k1 key could do on its own. On 24 November
+the buyer, with no EVM window, signed `retire(500, "Case I")` as an EVM transaction with its secp256k1 key only.
+The node refused it at broadcast: the account "has no open EVM authorisation window; open one with MsgOpenEVMWindow,
+signed on the Cosmos lane with the account's post-quantum key". No receipt, nonce 6 -> 6, certificates unchanged
+(`0x3c297530cadcd180945ca7ee06f292c20077b9a0b7bab683c037641c1d6ca515`). The same retire from the same account, sent
+as a hybrid-signed `MsgCrossVMCall`, was accepted (`97A5C80786442EC1C3866D0A890FE0E21915DB22B227F675A92F9873AE4CEA38`,
+receipts 30 -> 31). Decision 0038 has the details and the limit: an account with a live window is not covered.
+
 ## What I did not test
 
 - An asynchronous `MsgCrossVMCall` into the EVM.

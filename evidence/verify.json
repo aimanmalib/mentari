@@ -1,10 +1,10 @@
 {
-  "readAt": "2026-11-24T07:10:22.379Z",
+  "readAt": "2026-11-24T09:09:53.964Z",
   "evmRpc": "https://evm-testnet.qore.host",
   "rest": "https://api-testnet.qore.host",
-  "evmBlock": 10653907,
-  "checks": 92,
-  "passed": 92,
+  "evmBlock": 10658843,
+  "checks": 97,
+  "passed": 97,
   "failed": 0,
   "unavailable": 0,
   "checkList": [
@@ -125,17 +125,27 @@
     },
     {
       "group": "retirements",
-      "name": "receipt ids rise with the retirement number (20 retirements)",
+      "name": "retirement 21 matches receipt 30",
+      "outcome": "pass"
+    },
+    {
+      "group": "retirements",
+      "name": "retirement 22 matches receipt 31",
+      "outcome": "pass"
+    },
+    {
+      "group": "retirements",
+      "name": "receipt ids rise with the retirement number (22 retirements)",
       "outcome": "pass"
     },
     {
       "group": "totals",
-      "name": "minted 449963 - retired 10000 = supply 439963",
+      "name": "minted 449963 - retired 11000 = supply 438963",
       "outcome": "pass"
     },
     {
       "group": "totals",
-      "name": "the 20 retirements add up to retired 10000 Wh",
+      "name": "the 22 retirements add up to retired 11000 Wh",
       "outcome": "pass"
     },
     {
@@ -294,6 +304,24 @@
       "name": "case H step 2 retire receipts book gained a receipt at block 10613003",
       "outcome": "pass",
       "detail": "13 -> 14"
+    },
+    {
+      "group": "cases",
+      "name": "case I classic-key EVM transaction never ran",
+      "outcome": "pass",
+      "detail": "0x3c297530cadcd180945ca7ee06f292c20077b9a0b7bab683c037641c1d6ca515"
+    },
+    {
+      "group": "cases",
+      "name": "case I step 2 retire Cosmos transaction accepted",
+      "outcome": "pass",
+      "detail": "97A5C80786442EC1C3866D0A890FE0E21915DB22B227F675A92F9873AE4CEA38"
+    },
+    {
+      "group": "cases",
+      "name": "case I step 2 retire receipts book gained a receipt at block 10658815",
+      "outcome": "pass",
+      "detail": "30 -> 31"
     },
     {
       "group": "live",

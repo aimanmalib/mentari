@@ -181,4 +181,32 @@ describe("verify", () => {
       expect([r.summary.failed, r.summary.unavailable]).toEqual([0, 1]);
     });
   });
+  describe("case I", () => {
+    const I: RecordedEntry = {
+      id: "I",
+      classic: { evm_tx: "0xc1", refused: true },
+      steps: [{ step: 2, function: "retire", cosmos_tx: "I2", height: 500, accepted: true }],
+    };
+    const runI = (change: (w: World) => void = () => {}) =>
+      run((w) => {
+        w.native.set("I2", { code: 0, height: 500 });
+        for (const [h, c] of [[499, 9], [500, 10]] as const) w.counts.set(h, c);
+        change(w);
+      }, [...CASES, I]);
+
+    it("passes when the classic-key transaction has no receipt and the Native retire added one receipt", async () => {
+      const { summary, checks } = await runI();
+      expect(summary.failed).toBe(0);
+      expect(checks.filter((c) => c.name.startsWith("case I")).map((c) => c.name)).toEqual([
+        "case I classic-key EVM transaction never ran",
+        "case I step 2 retire Cosmos transaction accepted",
+        "case I step 2 retire receipts book gained a receipt at block 500",
+      ]);
+    });
+
+    it("fails when the node has a receipt for the classic-key transaction", async () => {
+      for (const status of ["success", "reverted"] as const)
+        expect((await runI((w) => w.txs.set("0xc1", { status, to: MENTARI }))).failed).toEqual(["case I classic-key EVM transaction never ran"]);
+    });
+  });
 });

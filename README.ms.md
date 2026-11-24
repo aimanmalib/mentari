@@ -25,8 +25,8 @@ pertama ialah [`6012d2b`](https://github.com/aimanmalib/mentari/commit/6012d2b) 
 > **Keadaan hari ini** (dibaca dari [`evidence/`](evidence/)):
 > - Kontrak testnet: `Mentari` di `0xf5cb2c6048a7ce8c5a7accc66eb8efc33942a448`, `AtomicityProbe` di `0x7438df055f0d96e6ba1b9ac8e7334a1be56130e4`.
 > - 449,963 Wh dicetak daripada bacaan meter, setiap satu disemak di rantai dengan ML-DSA-87: 9 semasa deploy ([`deploy.json`](evidence/deploy.json)), 1 dalam kes H, dan bacaan meter harian yang dihantar dari lorong Native sejak 24 November ([keputusan 0031](docs/decisions/0031-daily-meter-attest-gas.md), dalam bahasa Inggeris).
-> - 20 persaraan, 10,000 Wh dibersarakan, setiap satu sepadan dengan resit Native; `pnpm verify` lulus 92 daripada 92 semakan ([`verify.json`](evidence/verify.json)).
-> - Kes A hingga H direkod bersama transaksinya ([`testnet.json`](evidence/testnet.json)); kes H ialah attest dan persaraan yang dihantar dari lorong Native tanpa EVM window ([`docs/findings.md`](docs/findings.md), dalam bahasa Inggeris).
+> - 22 persaraan, 11,000 Wh dibersarakan, setiap satu sepadan dengan resit Native; `pnpm verify` lulus 97 daripada 97 semakan ([`verify.json`](evidence/verify.json)).
+> - Kes A hingga I direkod bersama transaksinya ([`testnet.json`](evidence/testnet.json)); kes H ialah attest dan persaraan yang dihantar dari lorong Native tanpa EVM window, dan dalam kes I rantai menolak persaraan yang ditandatangani dengan kunci secp256k1 sahaja ([`docs/findings.md`](docs/findings.md), dalam bahasa Inggeris).
 > - "Retire now" di laman awam: 7 tekanan berturut-turut, setiap satu menaikkan kedua-dua lejar satu; setiap butang kegagalan tidak mengubah mana-mana lejar, dan sejak 24 November setiap satu ialah transaksi Native yang dibatalkan rantai dengan kod 14 ([`live.json`](evidence/live.json)).
 
 ## Semak dalam 3 langkah

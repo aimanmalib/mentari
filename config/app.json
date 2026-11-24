@@ -256,5 +256,15 @@
     "memo": "Native entry E1",
     "gas": 2000000,
     "stockWh": 1000
+  },
+  "classicOnly": {
+    "_comment": "Case I (pnpm classic-only, decision 0038). role: sends both steps and must have no EVM window. Step 1 is Mentari.retire as an EVM transaction signed with the secp256k1 key alone, gas limit evmGas, watched for a receipt for waitSeconds. Step 2 is the same retire as a hybrid-signed MsgCrossVMCall with gas limit nativeGas. Before step 1 the demo sender gives the role stockWh of certificates from the Native lane when it holds fewer than retireWh.",
+    "role": "buyer",
+    "retireWh": 500,
+    "memo": "Case I",
+    "evmGas": 1500000,
+    "nativeGas": 2000000,
+    "stockWh": 1000,
+    "waitSeconds": 30
   }
 }

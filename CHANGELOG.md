@@ -25,6 +25,9 @@ contract is a new deployment, listed here with its new address.
 
 ### Added
 
+- `pnpm bank-fee` records cases J and J2: a 0.1 QOR fee `MsgSend` and a `retire` call in one hybrid-signed
+  Native transaction. In J both run; in J2 the retire reverts and the fee transfer is undone with it. `pnpm verify`
+  reads the recipient's balance around each block (decision 0041).
 - `deploy/selftest.sh` checks the live demo every 6 hours while it is judged: honest status, the demo sender above
   20 QOR, and the full public `verify`. `deploy/deploy.sh` refuses a new deploy after `deploy.freezeAfter` unless the
   judges ask for a change (decision 0040).

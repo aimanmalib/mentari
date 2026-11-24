@@ -25,9 +25,9 @@ commit is [`6012d2b`](https://github.com/aimanmalib/mentari/commit/6012d2b) on 2
 
 > **Where it stands today** (read from [`evidence/`](evidence/)):
 > - 449,963 Wh minted from meter readings, each ML-DSA-87 signature checked on chain ([`deploy.json`](evidence/deploy.json), [decision 0031](docs/decisions/0031-daily-meter-attest-gas.md)).
-> - 22 retirements and 11,000 Wh retired, each matched to its Native receipt.
-> - `pnpm verify` passed 97 of 97 checks ([`verify.json`](evidence/verify.json)).
-> - Cases A to I recorded on testnet with their transactions ([`testnet.json`](evidence/testnet.json)).
+> - 24 retirements and 12,000 Wh retired, each matched to its Native receipt.
+> - `pnpm verify` passed 107 of 107 checks ([`verify.json`](evidence/verify.json)).
+> - Cases A to J2 recorded on testnet with their transactions ([`testnet.json`](evidence/testnet.json)).
 > - 13 recorded presses on the public site, 7 of them "Retire now" in a row, each moving both ledgers by one ([`live.json`](evidence/live.json)).
 
 ## Judge it in 3 minutes
@@ -60,6 +60,8 @@ Every link opens the explorer with Mainnet selected. Click Testnet once, and the
 | H, step 2 | `retire` from the Native lane, no EVM window | Burned, receipts 13 → 14 | [`8E15D319…`](https://explore.qore.network/tx/8E15D319B2971FC5102C027BA8E3C8A8AAF1FDD72AD8E2172CEE2303B453B40A) |
 | I, step 1 | `retire` signed with the secp256k1 key alone, no EVM window | Refused before it reached a block: nonce 6 → 6, retirements 21 → 21 | none: the chain never took it |
 | I, step 2 | The same `retire` from the Native lane | Burned, receipts 30 → 31 | [`97A5C807…`](https://explore.qore.network/tx/97A5C80786442EC1C3866D0A890FE0E21915DB22B227F675A92F9873AE4CEA38) |
+| J | One Native transaction: `MsgSend` of a 0.1 QOR fee to the registrar, then `retire` | Fee paid, registrar 6.0 → 6.1 QOR; burned, receipts 32 → 33 | [`C1503B00…`](https://explore.qore.network/tx/C1503B00FEB65516D85DBC8832F32A3FD99625F807D4CEBB9A2B1BF0FB4B2527) |
+| J2 | The same two messages, the `retire` asks for 1 Wh more than the buyer holds | Failed (code 14): the fee went back too, registrar 6.1 → 6.1 QOR, receipts 33 → 33 | [`3E2F2D8D…`](https://explore.qore.network/tx/3E2F2D8D3E0386F2162D0AE1EC49FBABDEFEDEE29202D480D70FC5557BF7E3AD) |
 | Retire now, site | One press on the public site | Receipts 27 → 28, retirements 18 → 19 | [`922C6AF2…`](https://explore.qore.network/tx/922C6AF21D20019EB82E332396DA3EC9E696B3BFFF0B6011BA2BFE0415D3F946) |
 | Write-then-revert, site | Case B as a Native transaction | Failed (code 14), receipts 28 → 28 | [`4F9B5F8D…`](https://explore.qore.network/tx/4F9B5F8D45472307558019A22A72DCF2BEB79B3599E572E8BAE6EA8D11396703) |
 | Native refuses, site | Case C as a Native transaction | Failed (code 14), receipts 28 → 28 | [`7D69CA4F…`](https://explore.qore.network/tx/7D69CA4FCB6A3D21639E8A703E050D76E39E29348D7A7D151CCDD73F164FF89A) |
@@ -68,17 +70,18 @@ Every link opens the explorer with Mainnet selected. Click Testnet once, and the
 Cases A to G went through the EVM lane. For those, the explorer shows the transaction that carried the EVM call, and
 the revert reason is in the EVM receipt, which `pnpm verify` reads. The site's buttons are Native transactions, so the
 explorer shows a failed one as failed. The verbatim node error for case I is in
-[`testnet.json`](evidence/testnet.json).
+[`testnet.json`](evidence/testnet.json). In cases J and J2 the fee transfer runs first, so J2 shows a transfer that
+ran being undone when the contract call after it reverts ([decision 0041](docs/decisions/0041-bank-transfer-and-retire-in-one-transaction.md)).
 
 ## The five judging criteria
 
 | Criterion (official wording) | Weight | Where to check it |
 | --- | --- | --- |
-| Works as described | 25 % | [Try it](https://mentari.sasateguh.com/try) on the live site; [`pnpm demo`](#judge-it-in-3-minutes) and [`verify.json`](evidence/verify.json) (97 of 97); the presses in [`live.json`](evidence/live.json); the [proof table](#proof-on-testnet) |
-| QoreChain tech usage, verified in the repo and on chain | 25 % | [Kits and network features](#kits-and-network-features): the bridge, `pqcVerify`, `pqcKeyStatus`, `MsgCrossVMCall`, `@qorechain/sdk`, QoreX; the qor1 addresses in the [track table](#cross-vm-track-requirements-and-where-they-are-met) |
+| Works as described | 25 % | [Try it](https://mentari.sasateguh.com/try) on the live site; [`pnpm demo`](#judge-it-in-3-minutes) and [`verify.json`](evidence/verify.json) (107 of 107); the presses in [`live.json`](evidence/live.json); the [proof table](#proof-on-testnet) |
+| QoreChain tech usage, verified in the repo and on chain | 25 % | [Kits and network features](#kits-and-network-features): the bridge, `pqcVerify`, `pqcKeyStatus`, `MsgCrossVMCall`, `@qorechain/sdk`, QoreX; a bank transfer and a contract call in one transaction (case J); the qor1 addresses in the [track table](#cross-vm-track-requirements-and-where-they-are-met) |
 | Post-quantum correctness and security | 20 % | [What is signed, and where](#post-quantum-what-is-signed-and-where); case I; [Verify](https://mentari.sasateguh.com/verify) re-checks ML-DSA-87 in your browser; [`docs/threat-model.md`](docs/threat-model.md) |
 | Originality | 15 % | [What I found](#what-i-found-a-native-account-can-run-the-evm-contract); [`docs/findings.md`](docs/findings.md) |
-| Clarity, UX and documentation | 15 % | This file and [README.ms.md](README.ms.md); the site in English and Malay; [`docs/architecture.md`](docs/architecture.md); 40 [decision records](docs/decisions/), each with how to undo it; [`AI_USAGE.md`](AI_USAGE.md) |
+| Clarity, UX and documentation | 15 % | This file and [README.ms.md](README.ms.md); the site in English and Malay; [`docs/architecture.md`](docs/architecture.md); 41 [decision records](docs/decisions/), each with how to undo it; [`AI_USAGE.md`](AI_USAGE.md) |
 
 ## What I found: a Native account can run the EVM contract
 

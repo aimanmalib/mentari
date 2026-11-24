@@ -53,7 +53,7 @@ export interface RecordedCase {
  * `pnpm classic-only` records it: the same steps, plus `classic`, an EVM transaction the chain refused.
  */
 export interface RecordedEntry {
-  id: "H" | "I";
+  id: string;
   steps: readonly { step: number; function: string; cosmos_tx: string; height: number | null; accepted: boolean }[];
   classic?: { evm_tx: string; refused: boolean };
 }

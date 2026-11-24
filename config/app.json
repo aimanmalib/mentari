@@ -266,5 +266,15 @@
     "nativeGas": 2000000,
     "stockWh": 1000,
     "waitSeconds": 30
+  },
+  "bankFee": {
+    "_comment": "Cases J and J2 (pnpm bank-fee, decision 0041). One hybrid-signed Native transaction from role: a MsgSend of feeUqor to the role named in to, then a MsgCrossVMCall into Mentari.retire, gas limit gas. J retires retireWh; J2 asks for one Wh more than role then holds, so the contract reverts. to must be an account no recurring job sends to, so its balance in that block moves only by the fee. Before J the demo sender gives role stockWh of certificates from the Native lane when it holds fewer than retireWh.",
+    "role": "buyer",
+    "to": "registrar",
+    "feeUqor": "100000",
+    "retireWh": 500,
+    "memo": "Case J",
+    "gas": 1700000,
+    "stockWh": 1000
   }
 }

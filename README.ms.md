@@ -26,9 +26,9 @@ pertama ialah [`6012d2b`](https://github.com/aimanmalib/mentari/commit/6012d2b) 
 
 > **Keadaan hari ini** (dibaca dari [`evidence/`](evidence/)):
 > - 449,963 Wh dicetak daripada bacaan meter, setiap tandatangan ML-DSA-87 disemak di rantai ([`deploy.json`](evidence/deploy.json), [keputusan 0031](docs/decisions/0031-daily-meter-attest-gas.md), dalam bahasa Inggeris).
-> - 22 persaraan dan 11,000 Wh dibersarakan, setiap satu sepadan dengan resit Native-nya.
-> - `pnpm verify` lulus 97 daripada 97 semakan ([`verify.json`](evidence/verify.json)).
-> - Kes A hingga I direkod di testnet bersama transaksinya ([`testnet.json`](evidence/testnet.json)).
+> - 24 persaraan dan 12,000 Wh dibersarakan, setiap satu sepadan dengan resit Native-nya.
+> - `pnpm verify` lulus 107 daripada 107 semakan ([`verify.json`](evidence/verify.json)).
+> - Kes A hingga J2 direkod di testnet bersama transaksinya ([`testnet.json`](evidence/testnet.json)).
 > - 13 tekanan direkod di laman awam, 7 daripadanya "Retire now" berturut-turut, setiap satu menaikkan kedua-dua lejar satu ([`live.json`](evidence/live.json)).
 
 ## Nilai dalam 3 minit
@@ -64,6 +64,8 @@ Setiap pautan membuka penjelajah pada Mainnet. Klik Testnet sekali, dan transaks
 | H, langkah 2 | `retire` dari lorong Native, tanpa EVM window | Dibakar, resit 13 → 14 | [`8E15D319…`](https://explore.qore.network/tx/8E15D319B2971FC5102C027BA8E3C8A8AAF1FDD72AD8E2172CEE2303B453B40A) |
 | I, langkah 1 | `retire` ditandatangani dengan kunci secp256k1 sahaja, tanpa EVM window | Ditolak sebelum sampai ke blok: nonce 6 → 6, persaraan 21 → 21 | tiada: rantai tidak menerimanya |
 | I, langkah 2 | `retire` yang sama dari lorong Native | Dibakar, resit 30 → 31 | [`97A5C807…`](https://explore.qore.network/tx/97A5C80786442EC1C3866D0A890FE0E21915DB22B227F675A92F9873AE4CEA38) |
+| J | Satu transaksi Native: `MsgSend` yuran 0.1 QOR kepada pendaftar, kemudian `retire` | Yuran dibayar, pendaftar 6.0 → 6.1 QOR; dibakar, resit 32 → 33 | [`C1503B00…`](https://explore.qore.network/tx/C1503B00FEB65516D85DBC8832F32A3FD99625F807D4CEBB9A2B1BF0FB4B2527) |
+| J2 | Dua mesej yang sama, `retire` meminta 1 Wh lebih daripada pegangan pembeli | Gagal (kod 14): yuran turut kembali, pendaftar 6.1 → 6.1 QOR, resit 33 → 33 | [`3E2F2D8D…`](https://explore.qore.network/tx/3E2F2D8D3E0386F2162D0AE1EC49FBABDEFEDEE29202D480D70FC5557BF7E3AD) |
 | Retire now, laman | Satu tekanan di laman awam | Resit 27 → 28, persaraan 18 → 19 | [`922C6AF2…`](https://explore.qore.network/tx/922C6AF21D20019EB82E332396DA3EC9E696B3BFFF0B6011BA2BFE0415D3F946) |
 | Write-then-revert, laman | Kes B sebagai transaksi Native | Gagal (kod 14), resit 28 → 28 | [`4F9B5F8D…`](https://explore.qore.network/tx/4F9B5F8D45472307558019A22A72DCF2BEB79B3599E572E8BAE6EA8D11396703) |
 | Native refuses, laman | Kes C sebagai transaksi Native | Gagal (kod 14), resit 28 → 28 | [`7D69CA4F…`](https://explore.qore.network/tx/7D69CA4FCB6A3D21639E8A703E050D76E39E29348D7A7D151CCDD73F164FF89A) |
@@ -72,16 +74,18 @@ Setiap pautan membuka penjelajah pada Mainnet. Klik Testnet sekali, dan transaks
 Kes A hingga G melalui lorong EVM. Untuk kes itu, penjelajah menunjukkan transaksi yang membawa panggilan EVM, dan
 sebab berbalik ada dalam resit EVM, yang `pnpm verify` baca. Butang di laman ialah transaksi Native, jadi penjelajah
 menunjukkan yang gagal sebagai gagal. Ralat nod asal untuk kes I ada dalam [`testnet.json`](evidence/testnet.json).
+Dalam kes J dan J2 pindahan yuran berjalan dahulu, jadi J2 menunjukkan pindahan yang sudah berjalan dibatalkan apabila
+panggilan kontrak selepasnya berbalik ([keputusan 0041](docs/decisions/0041-bank-transfer-and-retire-in-one-transaction.md)).
 
 ## Lima kriteria penjurian
 
 | Kriteria (kata rasmi) | Berat | Di mana menyemaknya |
 | --- | --- | --- |
-| Works as described | 25 % | [Try it](https://mentari.sasateguh.com/try) di laman hidup; [`pnpm demo`](#nilai-dalam-3-minit) dan [`verify.json`](evidence/verify.json) (97 daripada 97); tekanan dalam [`live.json`](evidence/live.json); [jadual bukti](#bukti-di-testnet) |
-| QoreChain tech usage, verified in the repo and on chain | 25 % | [Kit dan ciri rangkaian](README.md#kits-and-network-features) (dalam bahasa Inggeris): jambatan, `pqcVerify`, `pqcKeyStatus`, `MsgCrossVMCall`, `@qorechain/sdk`, QoreX; alamat qor1 dalam [jadual trek](#keperluan-trek-cross-vm-dan-di-mana-ia-dipenuhi) |
+| Works as described | 25 % | [Try it](https://mentari.sasateguh.com/try) di laman hidup; [`pnpm demo`](#nilai-dalam-3-minit) dan [`verify.json`](evidence/verify.json) (107 daripada 107); tekanan dalam [`live.json`](evidence/live.json); [jadual bukti](#bukti-di-testnet) |
+| QoreChain tech usage, verified in the repo and on chain | 25 % | [Kit dan ciri rangkaian](README.md#kits-and-network-features) (dalam bahasa Inggeris): jambatan, `pqcVerify`, `pqcKeyStatus`, `MsgCrossVMCall`, `@qorechain/sdk`, QoreX; pindahan bank dan panggilan kontrak dalam satu transaksi (kes J); alamat qor1 dalam [jadual trek](#keperluan-trek-cross-vm-dan-di-mana-ia-dipenuhi) |
 | Post-quantum correctness and security | 20 % | [Apa ditandatangani, dan di mana](#pasca-kuantum-apa-ditandatangani-dan-di-mana); kes I; [Verify](https://mentari.sasateguh.com/verify) menyemak semula ML-DSA-87 dalam pelayar anda; [`docs/threat-model.md`](docs/threat-model.md) |
 | Originality | 15 % | [Apa yang saya temui](#apa-yang-saya-temui-akaun-native-boleh-menjalankan-kontrak-evm); [`docs/findings.md`](docs/findings.md) |
-| Clarity, UX and documentation | 15 % | Fail ini dan [README.md](README.md); laman dalam bahasa Inggeris dan Melayu; [`docs/architecture.md`](docs/architecture.md); 40 [rekod keputusan](docs/decisions/), setiap satu dengan cara mengundurnya; [`AI_USAGE.md`](AI_USAGE.md) |
+| Clarity, UX and documentation | 15 % | Fail ini dan [README.md](README.md); laman dalam bahasa Inggeris dan Melayu; [`docs/architecture.md`](docs/architecture.md); 41 [rekod keputusan](docs/decisions/), setiap satu dengan cara mengundurnya; [`AI_USAGE.md`](AI_USAGE.md) |
 
 ## Apa yang saya temui: akaun Native boleh menjalankan kontrak EVM
 

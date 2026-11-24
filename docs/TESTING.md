@@ -312,6 +312,14 @@ a live EVM window. `pnpm verify` fails case I when the node has a receipt for th
 made once, and each turned a test red: dropping the unchanged-state condition, dropping the case I check in verify, and
 polling for the whole wait after a refused send.
 
+`scripts/src/bank-fee.ts` runs cases J and J2 (ADR 0041). Its tests use a fake node. They check that the fee
+`MsgSend` and the `retire` call are signed hybrid into one transaction, the transfer first; that the recipient's
+balance is read at the block before and at the transaction's block, and not at all when the node refuses the
+transaction before any block; that J2 asks for one Wh more than the sender holds; and that `pnpm verify` fails J
+when the fee did not arrive, J2 when it stayed paid, and either when the transaction carries other messages. Three
+changes were each made once, and each turned a test red: dropping the fee message, expecting the fee in J2, and
+reading the balance before at the transaction's own block.
+
 `scripts/src/native.ts` gets the accounts ready on the Native lane (ADR 0016). Its tests run against an in-memory
 lane that applies bank sends, key registrations and windows, and refuses a hybrid transaction from an account with no
 key or a classical transaction that is not a key registration. They check that a top-up sends only what is short, in

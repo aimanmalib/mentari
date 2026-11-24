@@ -1,10 +1,10 @@
 {
-  "readAt": "2026-11-24T09:09:53.964Z",
+  "readAt": "2026-11-24T12:08:24.530Z",
   "evmRpc": "https://evm-testnet.qore.host",
   "rest": "https://api-testnet.qore.host",
-  "evmBlock": 10658843,
-  "checks": 97,
-  "passed": 97,
+  "evmBlock": 10666344,
+  "checks": 107,
+  "passed": 107,
   "failed": 0,
   "unavailable": 0,
   "checkList": [
@@ -135,17 +135,27 @@
     },
     {
       "group": "retirements",
-      "name": "receipt ids rise with the retirement number (22 retirements)",
+      "name": "retirement 23 matches receipt 32",
+      "outcome": "pass"
+    },
+    {
+      "group": "retirements",
+      "name": "retirement 24 matches receipt 33",
+      "outcome": "pass"
+    },
+    {
+      "group": "retirements",
+      "name": "receipt ids rise with the retirement number (24 retirements)",
       "outcome": "pass"
     },
     {
       "group": "totals",
-      "name": "minted 449963 - retired 11000 = supply 438963",
+      "name": "minted 449963 - retired 12000 = supply 437963",
       "outcome": "pass"
     },
     {
       "group": "totals",
-      "name": "the 22 retirements add up to retired 11000 Wh",
+      "name": "the 24 retirements add up to retired 12000 Wh",
       "outcome": "pass"
     },
     {
@@ -322,6 +332,54 @@
       "name": "case I step 2 retire receipts book gained a receipt at block 10658815",
       "outcome": "pass",
       "detail": "30 -> 31"
+    },
+    {
+      "group": "cases",
+      "name": "case J step 1 retire Cosmos transaction accepted",
+      "outcome": "pass",
+      "detail": "C1503B00FEB65516D85DBC8832F32A3FD99625F807D4CEBB9A2B1BF0FB4B2527"
+    },
+    {
+      "group": "cases",
+      "name": "case J step 1 retire receipts book gained a receipt at block 10666328",
+      "outcome": "pass",
+      "detail": "32 -> 33"
+    },
+    {
+      "group": "cases",
+      "name": "case J2 step 1 retire Cosmos transaction not accepted",
+      "outcome": "pass",
+      "detail": "3E2F2D8D3E0386F2162D0AE1EC49FBABDEFEDEE29202D480D70FC5557BF7E3AD"
+    },
+    {
+      "group": "cases",
+      "name": "case J2 step 1 retire receipts book unchanged at block 10666332",
+      "outcome": "pass",
+      "detail": "33 -> 33"
+    },
+    {
+      "group": "cases",
+      "name": "case J one transaction carries MsgSend + MsgCrossVMCall",
+      "outcome": "pass",
+      "detail": "C1503B00FEB65516D85DBC8832F32A3FD99625F807D4CEBB9A2B1BF0FB4B2527"
+    },
+    {
+      "group": "cases",
+      "name": "case J registrar balance gained the fee of 100000 uqor at block 10666328",
+      "outcome": "pass",
+      "detail": "6000000 -> 6100000"
+    },
+    {
+      "group": "cases",
+      "name": "case J2 one transaction carries MsgSend + MsgCrossVMCall",
+      "outcome": "pass",
+      "detail": "3E2F2D8D3E0386F2162D0AE1EC49FBABDEFEDEE29202D480D70FC5557BF7E3AD"
+    },
+    {
+      "group": "cases",
+      "name": "case J2 registrar balance unchanged at block 10666332",
+      "outcome": "pass",
+      "detail": "6100000 -> 6100000"
     },
     {
       "group": "live",

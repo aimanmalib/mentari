@@ -88,6 +88,8 @@ export interface StepEnv {
   revertReason(spec: StepSpec): Promise<string>;
   lane: Pick<NativeSettings["nativeLane"], "denom" | "gasPriceUqor">;
   gas: number;
+  /** Messages signed into the same transaction ahead of the call (cases J and J2: the fee transfer). */
+  leading?: EncodeObject[];
 }
 
 const LOG_MAX = 600;
@@ -100,7 +102,7 @@ export async function runStep(env: StepEnv, spec: StepSpec): Promise<StepRecord>
   const before = await env.probe(spec);
   const msg = crossVmCallMsg(env.actor.cosmos, env.mentari.address, env.mentari.abi, spec.functionName, spec.args);
   const fee = feeForGas(env.lane, BigInt(env.gas));
-  const bytes = env.actor.sign({ messages: [msg], fee, ...acct, classical: false });
+  const bytes = env.actor.sign({ messages: [...(env.leading ?? []), msg], fee, ...acct, classical: false });
   const r = await env.submitter.submit(bytes);
   const after = await env.probe(spec);
   const accepted = r.stage === "block" && r.code === 0;

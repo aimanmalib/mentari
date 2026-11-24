@@ -388,6 +388,154 @@
           ]
         }
       ]
+    },
+    {
+      "id": "J",
+      "title": "A bank transfer and a contract call in one hybrid-signed transaction: the retirement fee, the certificates and the Native receipt move in the same block",
+      "sender": {
+        "role": "buyer",
+        "cosmos": "qor14yc6fymv4c9nfyxmu85xfp8wp8m4vlgp5srudw",
+        "evm": "0xA931a4936cAE0B3490DBe1e86484eE09F7567d01"
+      },
+      "ranAt": "2026-11-24T12:08:08.773Z",
+      "messages": [
+        "/cosmos.bank.v1beta1.MsgSend",
+        "/qorechain.crossvm.v1.MsgCrossVMCall"
+      ],
+      "bank": {
+        "to": {
+          "role": "registrar",
+          "cosmos": "qor1fhv3ue4j2shru4w6qd409j5eqe60h4auxtqnd9"
+        },
+        "denom": "uqor",
+        "amount": "100000",
+        "before": "6000000",
+        "after": "6100000"
+      },
+      "steps": [
+        {
+          "step": 1,
+          "question": "One hybrid-signed transaction: MsgSend of the retirement fee to the registrar, then MsgCrossVMCall into Mentari.retire. Do the bank balance, the certificates and the Native receipt all move together?",
+          "function": "retire",
+          "args": [
+            "500",
+            "Case J"
+          ],
+          "contract_would": "burn the certificates and write one Native receipt",
+          "window_before": "closed",
+          "cosmos_tx": "C1503B00FEB65516D85DBC8832F32A3FD99625F807D4CEBB9A2B1BF0FB4B2527",
+          "stage": "block",
+          "code": 0,
+          "codespace": "",
+          "log": "",
+          "height": 10666328,
+          "gas_used": 1022998,
+          "accepted": true,
+          "revert_reason": null,
+          "event_types": [
+            "pqc_verify",
+            "pqc_hybrid_verify",
+            "ai_anomaly_check",
+            "coin_spent",
+            "coin_received",
+            "transfer",
+            "message",
+            "tx",
+            "execute",
+            "wasm",
+            "crossvm_request",
+            "crossvm_response"
+          ],
+          "receipts": {
+            "before": 32,
+            "after": 33
+          },
+          "state": [
+            {
+              "name": "retirementsCount",
+              "before": "23",
+              "after": "24"
+            },
+            {
+              "name": "balanceOf(buyer)",
+              "before": "500",
+              "after": "0"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "J2",
+      "title": "The same transaction with a retire the contract refuses: the fee transfer that ran first is undone with it",
+      "sender": {
+        "role": "buyer",
+        "cosmos": "qor14yc6fymv4c9nfyxmu85xfp8wp8m4vlgp5srudw",
+        "evm": "0xA931a4936cAE0B3490DBe1e86484eE09F7567d01"
+      },
+      "ranAt": "2026-11-24T12:08:08.774Z",
+      "messages": [
+        "/cosmos.bank.v1beta1.MsgSend",
+        "/qorechain.crossvm.v1.MsgCrossVMCall"
+      ],
+      "bank": {
+        "to": {
+          "role": "registrar",
+          "cosmos": "qor1fhv3ue4j2shru4w6qd409j5eqe60h4auxtqnd9"
+        },
+        "denom": "uqor",
+        "amount": "100000",
+        "before": "6100000",
+        "after": "6100000"
+      },
+      "steps": [
+        {
+          "step": 1,
+          "question": "The same two messages, but the retire asks for one Wh more than the sender holds. Is the fee transfer that ran first undone with it?",
+          "function": "retire",
+          "args": [
+            "1",
+            "Case J"
+          ],
+          "contract_would": "revert with InsufficientBalance",
+          "window_before": "closed",
+          "cosmos_tx": "3E2F2D8D3E0386F2162D0AE1EC49FBABDEFEDEE29202D480D70FC5557BF7E3AD",
+          "stage": "block",
+          "code": 14,
+          "codespace": "crossvm",
+          "log": "failed to execute message; message index: 1: execution reverted: EVM contract execution failed: EVM contract execution failed",
+          "height": 10666332,
+          "gas_used": 306928,
+          "accepted": false,
+          "revert_reason": "InsufficientBalance(0, 1)",
+          "event_types": [
+            "pqc_verify",
+            "pqc_hybrid_verify",
+            "ai_anomaly_check",
+            "coin_spent",
+            "coin_received",
+            "transfer",
+            "message",
+            "tx"
+          ],
+          "receipts": {
+            "before": 33,
+            "after": 33
+          },
+          "state": [
+            {
+              "name": "retirementsCount",
+              "before": "24",
+              "after": "24"
+            },
+            {
+              "name": "balanceOf(buyer)",
+              "before": "0",
+              "after": "0"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

@@ -9,6 +9,7 @@
     "og": "tsx og/render.ts",
     "cover": "tsx og/render-cover.ts",
     "shots": "tsx og/render-shots.ts",
+    "links": "tsx og/check-links.ts",
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json"
   },

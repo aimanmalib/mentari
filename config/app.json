@@ -186,6 +186,32 @@
       ],
       "maxKb": 600
     },
+    "linkCheck": {
+      "_comment": "Pages of the live site whose transaction links web/og/check-links.ts opens (`pnpm --filter @mentari/web links`). Each page is opened in a fresh context without cookies and read once ready shows. No link may send an EVM hash (0x...) to the explorer, and every /go/ link must redirect to the explorer page of a Cosmos hash (decisions 0033, 0034).",
+      "pages": [
+        {
+          "path": "/",
+          "ready": ".seam[aria-busy=\"false\"]"
+        },
+        {
+          "path": "/retirements",
+          "ready": ".records-wrap[aria-busy=\"false\"]"
+        },
+        {
+          "path": "/verify?n=1",
+          "ready": ".verify[aria-busy=\"false\"]"
+        },
+        {
+          "path": "/try",
+          "ready": ".retire-now"
+        },
+        {
+          "path": "/how-it-works",
+          "ready": "main h1"
+        }
+      ],
+      "maxRedirectChecks": 40
+    },
     "links": {
       "source": "https://github.com/aimanmalib/mentari",
       "slides": "https://github.com/aimanmalib/mentari/blob/main/docs/deck.pdf"

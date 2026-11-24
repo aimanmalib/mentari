@@ -44,3 +44,10 @@ ethereum_tx.ethereumTxHash='0x…'` returned the Cosmos transaction for case A (
 
 Revert the commit. The links go back to `web.explorer.tx` with the hash as given, and `/go/tx/` falls through to the
 page shell again.
+
+## Checking the live links
+
+`pnpm --filter @mentari/web links` opens the pages in `config/app.json` `web.linkCheck` on the live site, in a browser
+context without cookies. It fails when a link sends an EVM hash (`0x…`) straight to the explorer, or when a `/go/` link
+does not redirect to the explorer page of a Cosmos hash. On 2026-11-24 it read five pages and found 0 explorer links
+with an EVM hash. All 20 `/go/` links redirected to a Cosmos hash (3 `/go/tx`, 17 `/go/receipt`).

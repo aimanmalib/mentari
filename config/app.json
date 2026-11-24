@@ -49,7 +49,7 @@
     "demoRetire": true,
     "demoCases": true,
     "grant": true,
-    "meter": false,
+    "meter": true,
     "retireGas": 1300000,
     "caseGas": 1500000,
     "grantGas": 800000,

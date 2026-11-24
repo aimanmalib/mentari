@@ -6,6 +6,11 @@ contract is a new deployment, listed here with its new address.
 
 ## [Unreleased]
 
+### Changed
+
+- The daily meter job sends `attest` from the Native lane (`config/app.json` `nativeRoute.meter` on), so the 00:20
+  UTC run no longer needs an EVM window. It was left off until cases E and F were recorded (decision 0026).
+
 ### Added
 
 - Cases E (a reading signed with another account's key, `BadSignature`) and F (one watt-hour over the capacity,

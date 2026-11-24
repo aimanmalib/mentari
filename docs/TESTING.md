@@ -170,7 +170,7 @@ Each guard was removed from a copy of the code to check that a test notices:
 
 ## Web tests
 
-`web/test/` runs with vitest in Node and no network. `cd web && npx vitest run` reported 240 passed on 2026-11-24 in CI.
+`web/test/` runs with vitest in Node and no network. `cd web && npx vitest run` reported 247 passed on 2026-11-24 in CI.
 
 They cover the check behind the "both ledgers agree" badge (sender, note, receipt id, nothing checked), the EVM to
 Native address encoding, the receipts book reader (a missing receipt is `null`, any other failure throws so the page
@@ -224,6 +224,10 @@ byte limit.
 image build never sees (`brand/`, `docs/`, `deck/` and the rest). The first deploy of the new home page failed that
 way: the poster came from `brand/`. The home page now bundles `web.cover.webCopy`, and the test checks that it is
 byte for byte the committed cover. Pointing `HomeHero.tsx` back at `brand/` fails 1 test.
+
+`web/test/deck.test.ts` reads the five judging criteria from the README table and fails when one of them heads no
+slide in `deck/kandungan.json`, or when a slide names a weighted criterion the table does not list. On the earlier
+eight-slide deck 5 of these tests fail.
 
 After a deploy the preview is checked on the live site with the crawlers' own user agents:
 

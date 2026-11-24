@@ -18,6 +18,10 @@ contract is a new deployment, listed here with its new address.
 
 ### Changed
 
+- The slides follow the five official judging criteria. Slides 2 to 7 each name one criterion and its weight; a new
+  slide shows the Native lane (cases H, J and J2), the post-quantum slide shows case I and the explorer label, and the
+  screenshots were taken again from the public site. `web/test/deck.test.ts` fails when a criterion has no slide.
+
 - The daily meter job sends `attest` from the Native lane (`config/app.json` `nativeRoute.meter` on), so the 00:20
   UTC run no longer needs an EVM window. It was left off until cases E and F were recorded (decision 0026).
 - `nativeRoute.attestGas` is 900,000, down from 2,000,000: three `attest` calls from the Native lane used 640,824

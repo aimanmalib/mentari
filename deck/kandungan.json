@@ -16,76 +16,91 @@
         "https://mentari.sasateguh.com · https://github.com/aimanmalib/mentari"
       ],
       "gambar": "img/registry.png",
-      "kapsyen": "The registry, read from the testnet"
+      "kapsyen": "The registry on the public site, read from the testnet"
     },
     {
       "jenis": "biasa",
-      "tajuk": "EVM-to-Native call",
-      "kriteria": "a working EVM-to-Native call to an approved Native contract",
-      "lead": "Retiring a certificate burns it in an EVM contract and writes a public receipt into a Native contract through the Cross-VM bridge, in the same transaction.",
+      "tajuk": "One press, and both ledgers move",
+      "kriteria": "Works as described · 25 %",
+      "lead": "\"Retire now\" sends one hybrid-signed Native transaction that runs the EVM contract. The receipt count on both ledgers goes up by one. Each failure button makes a cross-VM call that must fail, and neither ledger moves.",
       "poin": [
-        "Burn first. retire burns the watt-hours, then builds the receipt note from typed fields.",
-        "One bridge call. The bridge at 0x…0901 sends record to qday-receipts, which is on the testnet allowlist: governance proposal 40, code id 865.",
-        "Read the reply. The contract stores the receipt id. An empty reply or an id that is not new reverts the retirement.",
-        "The EVM event names the Native receipt. The Native note names the EVM retirement."
-      ],
-      "kaki": [
-        "contracts/src/Mentari.sol"
-      ]
-    },
-    {
-      "jenis": "biasa",
-      "tajuk": "Atomic execution shown on testnet",
-      "kriteria": "atomic execution shown on testnet",
-      "lead": "If either side fails, neither happens. AtomicityProbe, a separate demo contract, fails on purpose.",
-      "poin": [
-        "B: writes a receipt, then reverts.",
-        "C: asks the Native contract to refuse.",
-        "D: calls a Native contract governance has not approved.",
-        "Each case must leave the receipt count the same before and after."
+        "24 retirements and 12,000 Wh retired, each matched to its Native receipt.",
+        "13 recorded presses on the public site, 7 of them \"Retire now\" in a row, each moving both ledgers by one.",
+        "pnpm verify passed 107 of 107 checks. It needs no key: pnpm demo in a fresh clone runs the same checks."
       ],
       "gambar": "img/try-it.png",
       "kapsyen": "The Try it page on the public site",
       "kaki": [
-        "Recorded on testnet in blocks 10609364, 10609366 and 10609368: the receipt count stayed at 8 each time. evidence/testnet.json",
-        "contracts/src/AtomicityProbe.sol"
+        "evidence/verify.json · evidence/live.json · README.md: Proof on testnet"
       ]
     },
     {
       "jenis": "biasa",
-      "tajuk": "Post-quantum checks",
-      "kriteria": "Post-quantum: ML-DSA-87 checked on chain",
-      "lead": "Every certificate starts as a solar meter reading signed with ML-DSA-87, and the contract checks it with the pqcVerify precompile.",
+      "tajuk": "An EVM contract that calls an approved Native contract",
+      "kriteria": "QoreChain tech usage, verified in the repo and on chain · 25 %",
+      "lead": "Retiring a certificate burns it in an EVM contract and writes a public receipt into a Native contract, in the same transaction.",
       "poin": [
-        "Minting. A daily reading signed by the meter's ML-DSA-87 key mints watt-hours to the producer. A leaked classical key alone mints nothing.",
-        "Moving. transfer only sends to accounts whose ML-DSA-87 key is registered on chain with proof of possession (pqcKeyStatus).",
-        "No replay. Signed messages include the chain id and the contract address.",
-        "Precompiles: Cross-VM bridge 0x…0901 · pqcVerify 0x…0a01 · pqcKeyStatus 0x…0a02."
+        "Burn first. retire burns the watt-hours, then builds the receipt note from typed fields.",
+        "One bridge call. The bridge at 0x…0901 sends record to qday-receipts, on the testnet allowlist: governance proposal 40, code id 865.",
+        "Read the reply. An empty reply or a receipt id that is not new reverts the retirement.",
+        "Atomic. AtomicityProbe fails on purpose in cases B, C and D. In blocks 10609364, 10609366 and 10609368 the receipt count stayed at 8."
       ],
       "kaki": [
-        "docs/threat-model.md"
+        "contracts/src/Mentari.sol · contracts/src/AtomicityProbe.sol · evidence/testnet.json"
       ]
     },
     {
       "jenis": "biasa",
-      "tajuk": "Verified features",
-      "kriteria": "Kits and network features: declared and verified",
+      "tajuk": "Kits and network features, each one used",
+      "kriteria": "QoreChain tech usage, verified in the repo and on chain · 25 %",
       "lead": "What the code uses, and where. Each kit is pinned in package.json.",
       "poin": [
-        "@qorechain/sdk 0.14.0: deriving the test accounts.",
+        "@qorechain/sdk 0.14.0: deriving the test accounts, and crossvm.crossVmCall for the Native lane.",
+        "MsgCrossVMCall from an account, hybrid-signed, with no EVM window: every \"Retire now\" on the site.",
         "Bridge, pqcVerify, pqcKeyStatus at 0x…0901 · 0x…0a01 · 0x…0a02: contracts/src/lib.",
         "qday-receipts, Native contract code id 865: the target of every retirement.",
-        "@qorechain/qorex-rainbowkit 0.1.0: QoreX as the wallet on the Try it page.",
-        "@qorechain/qorex-wallet-mock 0.1.0: QoreX in the browser tests."
+        "@qorechain/qorex-rainbowkit 0.1.0 on the Try it page; @qorechain/qorex-wallet-mock 0.1.0 in the browser tests."
       ],
       "kaki": [
         "README.md: Kits and network features"
       ]
     },
     {
+      "jenis": "biasa",
+      "tajuk": "The Native lane: a Native account runs the EVM contract",
+      "kriteria": "Originality · 15 %",
+      "lead": "The QoreChain Cross-VM reference lists \"Native account to EVM contract\" as not yet tested against the live network. I ran it.",
+      "poin": [
+        "Case H. One Native transaction, signed with secp256k1 plus ML-DSA-87, called Mentari.retire with no EVM window open. It burned the certificates and wrote the receipt: receipts 13 → 14.",
+        "Every \"Retire now\" on the public site now goes this way.",
+        "Case J. One Native transaction: MsgSend of a 0.1 QOR fee to the registrar, then retire. Registrar 6.0 → 6.1 QOR, receipts 32 → 33.",
+        "Case J2. The same two messages, with the retire asking for 1 Wh more than the buyer holds. Failed (code 14), and the fee went back too: registrar 6.1 → 6.1 QOR."
+      ],
+      "kaki": [
+        "docs/findings.md · docs/decisions/0041-bank-transfer-and-retire-in-one-transaction.md"
+      ]
+    },
+    {
+      "jenis": "biasa",
+      "tajuk": "ML-DSA-87, checked on chain",
+      "kriteria": "Post-quantum correctness and security · 20 %",
+      "lead": "Every certificate starts as a solar meter reading signed with ML-DSA-87, and the contract checks it with the pqcVerify precompile.",
+      "poin": [
+        "Minting. A leaked classical key alone mints nothing.",
+        "Moving. transfer only sends to accounts with a registered ML-DSA-87 key (pqcKeyStatus).",
+        "Case I. retire signed with the classical key alone was refused, nonce 6 → 6. The same retire from the Native lane went through: receipts 30 → 31.",
+        "No replay. Signed messages include the chain id and the contract address."
+      ],
+      "gambar": "../docs/images/explorer-quantum-safe.png",
+      "kapsyen": "The testnet explorer on a Native lane retirement",
+      "kaki": [
+        "docs/threat-model.md · the Verify page re-checks the meters' signatures in your browser"
+      ]
+    },
+    {
       "jenis": "angka",
       "tajuk": "Tested, then broken on purpose",
-      "kriteria": "Top-Quality: polished, functional and well-documented",
+      "kriteria": "Clarity, UX and documentation · 15 %",
       "angka": [
         {
           "nilai": "115",
@@ -100,7 +115,7 @@
           "label": "server tests (vitest)"
         },
         {
-          "nilai": "240",
+          "nilai": "247",
           "label": "site tests (vitest)"
         },
         {
@@ -110,13 +125,13 @@
       ],
       "kaki": [
         "Four invariants hold after every random call, and I broke Mentari.sol on purpose for each one: each break turned its invariant red.",
-        "The site is in English and Bahasa Melayu, and every design decision has a record with how to undo it. README.md: Tests"
+        "The site and the README are in English and Bahasa Melayu. 41 decision records, each with how to undo it. README.md: Tests"
       ]
     },
     {
       "jenis": "biasa",
       "tajuk": "AI usage",
-      "kriteria": "AI-Native: the workflow, the generated work and the human contribution",
+      "kriteria": "AI disclosure: AI_USAGE.md",
       "lead": "I built Mentari with AI coding agents (Claude Code). AI_USAGE.md has the full account.",
       "poin": [
         "Workflow. Three roles in separate sessions: a planner, a builder that takes one slice at a time, and a reviewer that breaks the code to see a test turn red. A mechanical gate sits between builder and reviewer.",
@@ -132,13 +147,13 @@
       "tajuk": "Check it in 3 steps",
       "kriteria": "Check it yourself",
       "poin": [
-        "Open https://mentari.sasateguh.com. The registry shows the EVM ledger and the Native receipts book side by side.",
-        "Go to Try it. \"Retire now\" retires 500 Wh, and three failure buttons each try a cross-VM call that must fail.",
-        "Read the proof in code: https://github.com/aimanmalib/mentari, contracts/test and the test notes.",
-        "Limits: the meter is simulated; the signatures, contracts and chain are real. Testnet only: the certificates have no value. On the testnet now: on the public site I pressed \"Retire now\" 5 times in a row, and every retirement moved both ledgers by one. No professional audit."
+        "Press. Open https://mentari.sasateguh.com/try and press \"Retire now\". Then press a failure button: neither ledger moves.",
+        "Check. Open the transaction link the page shows. The explorer starts with Mainnet selected: click Testnet once.",
+        "Re-run. In a fresh clone (Node 22, pnpm): pnpm install --frozen-lockfile && pnpm demo. It exits 0 only when no check fails.",
+        "Limits: the meter is simulated; the signatures, contracts and chain are real. Testnet only: the certificates have no value. No professional audit."
       ],
       "kaki": [
-        "Apache-2.0"
+        "https://github.com/aimanmalib/mentari · Apache-2.0"
       ]
     }
   ]

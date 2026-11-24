@@ -150,7 +150,7 @@ Dikira pada 24 November 2026 daripada larian CI pada komit `1577e46` (suite Foun
 | --- | --- |
 | Foundry, `contracts/test/` | 115 lulus: 98 ujian unit, 16 ujian fuzz (512 larian setiap satu) dan satu suite invarian yang memegang 4 invarian (forge mengira suite itu sekali, jadi 98 + 16 + 1 = 115); liputan baris `contracts/src` 99 % |
 | vitest, `server/test/` | 223 lulus |
-| vitest, `web/test/` | 240 lulus |
+| vitest, `web/test/` | 247 lulus |
 | vitest, `scripts/test/` | 172 lulus |
 | Playwright, `web/e2e/` | 12 lulus: halaman utama dan tindakan Retire now, serta laluan dompet dengan dompet tiruan QoreX, 6 kes dalam Chromium dan WebKit sebagai iPhone 13 |
 

@@ -58,6 +58,38 @@ describe("deck stats", () => {
   });
 });
 
+// Each official judging criterion in the README table heads at least one slide, with the same weight, and no slide
+// names a criterion the README does not list.
+function readmeCriteria(readme: string): string[] {
+  const lines = readme.split("\n");
+  const head = lines.findIndex((line) => line.startsWith("| Criterion (official wording) |"));
+  const rows = [];
+  for (const line of lines.slice(head + 2)) {
+    if (!line.startsWith("| ")) break;
+    const [name, weight] = line.split("|").slice(1, 3).map((cell) => cell.trim());
+    rows.push(`${name} · ${weight}`);
+  }
+  return rows;
+}
+
+describe("deck judging criteria", () => {
+  const criteria = readmeCriteria(read("README.md"));
+  const slides: { kriteria?: string }[] = JSON.parse(read("deck/kandungan.json")).slaid;
+  const named = slides.map((slide) => slide.kriteria ?? "").filter((k) => / · \d+ %$/.test(k));
+
+  it("reads the five criteria from the README", () => {
+    expect(criteria).toHaveLength(5);
+  });
+
+  it.each(criteria)("a slide is headed '%s'", (criterion) => {
+    expect(named).toContain(criterion);
+  });
+
+  it("every weighted slide heading is one of the README criteria", () => {
+    expect(named.filter((k) => !criteria.includes(k))).toEqual([]);
+  });
+});
+
 describe("generated deck", () => {
   const record = JSON.parse(read("deck/JANA.json"));
 

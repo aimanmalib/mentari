@@ -2,7 +2,7 @@
 
 I built Mentari with AI coding agents. This file says how: the workflow, what the agents generated, and what I did
 myself. The session numbers are from the project's own records up to 24 November 2026. The test counts are from the
-public CI run [45323154767](https://github.com/aimanmalib/mentari/actions/runs/45323154767) on 24 November 2026.
+public CI run [45331029642](https://github.com/aimanmalib/mentari/actions/runs/45331029642) on 24 November 2026.
 
 ## Workflow
 

@@ -14,7 +14,7 @@ contract is a new deployment, listed here with its new address.
   `/go/receipt/<id>` on the server (decision 0034).
 - Transaction links open the explorer on the right record. The explorer's transaction page takes the Cosmos hash, so
   an EVM hash now goes through `/go/tx/<hash>` on the server, which looks up the Cosmos transaction and redirects. A
-  short note next to the links says the explorer opens on mainnet and to press Testnet (decision 0033).
+  short note next to the links says the explorer opens on mainnet and to click Testnet once (decision 0033).
 
 ### Changed
 

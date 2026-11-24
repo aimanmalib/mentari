@@ -108,7 +108,7 @@
     "openAddress": "Buka {address} dalam penjelajah",
     "openTx": "Buka transaksi {hash} dalam penjelajah",
     "openBlock": "Buka blok {height} dalam penjelajah",
-    "explorerNote": "Penjelajah dibuka pada mainnet. Tekan Testnet di bahagian atas halamannya dan rekod itu akan dipaparkan.",
+    "explorerNote": "Penjelajah dibuka pada mainnet. Klik Testnet sekali di bahagian atas halamannya dan rekod itu akan dipaparkan.",
     "match": "Sepadan",
     "mismatch": "Tidak sepadan",
     "receipt": "Resit #{id}",

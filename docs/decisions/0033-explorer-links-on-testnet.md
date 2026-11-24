@@ -29,7 +29,7 @@ ethereum_tx.ethereumTxHash='0x…'` returned the Cosmos transaction for case A (
 - The site sends an EVM hash to `config/app.json` `web.explorer.evmTx` (`/go/tx/{hash}`) and a Cosmos hash straight to
   `web.explorer.tx`. A recorded case links its `cosmos_tx` directly when it has one. The server refuses to start if
   `evmTx` is not its own route.
-- One line next to the links, in English and Malay, says the explorer opens on mainnet and to press Testnet at the
+- One line next to the links, in English and Malay, says the explorer opens on mainnet and to click Testnet once at the
   top of its page. It is on the Retirements page, under a Verify result and under a Try it result.
 - The `/lcd` allowlist does not grow: the lookup URL is built on the server from one fixed shape, so visitors cannot
   send their own queries through it.

@@ -38,7 +38,7 @@ describe("RecordPair", () => {
     const html = render(<RecordPair record={RECORD} />);
     expect(html).toContain(`href="${siteConfig.explorer.evmTx.replace("{hash}", HASH)}"`);
     expect(html).not.toContain(siteConfig.explorer.tx.replace("{hash}", HASH));
-    expect(text(html)).not.toContain("Press Testnet");
+    expect(text(html)).not.toContain("Click Testnet once");
     expect(html).toContain(siteConfig.explorer.address.replace("{address}", HOLDER));
     expect(html).toContain(siteConfig.explorer.block.replace("{height}", "10501234"));
     expect(html).toContain(`href="${siteConfig.explorer.receiptTx.replace("{id}", "42")}"`);
@@ -186,7 +186,7 @@ describe("Try it", () => {
     expect(raw).toContain(`aria-label="Open transaction ${COSMOS} in the explorer"`);
     expect(raw).toContain(`<code>${COSMOS.slice(0, 8)}`);
     expect(raw).not.toContain(HASH.slice(0, 8));
-    expect(html).toContain("Press Testnet at the top of its page");
+    expect(html).toContain("Click Testnet once at the top of its page");
     expect(html).toContain("You have used this hour's live sends.");
     expect(html).toContain("Try again in about 2 min.");
     expect(html).toContain("recorded testnet case A");

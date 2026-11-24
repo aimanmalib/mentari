@@ -50,6 +50,11 @@ describe("locale files", () => {
     expect(used.size).toBeGreaterThan(20);
     for (const key of used) expect(en, key).toHaveProperty([key]);
   });
+
+  it("tell the reader to click Testnet once on the explorer, in both languages", () => {
+    expect(en["records.explorerNote"]).toContain("Click Testnet once");
+    expect(ms["records.explorerNote"]).toContain("Klik Testnet sekali");
+  });
 });
 
 describe("translate", () => {

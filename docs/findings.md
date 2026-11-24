@@ -32,7 +32,7 @@ I did not know what would happen, and I ran it.
 
 | Step | Call | Cosmos transaction | Block | Gas used | Result |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `attest(3, 20777, …)` | `48C756E1F0FA87228077922CF3F7B1D4501A887EEF8D9D79D67A0C0FE1E8C681` | 10612980 | 406,755 | Reached the contract and reverted there with `AlreadyAttested(3, 20777)`. Receipts 13 -> 13. |
+| 1 | `attest(3, 20780, 49082, …)` | `FC13A89597E46C3128D351B25C351461D2EC8B30A2D053017DFC6D7175AB2A3E` | 10637935 | 640,824 | Accepted. `attested(3, 20780)` false -> true, minted 344,115 -> 393,197 Wh. Receipts 25 -> 25. |
 | 2 | `retire(500, "Native entry E1")` | `8E15D319B2971FC5102C027BA8E3C8A8AAF1FDD72AD8E2172CEE2303B453B40A` | 10613003 | 1,009,253 | Accepted. Retirement 5, receipt 14. Receipts 13 -> 14. |
 
 **Step 2 is the answer to the main question.** One Native transaction, hybrid-signed, with no EVM window:
@@ -48,11 +48,13 @@ I did not know what would happen, and I ran it.
 Both cross-VM messages report `executed`. Native, then EVM, then Native, in one transaction. `pnpm verify` checks this
 retirement like any other, and passed 30 of 30 checks after it.
 
-**Step 1 was sent for a day that already has a reading.** Every finished day of system 3 had one when I ran it, so I
-sent a valid reading for the first day again. The call reached the contract: the chain's log is "execution reverted",
-and an `eth_call` of the same call from the buyer's address names `AlreadyAttested(3, 20777)`. That shows the chain
-let the call into the EVM with no window; the contract refused it. A successful `attest` from the Native lane still
-has to be run once a day without a reading exists (`pnpm native-entry --again 1`).
+**Step 1 is a reading minted from the Native lane.** The first time I sent step 1, every finished day of system 3
+already had a reading, so I sent the first day again (`48C756E1F0FA87228077922CF3F7B1D4501A887EEF8D9D79D67A0C0FE1E8C681`,
+block 10612980). It reached the contract and reverted there with `AlreadyAttested(3, 20777)`. On 24 November day
+20780 had no reading, so I sent step 1 again with `pnpm native-entry --again 1`. The chain checked the hybrid
+signature, ran `Mentari.attest` in the EVM, and the contract checked the meter's ML-DSA-87 signature with
+`pqcVerify` and minted 49,082 Wh to the producer. No EVM window was open. That record replaces the first one in the
+evidence file.
 
 **I ran both steps twice.** The first run (step 1 `98A6FF3FF4F1F55B23F0D89AD016FF4ABF1804F045560D424C938485B8F7A427`,
 step 2 `C7542EB3BE5D99895329997499D08B2E9527644AC010AD84ABA1B0CE2E75BF01`, retirement 4, receipt 13) gave the same

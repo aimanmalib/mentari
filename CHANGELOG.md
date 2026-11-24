@@ -8,6 +8,10 @@ contract is a new deployment, listed here with its new address.
 
 ### Added
 
+- Cases E (a reading signed with another account's key, `BadSignature`) and F (one watt-hour over the capacity,
+  `WhOutOfRange`) are recorded in `evidence/testnet.json`; both reverted with the receipt count unchanged, so all of A
+  to H are on the testnet. Case H step 1 was sent again for a day without a reading and was accepted: `attest` from
+  the Native lane with no EVM window minted 49,082 Wh. `pnpm verify` passed 73 of 73 checks.
 - The failure buttons (cases B, C, D) and the wallet grant are sent from the Native lane too, each as one
   hybrid-signed `MsgCrossVMCall`, so no demo button needs the EVM window. `/api/demo/status` reports each job's lane,
   whether it can send now and why not, the sender balance and the EVM window; it no longer says ready when the window

@@ -106,6 +106,27 @@
       }
     },
     {
+      "id": "E",
+      "title": "A reading signed with another account's key",
+      "expect": "revert",
+      "status": "reverted",
+      "contract": "0xF5cb2c6048a7CE8c5A7ACcc66eB8efc33942a448",
+      "function": "attest",
+      "evm_tx": "0x6cf45ade46b7af4a75f7be8a756e325ed68667476077e49a1089f24a5000fcb1",
+      "cosmos_tx": "5B7A5856013C83DDAD15258DC6C87FFBA9B185A2EA8AB6D927A2B18ACB41900D",
+      "height": 10637917,
+      "gas_used": 750000,
+      "revert_reason": "BadSignature(0xbE13F609C05AD4c0C3a480c4A30c3c6C1B1623a4)",
+      "receipts": {
+        "before": 25,
+        "after": 25
+      },
+      "retirements": {
+        "before": 16,
+        "after": 16
+      }
+    },
+    {
       "id": "E2",
       "title": "A second reading for the same day",
       "expect": "revert",
@@ -124,6 +145,27 @@
       "retirements": {
         "before": 1,
         "after": 1
+      }
+    },
+    {
+      "id": "F",
+      "title": "A reading over the system's capacity",
+      "expect": "revert",
+      "status": "reverted",
+      "contract": "0xF5cb2c6048a7CE8c5A7ACcc66eB8efc33942a448",
+      "function": "attest",
+      "evm_tx": "0x2cdb736c854685d99c40a2fa2529cf9143b33f8a5f3a717156077aa64600b6df",
+      "cosmos_tx": "CD9DDAE7155E6692C84E9038A8CB2D6DD196FEA3C394F79049814EFEBBFA9C34",
+      "height": 10637919,
+      "gas_used": 750000,
+      "revert_reason": "WhOutOfRange(40001, 40000)",
+      "receipts": {
+        "before": 25,
+        "after": 25
+      },
+      "retirements": {
+        "before": 16,
+        "after": 16
       }
     },
     {
@@ -155,7 +197,7 @@
         "cosmos": "qor14yc6fymv4c9nfyxmu85xfp8wp8m4vlgp5srudw",
         "evm": "0xA931a4936cAE0B3490DBe1e86484eE09F7567d01"
       },
-      "ranAt": "2026-11-23T11:59:28.270Z",
+      "ranAt": "2026-11-24T00:46:06.852Z",
       "steps": [
         {
           "step": 1,
@@ -163,21 +205,21 @@
           "function": "attest",
           "args": [
             "3",
-            "20777",
-            "54432",
-            "0x156d57f360c024a9\u2026(4627 bytes)"
+            "20780",
+            "49082",
+            "0x1b3c7e756c9c6147…(4627 bytes)"
           ],
-          "contract_would": "revert AlreadyAttested",
+          "contract_would": "mint the reading",
           "window_before": "closed",
-          "cosmos_tx": "48C756E1F0FA87228077922CF3F7B1D4501A887EEF8D9D79D67A0C0FE1E8C681",
+          "cosmos_tx": "FC13A89597E46C3128D351B25C351461D2EC8B30A2D053017DFC6D7175AB2A3E",
           "stage": "block",
-          "code": 14,
-          "codespace": "crossvm",
-          "log": "failed to execute message; message index: 0: execution reverted: EVM contract execution failed: EVM contract execution failed",
-          "height": 10612980,
-          "gas_used": 406755,
-          "accepted": false,
-          "revert_reason": "AlreadyAttested(3, 20777)",
+          "code": 0,
+          "codespace": "",
+          "log": "",
+          "height": 10637935,
+          "gas_used": 640824,
+          "accepted": true,
+          "revert_reason": null,
           "event_types": [
             "pqc_verify",
             "pqc_hybrid_verify",
@@ -186,28 +228,30 @@
             "coin_received",
             "transfer",
             "message",
-            "tx"
+            "tx",
+            "crossvm_request",
+            "crossvm_response"
           ],
           "receipts": {
-            "before": 13,
-            "after": 13
+            "before": 25,
+            "after": 25
           },
           "state": [
             {
-              "name": "attested(3, 20777)",
-              "before": "true",
+              "name": "attested(3, 20780)",
+              "before": "false",
               "after": "true"
             },
             {
               "name": "minted",
               "before": "344115",
-              "after": "344115"
+              "after": "393197"
             }
           ]
         },
         {
           "step": 2,
-          "question": "Is the nested bridge call accepted: Mentari.retire, which calls 0x\u20260901 into the Native receipts book?",
+          "question": "Is the nested bridge call accepted: Mentari.retire, which calls 0x…0901 into the Native receipts book?",
           "function": "retire",
           "args": [
             "500",

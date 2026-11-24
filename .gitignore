@@ -24,6 +24,8 @@ coverage/
 test-results/
 playwright-report/
 deck/build/
+# Demo video workspace: the video engine writes here; the film is published with the submission, not in git
+/video/
 
 # Local state and keys
 state/

@@ -1,10 +1,10 @@
 {
-  "readAt": "2026-11-23T23:50:48.949Z",
+  "readAt": "2026-11-24T00:46:22.709Z",
   "evmRpc": "https://evm-testnet.qore.host",
   "rest": "https://api-testnet.qore.host",
-  "evmBlock": 10635628,
-  "checks": 67,
-  "passed": 67,
+  "evmBlock": 10637947,
+  "checks": 73,
+  "passed": 73,
   "failed": 0,
   "unavailable": 0,
   "checkList": [
@@ -110,7 +110,7 @@
     },
     {
       "group": "totals",
-      "name": "minted 344115 - retired 8000 = supply 336115",
+      "name": "minted 393197 - retired 8000 = supply 385197",
       "outcome": "pass"
     },
     {
@@ -189,6 +189,22 @@
     },
     {
       "group": "cases",
+      "name": "case E EVM transaction reverted",
+      "outcome": "pass"
+    },
+    {
+      "group": "cases",
+      "name": "case E Cosmos transaction 5B7A5856013C83DDAD15258DC6C87FFBA9B185A2EA8AB6D927A2B18ACB41900D",
+      "outcome": "pass"
+    },
+    {
+      "group": "cases",
+      "name": "case E receipts book unchanged at block 10637917",
+      "outcome": "pass",
+      "detail": "25 -> 25"
+    },
+    {
+      "group": "cases",
       "name": "case E2 EVM transaction reverted",
       "outcome": "pass"
     },
@@ -202,6 +218,22 @@
       "name": "case E2 receipts book unchanged at block 10609370",
       "outcome": "pass",
       "detail": "8 -> 8"
+    },
+    {
+      "group": "cases",
+      "name": "case F EVM transaction reverted",
+      "outcome": "pass"
+    },
+    {
+      "group": "cases",
+      "name": "case F Cosmos transaction CD9DDAE7155E6692C84E9038A8CB2D6DD196FEA3C394F79049814EFEBBFA9C34",
+      "outcome": "pass"
+    },
+    {
+      "group": "cases",
+      "name": "case F receipts book unchanged at block 10637919",
+      "outcome": "pass",
+      "detail": "25 -> 25"
     },
     {
       "group": "cases",
@@ -221,15 +253,15 @@
     },
     {
       "group": "cases",
-      "name": "case H step 1 attest Cosmos transaction not accepted",
+      "name": "case H step 1 attest Cosmos transaction accepted",
       "outcome": "pass",
-      "detail": "48C756E1F0FA87228077922CF3F7B1D4501A887EEF8D9D79D67A0C0FE1E8C681"
+      "detail": "FC13A89597E46C3128D351B25C351461D2EC8B30A2D053017DFC6D7175AB2A3E"
     },
     {
       "group": "cases",
-      "name": "case H step 1 attest receipts book unchanged at block 10612980",
+      "name": "case H step 1 attest receipts book unchanged at block 10637935",
       "outcome": "pass",
-      "detail": "13 -> 13"
+      "detail": "25 -> 25"
     },
     {
       "group": "cases",

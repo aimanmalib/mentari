@@ -24,9 +24,9 @@ pertama ialah [`6012d2b`](https://github.com/aimanmalib/mentari/commit/6012d2b) 
 
 > **Keadaan hari ini** (dibaca dari [`evidence/`](evidence/)):
 > - Kontrak testnet: `Mentari` di `0xf5cb2c6048a7ce8c5a7accc66eb8efc33942a448`, `AtomicityProbe` di `0x7438df055f0d96e6ba1b9ac8e7334a1be56130e4`.
-> - 344,115 Wh dicetak daripada 9 bacaan meter, setiap satu disemak di rantai dengan ML-DSA-87 ([`deploy.json`](evidence/deploy.json)).
-> - 16 persaraan, 8,000 Wh dibersarakan, setiap satu sepadan dengan resit Native; `pnpm verify` lulus 67 daripada 67 semakan ([`verify.json`](evidence/verify.json)).
-> - Kes A, B, C, D, E2, G dan H direkod bersama transaksinya ([`testnet.json`](evidence/testnet.json)); kes H ialah persaraan yang dihantar dari lorong Native tanpa EVM window ([`docs/findings.md`](docs/findings.md), dalam bahasa Inggeris).
+> - 393,197 Wh dicetak daripada 10 bacaan meter, setiap satu disemak di rantai dengan ML-DSA-87: 9 semasa deploy ([`deploy.json`](evidence/deploy.json)) dan 1 dihantar dari lorong Native dalam kes H.
+> - 16 persaraan, 8,000 Wh dibersarakan, setiap satu sepadan dengan resit Native; `pnpm verify` lulus 73 daripada 73 semakan ([`verify.json`](evidence/verify.json)).
+> - Kes A hingga H direkod bersama transaksinya ([`testnet.json`](evidence/testnet.json)); kes H ialah attest dan persaraan yang dihantar dari lorong Native tanpa EVM window ([`docs/findings.md`](docs/findings.md), dalam bahasa Inggeris).
 > - "Retire now" di laman awam: 5 tekanan berturut-turut, setiap satu menaikkan kedua-dua lejar satu; setiap butang kegagalan tidak mengubah mana-mana lejar ([`live.json`](evidence/live.json)).
 
 ## Semak dalam 3 langkah

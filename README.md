@@ -23,9 +23,9 @@ commit is [`6012d2b`](https://github.com/aimanmalib/mentari/commit/6012d2b) on 2
 
 > **Where it stands today** (read from [`evidence/`](evidence/)):
 > - Testnet contracts: `Mentari` at `0xf5cb2c6048a7ce8c5a7accc66eb8efc33942a448`, `AtomicityProbe` at `0x7438df055f0d96e6ba1b9ac8e7334a1be56130e4`.
-> - 344,115 Wh minted from 9 meter readings, each checked on chain with ML-DSA-87 ([`deploy.json`](evidence/deploy.json)).
-> - 16 retirements, 8,000 Wh retired, each matched to its Native receipt; `pnpm verify` passed 67 of 67 checks ([`verify.json`](evidence/verify.json)).
-> - Cases A, B, C, D, E2, G and H recorded with their transactions ([`testnet.json`](evidence/testnet.json)); case H is a retire sent from the Native lane with no EVM window ([`docs/findings.md`](docs/findings.md)).
+> - 393,197 Wh minted from 10 meter readings, each checked on chain with ML-DSA-87: 9 at deployment ([`deploy.json`](evidence/deploy.json)) and 1 sent from the Native lane in case H.
+> - 16 retirements, 8,000 Wh retired, each matched to its Native receipt; `pnpm verify` passed 73 of 73 checks ([`verify.json`](evidence/verify.json)).
+> - Cases A to H recorded with their transactions ([`testnet.json`](evidence/testnet.json)); case H is an attest and a retire sent from the Native lane with no EVM window ([`docs/findings.md`](docs/findings.md)).
 > - "Retire now" on the public site: 5 presses in a row, each moved both ledgers by one; each failure button moved neither ([`live.json`](evidence/live.json)).
 
 ## Check it in 3 steps

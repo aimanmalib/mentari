@@ -10,6 +10,10 @@ What the demo film says, and the material it is cut from. The film itself and it
 - [`tangkap/log.json`](tangkap/log.json): what each press returned and what each explorer page said, for example
   `failed (code 14)` for the revert. [`tangkap/kotak.json`](tangkap/kotak.json) holds the element positions the
   camera moves to.
+- [`index.tmpl`](index.tmpl): the film itself, one page where every frame is a function of time. Every screen in it is a
+  capture of the live site or the explorer.
+- [`tangkap/teks.py`](tangkap/teks.py): writes the film plan. It reads the values on screen from the evidence, the press
+  log and `verify.txt`, and times each picture to the words that describe it, from the timings the voice engine returned.
 - [`tangkap/verify.txt`](tangkap/verify.txt): the check lines of a real `pnpm demo` run from a clean copy of the
   repo, shown in the terminal scene.
 

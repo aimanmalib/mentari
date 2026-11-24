@@ -5,7 +5,7 @@
 <p align="center"><a href="https://github.com/aimanmalib/mentari/actions/workflows/ci.yml"><img src="https://github.com/aimanmalib/mentari/actions/workflows/ci.yml/badge.svg" alt="CI"></a> <a href="https://github.com/aimanmalib/mentari/blob/main/LICENSE"><img src="https://img.shields.io/github/license/aimanmalib/mentari" alt="Lesen: Apache-2.0"></a> <img src="https://img.shields.io/badge/QoreChain-Diana%20testnet-22357e" alt="Testnet QoreChain Diana"></p>
 
 <p align="center"><b>Sijil solar yang hanya boleh dibersarakan sekali: bakar dan resit awam berlaku bersama, atau tidak langsung.</b> · <i>Solar certificates you can retire only once: burn and public receipt land together, or not at all.</i><br>
-<a href="https://mentari.sasateguh.com"><b>demo langsung</b></a> · <a href="#nilai-dalam-3-minit">nilai dalam 3 minit</a> · <a href="#bukti-di-testnet">bukti di testnet</a> · <a href="#lima-kriteria-penjurian">kriteria penjurian</a> · <a href="#jalankan">jalankan</a> · <a href="#had">had</a> · <a href="AI_USAGE.md">penggunaan AI</a> · <a href="docs/deck.pdf">slaid (PDF)</a> · <a href="README.md">English</a><br>
+<a href="https://mentari.sasateguh.com"><b>demo langsung</b></a> · <a href="docs/video/mentari-demo.mp4"><b>video demo</b></a> · <a href="#nilai-dalam-3-minit">nilai dalam 3 minit</a> · <a href="#bukti-di-testnet">bukti di testnet</a> · <a href="#lima-kriteria-penjurian">kriteria penjurian</a> · <a href="#jalankan">jalankan</a> · <a href="#had">had</a> · <a href="AI_USAGE.md">penggunaan AI</a> · <a href="docs/deck.pdf">slaid (PDF)</a> · <a href="README.md">English</a><br>
 Dibina di Malaysia oleh <a href="https://aimanmalib.com">Aiman Malib</a> · <a href="https://sasateguh.com">Sasa Teguh</a></p>
 
 <p align="center"><img src="docs/images/screenshot-desktop.png" width="640" alt="Halaman daftar Mentari di desktop: lejar EVM di kiri, buku resit Native di kanan, dan lencana di tengah yang menyatakan kedua-dua lejar sepakat"> <img src="docs/images/screenshot-mobile.png" width="180" alt="Halaman daftar yang sama di iPhone, dengan label meter simulasi"></p>
@@ -79,7 +79,7 @@ menunjukkan yang gagal sebagai gagal. Ralat nod asal untuk kes I ada dalam [`tes
 | QoreChain tech usage, verified in the repo and on chain | 25 % | [Kit dan ciri rangkaian](README.md#kits-and-network-features) (dalam bahasa Inggeris): jambatan, `pqcVerify`, `pqcKeyStatus`, `MsgCrossVMCall`, `@qorechain/sdk`, QoreX; alamat qor1 dalam [jadual trek](#keperluan-trek-cross-vm-dan-di-mana-ia-dipenuhi) |
 | Post-quantum correctness and security | 20 % | [Apa ditandatangani, dan di mana](#pasca-kuantum-apa-ditandatangani-dan-di-mana); kes I; [Verify](https://mentari.sasateguh.com/verify) menyemak semula ML-DSA-87 dalam pelayar anda; [`docs/threat-model.md`](docs/threat-model.md) |
 | Originality | 15 % | [Apa yang saya temui](#apa-yang-saya-temui-akaun-native-boleh-menjalankan-kontrak-evm); [`docs/findings.md`](docs/findings.md) |
-| Clarity, UX and documentation | 15 % | Fail ini dan [README.md](README.md); laman dalam bahasa Inggeris dan Melayu; [`docs/architecture.md`](docs/architecture.md); 38 [rekod keputusan](docs/decisions/), setiap satu dengan cara mengundurnya; [`AI_USAGE.md`](AI_USAGE.md) |
+| Clarity, UX and documentation | 15 % | Fail ini dan [README.md](README.md); laman dalam bahasa Inggeris dan Melayu; [`docs/architecture.md`](docs/architecture.md); 39 [rekod keputusan](docs/decisions/), setiap satu dengan cara mengundurnya; [`AI_USAGE.md`](AI_USAGE.md) |
 
 ## Apa yang saya temui: akaun Native boleh menjalankan kontrak EVM
 

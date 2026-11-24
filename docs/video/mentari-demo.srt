@@ -1,0 +1,192 @@
+1
+00:00:00,350 --> 00:00:02,880
+A solar certificate is only worth something if it
+
+2
+00:00:02,890 --> 00:00:03,620
+can be used once.
+
+3
+00:00:03,630 --> 00:00:06,160
+Today the burn lives in one system and the
+
+4
+00:00:06,170 --> 00:00:07,510
+public record in another.
+
+5
+00:00:07,520 --> 00:00:09,530
+They can disagree.
+
+6
+00:00:15,230 --> 00:00:17,900
+This is Mentari on the QoreChain testnet.
+
+7
+00:00:17,910 --> 00:00:19,360
+I press Retire now.
+
+8
+00:00:19,370 --> 00:00:23,500
+One transaction burns five hundred watt-hours in an EVM
+
+9
+00:00:23,510 --> 00:00:26,650
+contract and writes a receipt into the Native receipts
+
+10
+00:00:26,660 --> 00:00:28,900
+book through the Cross-VM bridge.
+
+11
+00:00:28,910 --> 00:00:30,410
+Both ledgers go up by one.
+
+12
+00:00:30,420 --> 00:00:33,930
+The explorer shows it signed with ML-DSA-87.
+
+13
+00:00:42,230 --> 00:00:42,890
+Now I make it fail.
+
+14
+00:00:42,900 --> 00:00:45,390
+This button writes the Native receipt,
+
+15
+00:00:45,400 --> 00:00:46,620
+then reverts on the EVM side.
+
+16
+00:00:46,630 --> 00:00:48,180
+The receipt count does not move.
+
+17
+00:00:48,190 --> 00:00:50,030
+The chain undid the Native write.
+
+18
+00:00:50,040 --> 00:00:52,440
+The other two buttons fail on the Native side
+
+19
+00:00:52,450 --> 00:00:54,530
+and at the bridge allowlist.
+
+20
+00:01:03,030 --> 00:01:04,580
+Anyone can check a retirement.
+
+21
+00:01:04,590 --> 00:01:05,720
+The page reads both records.
+
+22
+00:01:05,730 --> 00:01:07,200
+Each one names the other,
+
+23
+00:01:07,210 --> 00:01:09,230
+and the Mentari contract wrote the receipt.
+
+24
+00:01:09,240 --> 00:01:12,690
+Then your browser checks the meter signatures again.
+
+25
+00:01:19,390 --> 00:01:23,300
+Certificates are minted from meter readings signed with ML-DSA-87.
+
+26
+00:01:23,310 --> 00:01:27,300
+The contract checks each signature with the pqcVerify precompile.
+
+27
+00:01:27,310 --> 00:01:31,280
+A reading signed with another key mints nothing.
+
+28
+00:01:31,290 --> 00:01:35,270
+A classical key alone cannot retire: the chain refuses
+
+29
+00:01:35,280 --> 00:01:35,880
+it.
+
+30
+00:01:42,950 --> 00:01:43,730
+One thing I did not expect.
+
+31
+00:01:43,740 --> 00:01:47,120
+The docs mark calls from a Native account into
+
+32
+00:01:47,130 --> 00:01:48,260
+the EVM as not yet tested.
+
+33
+00:01:48,270 --> 00:01:48,870
+I ran it.
+
+34
+00:01:48,690 --> 00:01:51,450
+One hybrid-signed transaction,
+
+35
+00:01:51,460 --> 00:01:52,430
+with no EVM window open,
+
+36
+00:01:52,440 --> 00:01:55,310
+ran the contract and wrote the receipt back on
+
+37
+00:01:55,320 --> 00:01:56,190
+the Native side.
+
+38
+00:01:56,200 --> 00:01:58,610
+Retire now uses that route.
+
+39
+00:02:06,510 --> 00:02:07,750
+You do not have to trust this video.
+
+40
+00:02:07,760 --> 00:02:09,740
+Clone the repo and run pnpm demo.
+
+41
+00:02:09,750 --> 00:02:10,350
+It needs no key.
+
+42
+00:02:10,290 --> 00:02:14,400
+It checks every retirement and every recorded case again
+
+43
+00:02:14,410 --> 00:02:16,730
+from public endpoints.
+
+44
+00:02:23,830 --> 00:02:25,480
+The meters are simulated.
+
+45
+00:02:25,490 --> 00:02:27,620
+The signatures and the chain are real.
+
+46
+00:02:27,630 --> 00:02:30,280
+I built Mentari on my own in Malaysia with
+
+47
+00:02:30,290 --> 00:02:31,580
+AI coding agents.
+
+48
+00:02:31,590 --> 00:02:34,130
+This voice is an AI clone of my own.
+

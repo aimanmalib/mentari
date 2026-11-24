@@ -29,6 +29,7 @@ deck/build/
 /video/*
 !/video/README.md
 !/video/skrip.json
+!/video/index.tmpl
 !/video/tangkap/
 /video/tangkap/*
 !/video/tangkap/tangkap.e2e.ts
@@ -36,6 +37,8 @@ deck/build/
 !/video/tangkap/log.json
 !/video/tangkap/kotak.json
 !/video/tangkap/verify.txt
+!/video/tangkap/teks.py
+!/video/tangkap/srt.py
 
 # Local state and keys
 state/

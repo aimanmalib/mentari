@@ -5,7 +5,7 @@
 <p align="center"><a href="https://github.com/aimanmalib/mentari/actions/workflows/ci.yml"><img src="https://github.com/aimanmalib/mentari/actions/workflows/ci.yml/badge.svg" alt="CI"></a> <a href="https://github.com/aimanmalib/mentari/blob/main/LICENSE"><img src="https://img.shields.io/github/license/aimanmalib/mentari" alt="Licence: Apache-2.0"></a> <img src="https://img.shields.io/badge/QoreChain-Diana%20testnet-22357e" alt="QoreChain Diana testnet"></p>
 
 <p align="center"><b>Solar certificates you can retire only once: burn and public receipt land together, or not at all.</b> · <i>Sijil solar yang hanya boleh dibersarakan sekali: bakar dan resit awam berlaku bersama, atau tidak langsung.</i><br>
-<a href="https://mentari.sasateguh.com"><b>live demo</b></a> · <a href="#judge-it-in-3-minutes">judge it in 3 minutes</a> · <a href="#proof-on-testnet">proof on testnet</a> · <a href="#the-five-judging-criteria">judging criteria</a> · <a href="#run-it">run it</a> · <a href="#limits">limits</a> · <a href="AI_USAGE.md">AI usage</a> · <a href="docs/deck.pdf">slides (PDF)</a> · <a href="README.ms.md">Bahasa Melayu</a><br>
+<a href="https://mentari.sasateguh.com"><b>live demo</b></a> · <a href="docs/video/mentari-demo.mp4"><b>demo video</b></a> · <a href="#judge-it-in-3-minutes">judge it in 3 minutes</a> · <a href="#proof-on-testnet">proof on testnet</a> · <a href="#the-five-judging-criteria">judging criteria</a> · <a href="#run-it">run it</a> · <a href="#limits">limits</a> · <a href="AI_USAGE.md">AI usage</a> · <a href="docs/deck.pdf">slides (PDF)</a> · <a href="README.ms.md">Bahasa Melayu</a><br>
 Built in Malaysia by <a href="https://aimanmalib.com">Aiman Malib</a> · <a href="https://sasateguh.com">Sasa Teguh</a></p>
 
 <p align="center"><img src="docs/images/screenshot-desktop.png" width="640" alt="The Mentari registry page on desktop: the EVM ledger on the left, the Native receipts book on the right, and a badge in the middle that says both ledgers agree"> <img src="docs/images/screenshot-mobile.png" width="180" alt="The same registry page on an iPhone, with the simulated meter label"></p>
@@ -76,7 +76,7 @@ explorer shows a failed one as failed. The verbatim node error for case I is in
 | QoreChain tech usage, verified in the repo and on chain | 25 % | [Kits and network features](#kits-and-network-features): the bridge, `pqcVerify`, `pqcKeyStatus`, `MsgCrossVMCall`, `@qorechain/sdk`, QoreX; the qor1 addresses in the [track table](#cross-vm-track-requirements-and-where-they-are-met) |
 | Post-quantum correctness and security | 20 % | [What is signed, and where](#post-quantum-what-is-signed-and-where); case I; [Verify](https://mentari.sasateguh.com/verify) re-checks ML-DSA-87 in your browser; [`docs/threat-model.md`](docs/threat-model.md) |
 | Originality | 15 % | [What I found](#what-i-found-a-native-account-can-run-the-evm-contract); [`docs/findings.md`](docs/findings.md) |
-| Clarity, UX and documentation | 15 % | This file and [README.ms.md](README.ms.md); the site in English and Malay; [`docs/architecture.md`](docs/architecture.md); 38 [decision records](docs/decisions/), each with how to undo it; [`AI_USAGE.md`](AI_USAGE.md) |
+| Clarity, UX and documentation | 15 % | This file and [README.ms.md](README.ms.md); the site in English and Malay; [`docs/architecture.md`](docs/architecture.md); 39 [decision records](docs/decisions/), each with how to undo it; [`AI_USAGE.md`](AI_USAGE.md) |
 
 ## What I found: a Native account can run the EVM contract
 

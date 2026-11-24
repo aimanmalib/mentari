@@ -1,0 +1,293 @@
+<!doctype html>
+<!-- SOURCE (index.tmpl, engine method v2). index.html is GENERATED from this file and filem.json by the engine video build.
+     Every frame is a pure function of time: one paused GSAP tween drives seek(t), so a render is the same frame by frame.
+     Every screen is a real capture of the live site (assets/shots/); every value comes from filem.json, written by tangkap/teks.py from the voice timings. -->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <!--TOKEN-->
+    <style>
+      /* Product look: the site's design tokens (web/src/styles/tokens.css) and its three fonts. */
+      @font-face { font-family: 'Bricolage Grotesque Variable'; src: url(assets/fonts/bricolage-grotesque-latin-wdth-normal.woff2) format('woff2'); font-weight: 200 800; }
+      @font-face { font-family: 'Instrument Sans Variable'; src: url(assets/fonts/instrument-sans-latin-wght-normal.woff2) format('woff2'); font-weight: 400 700; }
+      @font-face { font-family: 'IBM Plex Mono'; src: url(assets/fonts/ibm-plex-mono-latin-500-normal.woff2) format('woff2'); font-weight: 500; }
+      :root {
+        --daylight: #f5f7fb; --paper: #ffffff; --ink: #141a3a; --muted: #4a5378; --silicon: #22357e; --silicon-deep: #18265e;
+        --silicon-text: #e9edfb; --busbar: #c7d0e4; --noon: #f3b415; --noon-wash: #fff4d1; --noon-ink: #6b4800; --agree: #17734f;
+        --agree-wash: #e3f4ec; --alarm: #b3261e; --alarm-wash: #fbe7e5; --code: #0f1530;
+        --f-display: 'Bricolage Grotesque Variable', sans-serif; --f-body: 'Instrument Sans Variable', sans-serif; --f-mono: 'IBM Plex Mono', monospace;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--daylight); }
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: var(--daylight); color: var(--ink); font-family: var(--f-body); }
+      .scene { position: absolute; inset: 0; overflow: hidden; }
+      .w { display: inline-block; }
+      .kicker { font: 500 22px/1.3 var(--f-mono); letter-spacing: .04em; color: var(--silicon); margin-bottom: 26px; }
+      .papar { font-family: var(--f-display); font-weight: 700; line-height: 1.05; letter-spacing: -.02em; font-size: 60px; color: var(--ink); }
+      .kiri { position: absolute; left: 96px; top: 330px; width: 420px; }
+      .pelayar { position: absolute; border-radius: 20px; background: var(--paper); border: 1px solid var(--busbar); box-shadow: 0 30px 90px rgba(20,26,58,.18); overflow: hidden; }
+      .pelayar .krom { height: 52px; display: flex; align-items: center; gap: 10px; padding: 0 20px; border-bottom: 1px solid var(--busbar); background: #eef1f8; }
+      .pelayar .krom i { width: 13px; height: 13px; border-radius: 50%; background: var(--busbar); display: block; }
+      .pelayar .url { margin-left: 18px; flex: 1; height: 32px; border-radius: 9px; background: var(--paper); color: var(--muted); font-size: 17px; font-weight: 500; display: flex; align-items: center; padding: 0 16px; gap: 10px; }
+      .pelayar .url b { color: var(--ink); font-weight: 600; }
+      .skrin { position: absolute; left: 0; top: 0; transform-origin: 0 0; overflow: hidden; }
+      .skrin img { position: absolute; left: 0; top: 0; display: block; }
+      .kursor { position: absolute; left: 0; top: 0; z-index: 9; }
+      .riak { position: absolute; border-radius: 50%; border: 3px solid var(--noon); z-index: 9; }
+      .cincin { position: absolute; border: 4px solid var(--noon); border-radius: 16px; z-index: 8; box-shadow: 0 0 0 6px rgba(243,180,21,.18); }
+      .term { position: absolute; inset: 0; background: var(--code); color: #dfe5f7; font: 500 19px/1.5 var(--f-mono); padding: 26px 34px; white-space: pre; overflow: hidden; }
+      .term .pr { color: var(--noon); } .term .ok { color: #7fdca4; } .term .hd { color: #9fb0e8; }
+      .kod { position: absolute; inset: 0; background: var(--code); color: #dfe5f7; font: 500 23px/1.6 var(--f-mono); padding: 30px 0; white-space: pre; overflow: hidden; }
+      .kod .ln { display: block; padding: 0 30px 0 0; }
+      .kod .no { display: inline-block; width: 60px; text-align: right; margin-right: 26px; color: #8f9ac4; }
+      .kod .s { color: #f6cf6a; } .kod .k { color: #9fb0e8; }
+      .sk-lane { position: absolute; top: 470px; width: 540px; height: 330px; border-radius: 18px; padding: 30px 34px; }
+      .sk-lane h3 { font: 700 36px/1.1 var(--f-display); }
+      .sk-row { margin-top: 34px; height: 92px; border-radius: 14px; display: flex; align-items: center; gap: 18px; padding: 0 26px; font: 700 32px/1 var(--f-display); }
+      .sk-cert { position: absolute; left: 960px; top: 150px; width: 500px; white-space: nowrap; height: 150px; border-radius: 18px; background: var(--paper); border: 2px solid var(--busbar);
+        display: flex; align-items: center; gap: 24px; padding: 0 32px; box-shadow: 0 20px 60px rgba(20,26,58,.12); font: 700 34px/1.1 var(--f-display); }
+      .sun { width: 64px; height: 64px; border-radius: 50%; background: var(--noon); flex: none; }
+      .tengah { position: absolute; left: 0; right: 0; text-align: center; }
+      .cap { position: absolute; left: 0; right: 0; top: 962px; text-align: center; z-index: 50; }
+      .cap span { display: inline-block; font: 600 34px/1.3 var(--f-body); color: #fff; background: rgba(20,26,58,.88); padding: 10px 28px; border-radius: 16px; max-width: 1600px; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="{{tempoh}}" data-width="1920" data-height="1080">
+      <div id="X" hidden data-hos="{{hos}}" data-kotak="{{kotak}}" data-plan="{{plan}}" data-kes_e="{{kes_e}}" data-kes_i="{{kes_i}}" data-kes_cd="{{kes_cd}}" data-verify_out="{{verify_out}}"
+           data-verify_n="{{verify_n}}" data-exp_retire="{{exp_retire}}" data-exp_b="{{exp_b}}" data-exp_native="{{exp_native}}" data-docs_url="{{docs_url}}"
+           data-hook_k="{{hook_k}}" data-hook_h="{{hook_h}}" data-retire_k="{{retire_k}}" data-retire_h="{{retire_h}}" data-gagal_k="{{gagal_k}}" data-gagal_h="{{gagal_h}}"
+           data-verify_k="{{verify_k}}" data-verify_h="{{verify_h}}" data-meter_k="{{meter_k}}" data-meter_h="{{meter_h}}" data-native_k="{{native_k}}" data-native_h="{{native_h}}"
+           data-demo_k="{{demo_k}}" data-demo_h="{{demo_h}}" data-tutup_1="{{tutup_1}}" data-tutup_2="{{tutup_2}}" data-sk_resit="{{sketsa_resit}}" data-sk_gagal="{{sketsa_gagal}}"></div>
+      <div id="s-hook" class="clip scene" data-start="{{b_hook_a}}" data-duration="{{b_hook_d}}" data-track-index="1" data-track-kind="graphics">
+        <svg style="position:absolute;left:0;top:0" width="1920" height="1080"><path d="M1210 300 C1210 390 910 380 910 470" stroke="#c7d0e4" stroke-width="4" fill="none"/><path d="M1210 300 C1210 390 1510 380 1510 470" stroke="#c7d0e4" stroke-width="4" fill="none"/></svg>
+        <div class="sk-cert"><div class="sun"></div><span>{{sketsa_sijil}}</span></div>
+        <div class="sk-lane" style="left:640px;background:var(--silicon);color:var(--silicon-text)"><h3>{{sketsa_evm}}</h3>
+          <div id="sk-bakar" class="sk-row" style="background:rgba(233,237,251,.14)">&#10003; {{sketsa_bakar}}</div></div>
+        <div class="sk-lane" style="left:1240px;background:var(--noon-wash);color:var(--noon-ink);border:2px solid #f1dc9a"><h3>{{sketsa_native}}</h3>
+          <div id="sk-resit" class="sk-row" style="border:3px dashed var(--noon-ink)"><span id="sk-resit-t">{{sketsa_resit}}</span></div></div>
+        <div id="sk-dua" class="tengah" style="top:850px;font:700 40px/1.2 var(--f-display);color:var(--alarm);padding-left:540px">{{sketsa_dua}}</div>
+      </div>
+      <div id="s-retire" class="clip scene" data-start="{{b_retire_a}}" data-duration="{{b_retire_d}}" data-track-index="1" data-track-kind="graphics"></div>
+      <div id="s-gagal" class="clip scene" data-start="{{b_gagal_a}}" data-duration="{{b_gagal_d}}" data-track-index="1" data-track-kind="graphics"></div>
+      <div id="s-verify" class="clip scene" data-start="{{b_verify_a}}" data-duration="{{b_verify_d}}" data-track-index="1" data-track-kind="graphics"></div>
+      <div id="s-meter" class="clip scene" data-start="{{b_meter_a}}" data-duration="{{b_meter_d}}" data-track-index="1" data-track-kind="graphics"></div>
+      <div id="s-native" class="clip scene" data-start="{{b_native_a}}" data-duration="{{b_native_d}}" data-track-index="1" data-track-kind="graphics"></div>
+      <div id="s-demo" class="clip scene" data-start="{{b_demo_a}}" data-duration="{{b_demo_d}}" data-track-index="1" data-track-kind="graphics"></div>
+      <div id="s-tutup" class="clip scene" data-start="{{b_tutup_a}}" data-duration="{{b_tutup_d}}" data-track-index="1" data-track-kind="graphics">
+        <div class="tengah" style="top:380px"><img id="tu-logo" src="assets/logo.svg" alt="" style="width:96px;height:96px;display:block;margin:0 auto 40px" />
+          <div id="tu-1" class="papar" style="font-size:76px"></div><div id="tu-2" class="papar" style="font-size:76px;color:var(--silicon);margin-top:14px"></div></div>
+      </div>
+      <div id="s-akhir" class="clip scene" data-start="{{t_akhir}}" data-duration="{{t_akhir_d}}" data-track-index="2" data-track-kind="graphics" style="background: var(--daylight)">
+        <div class="tengah" style="top:190px">
+          <img id="ak-logo" src="assets/logo.svg" alt="" style="width:128px;height:128px;display:block;margin:0 auto 26px" />
+          <div class="papar" style="font-size:108px">Mentari</div>
+          <div id="ak-h" style="font:600 38px/1.3 var(--f-body);color:var(--muted);margin:22px auto 0;max-width:1300px">{{akhir_h}}</div>
+          <div id="ak-u" style="font:500 40px/1.2 var(--f-mono);margin-top:46px;color:var(--silicon)">{{akhir_url}}</div>
+          <div id="ak-r" style="font:500 30px/1.2 var(--f-mono);margin-top:16px">{{akhir_repo}}</div>
+          <div id="ak-s" style="font:600 26px/1.3 var(--f-body);color:var(--muted);margin-top:30px">{{akhir_sub}}</div>
+          <div style="font:500 21px/1.3 var(--f-mono);color:var(--muted);margin-top:48px">{{label_ai}}</div>
+        </div>
+      </div>
+      <div id="captions" data-track-kind="captions">
+        <!--SARI-->
+      </div>
+      <!--SUARA-->
+      <audio id="bgm1" class="clip" src="assets/music/bed.mp3" data-start="{{bgm1_a}}" data-duration="{{bgm1_d}}" data-volume="0.11" data-fade-in="1.5" data-fade-out="3" data-track-index="21"></audio>
+      <audio id="bgm2" class="clip" src="assets/music/bed.mp3" data-start="{{bgm2_a}}" data-duration="{{bgm2_d}}" data-volume="0.11" data-fade-in="3" data-fade-out="3" data-track-index="22"></audio>
+      <audio id="fx-hook" class="clip" src="assets/sfx/tolak.mp3" data-start="{{t_fails}}" data-duration="1" data-volume="0.45" data-track-index="23"></audio>
+      <audio id="fx-k1" class="clip" src="assets/sfx/klik1.mp3" data-start="{{t_klik}}" data-duration="1" data-volume="0.55" data-track-index="24"></audio>
+      <audio id="fx-naik" class="clip" src="assets/sfx/suis.mp3" data-start="{{t_hasil}}" data-duration="1" data-volume="0.4" data-track-index="25"></audio>
+      <audio id="fx-k2" class="clip" src="assets/sfx/klik1.mp3" data-start="{{t_g_klik}}" data-duration="1" data-volume="0.55" data-track-index="26"></audio>
+      <audio id="fx-b" class="clip" src="assets/sfx/darat.mp3" data-start="{{t_g_hasil}}" data-duration="1" data-volume="0.45" data-track-index="27"></audio>
+      <audio id="fx-k3" class="clip" src="assets/sfx/klik1.mp3" data-start="{{t_g_kc}}" data-duration="1" data-volume="0.5" data-track-index="28"></audio>
+      <audio id="fx-k4" class="clip" src="assets/sfx/klik1.mp3" data-start="{{t_g_kd}}" data-duration="1" data-volume="0.5" data-track-index="29"></audio>
+      <audio id="fx-e" class="clip" src="assets/sfx/tolak.mp3" data-start="{{t_m_e_hi}}" data-duration="1" data-volume="0.45" data-track-index="31"></audio>
+      <audio id="fx-i" class="clip" src="assets/sfx/tolak.mp3" data-start="{{t_m_i_hi}}" data-duration="1" data-volume="0.45" data-track-index="32"></audio>
+      <audio id="fx-ok" class="clip" src="assets/sfx/suis.mp3" data-start="{{t_d_ok}}" data-duration="1" data-volume="0.4" data-track-index="33"></audio>
+    </div>
+    <script>
+      const TEMPOH = {{tempoh}};
+      const X = document.getElementById('X').dataset, K = JSON.parse(X.kotak), P = JSON.parse(X.plan), B = P.B, T = P.T;
+
+      // ---------- time maths (no Date.now, no randomness, no CSS animation) ----------
+      const cl = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x)), pr = (t, a, b) => cl((t - a) / (b - a));
+      const eo = x => 1 - Math.pow(1 - x, 3), eio = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+      const eb = x => { const c1 = 1.5, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); };
+      const lerp = (a, b, k) => a + (b - a) * k, px = n => n + 'px';
+      const esc = s => String(s).replace(/[&<>]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;'}[c]));
+      function laluan(t, p) { let v = p[0][1]; for (let i = 1; i < p.length; i++) { const [ta, va] = p[i - 1], [tb, vb] = p[i];
+        if (t >= tb) v = vb; else if (t > ta) { v = lerp(va, vb, eio(pr(t, ta, tb))); break; } else break; } return v; }
+
+      // ---------- DOM helpers ----------
+      function el(tag, cls, css, inner, ibu) { const e = document.createElement(tag); if (cls) e.className = cls;
+        if (css) Object.assign(e.style, css); if (inner != null) e.innerHTML = inner; ibu.appendChild(e); return e; }
+      function kinetik(ibu, teks) { const k = teks.split(' ');
+        return k.map((w, i) => { const s = el('span', 'w', null, esc(w), ibu); if (i < k.length - 1) ibu.appendChild(document.createTextNode(' ')); return s; }); }
+      function kinetikMain(span, t, a, jeda = .07, dur = .45) { span.forEach((s, i) => { const k = eo(pr(t, a + i * jeda, a + i * jeda + dur));
+        s.style.opacity = k; s.style.transform = `translateY(${(1 - k) * 0.45}em)`; }); }
+      const PENUNJUK = '<svg viewBox="0 0 15 19" width="100%" height="100%"><path d="M1 1v15l4-4 3 6 3-1.5-3-6h5z" fill="#141a3a" stroke="#ffffff" stroke-width="1.1" stroke-linejoin="round"/></svg>';
+      const KUNCI = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" style="color:var(--agree)"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+      const S = id => document.getElementById('s-' + id);
+      const L = {x: 576, y: 92, w: 1248, h: 820}, CSS = 1280, s = L.w / CSS, VH = (L.h - 52) / s;
+      const maxR = f => Math.max(0, P.H[f] - VH);
+      function pelayar(ibu) { const w = el('div', 'pelayar', {left: px(L.x), top: px(L.y), width: px(L.w), height: px(L.h)}, null, ibu);
+        const k = el('div', 'krom', null, '<i></i><i></i><i></i>', w); const url = el('div', 'url', null, KUNCI + '<span></span>', k);
+        const view = el('div', '', {position: 'absolute', left: 0, top: '52px', width: px(L.w), height: px(L.h - 52), overflow: 'hidden', background: 'var(--daylight)'}, null, w);
+        return {w, view, url: url.querySelector('span'), kini: null}; }
+      function urlDi(dev, u) { if (dev.kini === u) return; dev.kini = u;
+        dev.url.innerHTML = u.startsWith('/') ? `https://<b>${esc(X.hos)}</b>${esc(u)}` : `<b style="font-family:var(--f-mono)">${esc(u)}</b>`; }
+      /** Browser window with several captures (cross-fade); each scrolls along a path [[t, y], …] in CSS px. */
+      function skrinPelayar(ibu, imej) {
+        const dev = pelayar(ibu);
+        const sk = el('div', 'skrin', {width: px(CSS), height: px(VH), transform: `scale(${s})`}, null, dev.view);
+        const lap = imej.map(m => { const d = el('div', '', {position: 'absolute', inset: 0}, null, sk);
+          const i = el('img', '', {width: px(CSS)}, null, d); i.src = 'assets/shots/' + m.f + '.png'; i.alt = ''; return {m, d, i}; });
+        const kur = el('div', 'kursor', {width: px(30 / s), height: px(38 / s), opacity: 0}, PENUNJUK, sk);
+        const rk = el('div', 'riak', {opacity: 0}, null, sk);
+        const cin = el('div', 'cincin', {opacity: 0}, null, sk);
+        let yKini = 0, urlImej = '/';
+        return {dev, sk, kur, rk, cin, get y() { return yKini; }, get url() { return urlImej; }, seek(t) {
+          let aktif = 0; lap.forEach(({m}, i) => { if (t >= m.dari) aktif = i; });
+          lap.forEach(({m, d, i}, j) => { const masuk = j === 0 ? 1 : eo(pr(t, m.dari, m.dari + .45));
+            d.style.opacity = j <= aktif ? masuk : 0; const y = Math.min(maxR(m.f), laluan(t, m.tatal)); i.style.transform = `translateY(${-y}px)`; if (j === aktif) yKini = y; });
+          urlImej = lap[aktif].m.url; }};
+      }
+      /** Ring around a box (CSS px of the capture), shown between a and b. */
+      function cincinDi(p, t, a, b, k) { const e = p.cin; e.style.opacity = Math.min(eo(pr(t, a, a + .35)), 1 - pr(t, b - .3, b));
+        Object.assign(e.style, {left: px(k.x - 10), top: px(k.y - p.y - 10), width: px(k.w + 20), height: px(k.h + 20)}); }
+      function kursorDi(p, t, jalan) { let q = jalan[0]; for (let i = 1; i < jalan.length; i++) { const [ta, xa, ya] = jalan[i - 1], [tb, xb, yb] = jalan[i];
+          if (t >= tb) q = jalan[i]; else if (t > ta) { const k = eio(pr(t, ta, tb)); q = [t, lerp(xa, xb, k), lerp(ya, yb, k)]; break; } else break; }
+        p.kur.style.transform = `translate(${q[1]}px,${q[2] - p.y}px)`; }
+      function riak(p, t, tk, x, y) { const k = pr(t, tk, tk + .55); p.rk.style.opacity = k > 0 && k < 1 ? (1 - k) : 0;
+        const d = 10 + 60 * eo(k); Object.assign(p.rk.style, {left: px(x - d / 2), top: px(y - p.y - d / 2), width: px(d), height: px(d)}); }
+      /** Punch-in: scale the browser window about the centre of box k (capture CSS px) along [[t, scale]]. */
+      function punch(p, t, jalan, k) { const z = laluan(t, jalan);
+        const fx = Math.min((k.x + k.w / 2) * s, .3 * L.w), fy = 52 + (k.y + k.h / 2 - p.y) * s;
+        p.dev.w.style.transformOrigin = `${fx}px ${fy}px`; p.dev.w.style.transform = `scale(${z})`; }
+      function kiri(ibu, k, h) { const w = el('div', 'kiri', null, null, ibu); const kk = el('div', 'kicker', null, esc(k), w);
+        const hh = el('div', 'papar', null, null, w); return {kk, sp: kinetik(hh, h)}; }
+      function adegan(t, b, kk) { const o = Math.min(eo(pr(t, b[0], b[0] + .5)), 1 - pr(t, b[1] - .4, b[1]));
+        kk.kk.parentNode.style.opacity = o; kinetikMain(kk.sp, t, b[0] + .25); return o; }
+      function masuk(w, t, b) { w.style.opacity = Math.min(eo(pr(t, b[0], b[0] + .5)), 1 - pr(t, b[1] - .4, b[1])); }
+      /** Code panel inside a browser window: JSON lines with numbers. */
+      function kodPanel(view, teks) { const k = el('div', 'kod', {opacity: 0}, null, view);
+        return {k, baris: teks.split('\n').map((l, i) => el('span', 'ln', null, `<span class="no">${i + 1}</span>` +
+          esc(l).replace(/(&quot;|")([^"]*)("\s*:)/, '<span class="k">$1$2$3</span>').replace(/(:\s*)("[^"]*")/, '$1<span class="s">$2</span>'), k))}; }
+
+      /** A browser scene: captures, rings, cursor, clicks, a punch-in and code panels, all keyed to film time. */
+      function adeganPelayar(id, imej, o) {
+        const kk = kiri(S(id), X[id + '_k'], X[id + '_h']), p = skrinPelayar(S(id), imej);
+        const panel = (o.panel || []).map(q => Object.assign({}, q, kodPanel(p.dev.view, q.teks), {hiI: q.teks.split('\n').findIndex(l => l.includes(q.hi))}));
+        return {p, seek(t) {
+          adegan(t, B[id], kk); masuk(p.dev.w, t, B[id]); p.seek(t);
+          const r = (o.cincin || []).filter(c => t >= c.a && t < c.b).pop();
+          if (r) cincinDi(p, t, r.a, r.b, r.k); else p.cin.style.opacity = 0;
+          if (o.kursor) { kursorDi(p, t, o.kursor.jalan); p.kur.style.opacity = o.kursor.nampak.some(([a, b]) => t >= a && t < b) ? 1 : 0; }
+          const kl = (o.klik || []).filter(c => t >= c[0]).pop(); if (kl) riak(p, t, kl[0], kl[1], kl[2]); else p.rk.style.opacity = 0;
+          if (o.punch) punch(p, t, o.punch.jalan, o.punch.k);
+          let url = p.url; panel.forEach((q, j) => { const nx = panel[j + 1];
+            q.k.style.opacity = Math.min(eo(pr(t, q.a, q.a + .45)), nx ? 1 - pr(t, nx.a + .45, nx.a + .5) : 1); if (t >= q.a) url = q.url;
+            q.baris.forEach((b, i) => { b.style.background = i === q.hiI && t >= q.thi ? 'rgba(179,38,30,.45)' : 'transparent'; }); });
+          urlDi(p.dev, url); }};
+      }
+
+      const box = (f, n) => K[f][n], pad = (k, d) => ({x: k.x - d, y: k.y - d, w: k.w + 2 * d, h: k.h + 2 * d});
+      const BTN = [790, 873, 955].map(y => ({x: 583, y, w: 609, h: 73})), mid = k => [k.x + k.w * .62, k.y + k.h / 2];
+      const COUNTS = box('try-b', 'counts'), YRES = box('try-b', 'result').y - 200, yTry = box('try', 'retire').y - 180, yF = box('try', 'fails').y - 120;
+      const SIG = {x: 36, y: box('exp-retire', 'sig').y - 13, w: 1208, h: 110}, STAT = {x: 40, y: box('exp-b', 'status').y - 11, w: 1200, h: 66};
+      const AGREE = {x: 64, y: 528, w: 1152, h: 88}, CHECKS = {x: 72, y: 630, w: 620, h: 122}, PQ = {x: 64, y: 1516, w: 1152, h: 318};
+      const SYS = {x: 56, y: 1640, w: 1168, h: 290}, CROSS = {x: 44, y: box('exp-native', 'crossvm').y - 10, w: 1192, h: 200};
+      const FLAG = pad({x: 316, y: box('docs', 'head').y - P.docsY0, w: 703, h: box('docs', 'flag').y + 20 - box('docs', 'head').y}, 10);
+
+      // 1 HOOK: the problem as a sketch (frame 0 already shows it; social players use it as the thumbnail)
+      const hK = kiri(S('hook'), X.hook_k, X.hook_h);
+      const skBakar = document.getElementById('sk-bakar'), skResit = document.getElementById('sk-resit'), skResitT = document.getElementById('sk-resit-t'), skDua = document.getElementById('sk-dua');
+      // 2 RETIRE: a real press of Retire now, the counts, then the transaction on the explorer
+      const rb = box('try', 'retire'), rc = [rb.x + rb.w / 2, rb.y + rb.h / 2];
+      const aRe = adeganPelayar('retire', [
+        {f: 'try', url: '/try', dari: 0, tatal: [[B.retire[0] + .3, 120], [T.klik - .9, yTry]]},
+        {f: 'try-retire', url: '/try', dari: T.hasil, tatal: [[T.hasil, yTry], [T.hasil + 1.6, YRES]]},
+        {f: 'exp-retire', url: X.exp_retire, dari: T.exp, tatal: [[T.exp, 0], [T.safe - .3, 0], [T.safe + .6, SIG.y - 260], [B.retire[1], SIG.y - 200]]}], {
+        cincin: [{a: B.retire[0] + 1.2, b: T.klik + .3, k: rb}, {a: T.kira, b: T.exp, k: COUNTS}, {a: T.exp + .5, b: T.safe - .3, k: STAT}, {a: T.safe + .7, b: B.retire[1], k: SIG}],
+        kursor: {jalan: [[B.retire[0], 900, yTry + 560], [T.klik - .9, 900, yTry + 560], [T.klik - .05, rc[0], rc[1]]], nampak: [[B.retire[0], T.hasil]]},
+        klik: [[T.klik, rc[0], rc[1]]], punch: {jalan: [[T.kira - .6, 1], [T.kira + .6, 1.12], [T.exp - .5, 1.12], [T.exp, 1]], k: COUNTS}});
+      // 3 GAGAL: Write, then revert; the counts that did not move; the failed transaction; the two other buttons
+      const b0 = mid(BTN[0]), b1 = mid(BTN[1]), b2 = mid(BTN[2]);
+      const aGa = adeganPelayar('gagal', [
+        {f: 'try', url: '/try', dari: 0, tatal: [[0, yF]]},
+        {f: 'try-b', url: '/try', dari: T.g_hasil, tatal: [[T.g_hasil, yF], [T.g_hasil + 1.2, YRES]]},
+        {f: 'exp-b', url: X.exp_b, dari: T.g_exp, tatal: [[0, 0]]},
+        {f: 'try', url: '/try', dari: T.g_other, tatal: [[0, yF]]}], {
+        panel: [{a: T.g_akhir, teks: X.kes_cd, url: 'evidence/testnet.json · cases C and D', hi: 'reverted', thi: T.g_akhir + .6}],
+        cincin: [{a: B.gagal[0] + 1, b: T.g_klik + .3, k: BTN[0]}, {a: T.g_kira, b: T.g_exp, k: COUNTS}, {a: T.g_exp + .5, b: T.g_other, k: STAT},
+          {a: T.g_other + .2, b: T.g_kc + .3, k: BTN[1]}, {a: T.g_kc + .5, b: T.g_kd + .3, k: BTN[2]}],
+        kursor: {jalan: [[B.gagal[0], 960, yF + 640], [T.g_klik - .9, 960, yF + 640], [T.g_klik - .05, ...b0], [T.g_other, ...b0], [T.g_kc - .05, ...b1],
+          [T.g_kc + .3, ...b1], [T.g_kd - .05, ...b2]], nampak: [[B.gagal[0], T.g_hasil + .2], [T.g_other, T.g_akhir]]},
+        klik: [[T.g_klik, ...b0], [T.g_kc, ...b1], [T.g_kd, ...b2]]});
+      // 4 VERIFY: both records agree, the checks, then the signatures checked again in the browser
+      const aVe = adeganPelayar('verify', [{f: 'verify', url: '/verify?n=' + X.verify_n, dari: 0, tatal: [[T.v_pq, 0], [T.v_pq + 1.2, PQ.y - 260]]}], {
+        cincin: [{a: T.v_agree, b: T.v_names, k: AGREE}, {a: T.v_names, b: T.v_pq, k: CHECKS}, {a: T.v_pq + 1.3, b: B.verify[1], k: PQ}]});
+      // 5 METER: the signed meters on the registry, then cases E and I from evidence/testnet.json
+      const aMe = adeganPelayar('meter', [{f: 'registry', url: '/', dari: 0, tatal: [[B.meter[0] + .3, 600], [B.meter[0] + 2.2, SYS.y - 250]]}], {
+        cincin: [{a: B.meter[0] + 2.4, b: T.m_e, k: SYS}],
+        panel: [{a: T.m_e, teks: X.kes_e, url: 'evidence/testnet.json · case E', hi: 'revert_reason', thi: T.m_e_hi},
+                {a: T.m_i, teks: X.kes_i, url: 'evidence/testnet.json · case I', hi: 'refused', thi: T.m_i_hi}]});
+      // 6 NATIVE: the docs flag, the hybrid-signed transaction that ran it, then the finding on How it works
+      const aNa = adeganPelayar('native', [
+        {f: 'docs-flag', url: X.docs_url, dari: 0, tatal: [[0, FLAG.y - 300]]},
+        {f: 'exp-native', url: X.exp_native, dari: T.n_ran, tatal: [[T.n_ran, 0], [T.n_safe + .3, 0], [T.n_safe + 1.1, SIG.y - 260], [T.n_cross + .2, SIG.y - 260], [T.n_cross + 1.2, CROSS.y - 200]]},
+        {f: 'how', url: '/how-it-works', dari: T.n_how, tatal: [[0, box('how', 'svg').y - 60]]}], {
+        cincin: [{a: T.n_flag + .3, b: T.n_ran, k: FLAG}, {a: T.n_safe + 1.2, b: T.n_cross + .2, k: SIG}, {a: T.n_cross + 1.3, b: T.n_how, k: CROSS},
+          {a: T.n_how + .8, b: B.native[1], k: pad(box('how', 'svg'), 4)}]});
+      // 7 DEMO: a real pnpm demo run from a clean copy of the repo
+      const dK = kiri(S('demo'), X.demo_k, X.demo_h), dq = pelayar(S('demo')); urlDi(dq, '~/mentari · bash');
+      const term = el('div', 'term', null, null, dq.view), tIn = el('div', '', null, null, term);
+      const vOut = X.verify_out.split('\n'), CMD = 'pnpm demo';
+      const warnaV = (l, kuat) => /checks passed/.test(l) ? `<span class="ok"${kuat ? ' style="background:rgba(127,220,164,.2);font-weight:700"' : ''}>${esc(l)}</span>` :
+        /^ok /.test(l) ? `<span class="ok">ok</span>${esc(l.slice(2))}` : `<span class="hd">${esc(l)}</span>`;
+      // 8 TUTUP + end card
+      const tu1 = kinetik(document.getElementById('tu-1'), X.tutup_1), tu2 = kinetik(document.getElementById('tu-2'), X.tutup_2), tuLogo = document.getElementById('tu-logo');
+      const akLogo = document.getElementById('ak-logo'), akIds = ['ak-h', 'ak-u', 'ak-r', 'ak-s'].map(i => document.getElementById(i));
+
+      function seek(t) {
+        // hook
+        const oh = 1 - pr(t, B.hook[1] - .4, B.hook[1]); S('hook').style.opacity = oh; hK.kk.parentNode.style.opacity = 1; kinetikMain(hK.sp, t, -1);
+        const kb = eb(pr(t, T.burn, T.burn + .5)); skBakar.style.opacity = pr(t, T.burn, T.burn + .2); skBakar.style.transform = `scale(${.8 + .2 * kb})`;
+        skResit.style.opacity = pr(t, T.receipt, T.receipt + .3);
+        const gg = t >= T.fails; skResit.style.borderColor = gg ? 'var(--alarm)' : 'var(--noon-ink)'; skResit.style.background = gg ? 'var(--alarm-wash)' : 'transparent';
+        skResit.style.color = gg ? 'var(--alarm)' : 'var(--noon-ink)'; skResitT.innerHTML = gg ? '&#10007; ' + esc(X.sk_gagal) : esc(X.sk_resit);
+        skResit.style.transform = `translateX(${gg ? Math.sin((t - T.fails) * 40) * 8 * (1 - pr(t, T.fails, T.fails + .4)) : 0}px)`;
+        skDua.style.opacity = eo(pr(t, T.fails + .5, T.fails + 1));
+        [aRe, aGa, aVe, aMe, aNa].forEach(a => a.seek(t));
+        // demo
+        adegan(t, B.demo, dK); masuk(dq.w, t, B.demo);
+        const nc = Math.round(CMD.length * pr(t, T.d_cmd, T.d_cmd + .8)), nl = Math.round(vOut.length * pr(t, T.d_cmd + 1.1, T.d_ok - .4));
+        const lines = [`<span class="pr">$ </span>${esc(CMD.slice(0, nc))}`, ''].concat(vOut.slice(0, nl).map(l => warnaV(l, t >= T.d_ok)));
+        const vis = Math.floor((L.h - 52 - 52) / 28.5); tIn.innerHTML = lines.slice(Math.max(0, lines.length - vis)).join('\n');
+        // tutup + end card
+        const ot = Math.min(eo(pr(t, B.tutup[0], B.tutup[0] + .5)), 1 - pr(t, B.tutup[1] - .4, B.tutup[1])); S('tutup').style.opacity = Math.min(ot, 1 - pr(t, T.akhir + .6, T.akhir + .65));
+        kinetikMain(tu1, t, B.tutup[0] + .5); kinetikMain(tu2, t, T.tu2); tuLogo.style.transform = `scale(${.85 + .15 * eb(pr(t, B.tutup[0], B.tutup[0] + .7))})`;
+        const ka = eo(pr(t, T.akhir, T.akhir + .6)); S('akhir').style.opacity = ka;
+        akLogo.style.transform = `scale(${.85 + .15 * eb(pr(t, T.akhir, T.akhir + .7))})`;
+        akIds.forEach((e, i) => { e.style.opacity = eo(pr(t, T.akhir + .7 + .5 * i, T.akhir + 1.2 + .5 * i)); });
+      }
+
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      // A property setter, not onUpdate: timeline.seek() suppresses callbacks by default, but it always sets properties.
+      const jam = { _t: 0, get t() { return this._t; }, set t(v) { this._t = v; seek(v); } };
+      tl.to(jam, { t: TEMPOH, duration: TEMPOH, ease: "none" }, 0);
+      document.querySelectorAll(".cap span").forEach((sp) => {
+        const c = sp.parentElement, st = +c.dataset.start, du = +c.dataset.duration;
+        tl.fromTo(sp, { opacity: 0 }, { opacity: 1, duration: 0.08, ease: "none" }, st);
+        tl.to(sp, { opacity: 0, duration: 0.1, ease: "power2.in" }, st + du - 0.1);
+      });
+      window.__timelines["main"] = tl;
+      seek(0);
+      tl.seek(0);
+    </script>
+  </body>
+</html>

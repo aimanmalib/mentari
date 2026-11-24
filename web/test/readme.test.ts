@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 // The top of README.md and README.ms.md answers the judging rubric: a proof table of explorer links, the five official
@@ -47,6 +47,13 @@ describe.each(["README.md", "README.ms.md"])("%s", (file) => {
       expect(hash, `${file}: ${hash}`).toMatch(/^[0-9A-F]{64}$/);
       expect(recorded.has(hash), `${file}: ${hash} is not in evidence/`).toBe(true);
     }
+  });
+
+  it("points every file link in its header, the demo video among them, at a file in the repo", () => {
+    const head = text.split("\n## ")[0] ?? "";
+    const files = [...head.matchAll(/href="([^"#:]+)"/g)].map((m) => m[1] ?? "");
+    expect(files).toContain("docs/video/mentari-demo.mp4");
+    for (const f of files) expect(existsSync(new URL(f, root)), `${file}: ${f}`).toBe(true);
   });
 
   it("names the five official criteria", () => {

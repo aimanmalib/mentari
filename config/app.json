@@ -146,6 +146,39 @@
       "shotWidth": 1440,
       "shotHeight": 900
     },
+    "shots": {
+      "_comment": "Screenshots of the live site for the READMEs and the slides, drawn by web/og/render-shots.ts (`pnpm --filter @mentari/web shots`). Each shot opens path on share.siteUrl in a fresh context, waits for ready, then writes out (relative to the repository root). device names a Playwright device; without it the shot uses width x height in Chromium.",
+      "list": [
+        {
+          "path": "/",
+          "ready": ".seam[aria-busy=\"false\"]",
+          "out": "docs/images/screenshot-desktop.png",
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "path": "/",
+          "ready": ".seam[aria-busy=\"false\"]",
+          "out": "docs/images/screenshot-mobile.png",
+          "device": "iPhone 13"
+        },
+        {
+          "path": "/",
+          "ready": ".seam[aria-busy=\"false\"]",
+          "out": "deck/img/registry.png",
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "path": "/try",
+          "ready": ".retire-now",
+          "out": "deck/img/try-it.png",
+          "width": 1200,
+          "height": 810
+        }
+      ],
+      "maxKb": 600
+    },
     "links": {
       "source": "https://github.com/aimanmalib/mentari",
       "slides": "https://github.com/aimanmalib/mentari/blob/main/docs/deck.pdf"

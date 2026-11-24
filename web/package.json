@@ -8,6 +8,7 @@
     "preview": "vite preview",
     "og": "tsx og/render.ts",
     "cover": "tsx og/render-cover.ts",
+    "shots": "tsx og/render-shots.ts",
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json"
   },

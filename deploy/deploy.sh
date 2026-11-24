@@ -3,11 +3,31 @@
 #   deploy/deploy.sh             build HEAD from a clean `git archive`, run it, install the route, verify
 #   deploy/deploy.sh --rollback  run the previous image again (held by the stopped `mentari-undo` container)
 #   deploy/deploy.sh --status    container, tags, rollback image and the public health code
+#   deploy/deploy.sh --check-freeze  only the freeze check below (exit 0 = a deploy may run now)
+#
+# From config/limits.json deploy.freezeAfter on, a new deploy is refused (decision 0040): the entry is judged as
+# submitted. Only when the judges ask for a change: MENTARI_JURI_MINTA='<what they asked>'. --rollback stays open.
 #
 # Host values live in deploy/hos.env (not tracked; deploy/hos.env.example lists them). The demo sender key stays
 # in MENTARI_SECRETS_DIR outside the repository and reaches the container as a read-only mount: never the image.
 set -euo pipefail
 cd "$(dirname "$0")"
+
+# DEPLOY_LIMITS overrides the config path (tests).
+freeze_check() {
+  local lim=${DEPLOY_LIMITS:-../config/limits.json} at
+  at=$(node -e 'const l=JSON.parse(require("fs").readFileSync(process.argv[1],"utf8"));const t=Date.parse(l.deploy&&l.deploy.freezeAfter);if(!Number.isFinite(t))process.exit(3);console.log(Math.floor(t/1000)+" "+l.deploy.freezeAfter)' "$lim") \
+    || { echo "cannot read deploy.freezeAfter from $lim: refusing to deploy"; return 1; }
+  [ "$(date -u +%s)" -lt "${at%% *}" ] && return 0
+  if [ -n "${MENTARI_JURI_MINTA:-}" ]; then echo "deploy freeze (${at#* }) lifted for: $MENTARI_JURI_MINTA"; return 0; fi
+  echo "deploys are frozen since ${at#* } while the entry is judged; nothing was changed."
+  echo "Only when the judges ask for a change: MENTARI_JURI_MINTA='<what they asked>' bash deploy/deploy.sh"
+  return 1
+}
+case "${1:-}" in
+  --check-freeze) freeze_check; exit $? ;;
+  "") freeze_check || exit 1 ;;
+esac
 [ -r hos.env ] || { echo "deploy/hos.env missing (copy deploy/hos.env.example)"; exit 1; }
 # shellcheck disable=SC1091
 . ./hos.env
@@ -66,7 +86,7 @@ case "${1:-}" in
     git -C .. archive HEAD | tar -x -C "$ctx"   # clean tree: untracked and ignored files never reach the image
     $BUILD_CMD -t "mentari:$TAG" "$ctx"
     [ -r CURRENT_TAG ] && cp CURRENT_TAG PREVIOUS_TAG ;;
-  *) echo "usage: deploy.sh [--rollback|--status]"; exit 2 ;;
+  *) echo "usage: deploy.sh [--rollback|--status|--check-freeze]"; exit 2 ;;
 esac
 
 old_id=$(docker inspect -f '{{.Image}}' mentari 2>/dev/null || true)

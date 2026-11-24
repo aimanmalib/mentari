@@ -119,7 +119,7 @@ EVM transactions yet, so today the last step is refused
 | File | Holds |
 | --- | --- |
 | [`config/app.json`](../config/app.json) | Network endpoints, chain ids, account roles, contract addresses, the receipts book, site settings |
-| [`config/limits.json`](../config/limits.json) | Proxy allowlist and cache, trusted proxies, demo limits and amount |
+| [`config/limits.json`](../config/limits.json) | Proxy allowlist and cache, trusted proxies, demo limits and amount, the self-test and its funds line, the deploy freeze |
 | [`config/meter.json`](../config/meter.json) | The three simulated solar systems and the seeded sun-hour model |
 | [`config/cloudflare-ips.json`](../config/cloudflare-ips.json) | Cloudflare address ranges for the client IP rule |
 
@@ -128,3 +128,6 @@ EVM transactions yet, so today the last step is refused
 `deploy/deploy.sh` builds the image from the committed tree, starts it behind the host's reverse proxy at
 `mentari.sasateguh.com`, checks `/healthz`, and keeps the previous image. `deploy/deploy.sh --rollback` goes back to it.
 `deploy/uptime.sh` checks the public URL every 15 minutes. See [decision 0009](decisions/0009-container-deploy-and-health-watch.md).
+`deploy/selftest.sh` runs every 6 hours while the entry is judged: honest demo status, the demo sender's funds and the
+full public `verify`. From `config/limits.json` `deploy.freezeAfter` on, `deploy/deploy.sh` refuses a new deploy unless
+the judges asked for a change. See [decision 0040](decisions/0040-self-test-and-deploy-freeze-while-judged.md).

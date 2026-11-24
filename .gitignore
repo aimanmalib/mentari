@@ -50,3 +50,4 @@ deploy/hos.env
 deploy/*_TAG
 deploy/.uptime-state
 deploy/.funds-state
+deploy/.selftest-state

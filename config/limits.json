@@ -47,5 +47,23 @@
     "pageSize": 15,
     "maxPages": 6,
     "cacheSeconds": 120
+  },
+  "funds": {
+    "_comment": "deploy/selftest.sh (decision 0040): one warning when this account holds less than warnQor whole QOR. A press costs about 0.2 QOR. deploy/funds.sh keeps its own lower line in config/app.json funding.lowBalanceQor.",
+    "role": "demo sender",
+    "warnQor": 20
+  },
+  "selftest": {
+    "_comment": "deploy/selftest.sh (decision 0040), run from cron every 6 hours while the demo is judged. failsBeforeAlert: failed runs in a row before one warning. statusTries and statusRetrySeconds: reads of /api/demo/status before it counts as failed (the chain read behind it can blip). balanceToleranceQor: how far the status balance may differ from the chain (it is cached for a few seconds). timeoutSeconds: one HTTP read. verifyTimeoutSeconds: the full public verify.",
+    "failsBeforeAlert": 2,
+    "statusTries": 3,
+    "statusRetrySeconds": 10,
+    "balanceToleranceQor": 1,
+    "timeoutSeconds": 25,
+    "verifyTimeoutSeconds": 300
+  },
+  "deploy": {
+    "_comment": "deploy/deploy.sh refuses to build or run a new image from freezeAfter on (the entry is judged as submitted). Only when the judges ask for a change: MENTARI_JURI_MINTA='<what they asked>' bash deploy/deploy.sh. --rollback and --status still work.",
+    "freezeAfter": "2026-12-02T17:59:00Z"
   }
 }

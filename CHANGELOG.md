@@ -25,6 +25,10 @@ contract is a new deployment, listed here with its new address.
 
 ### Added
 
+- `deploy/selftest.sh` checks the live demo every 6 hours while it is judged: honest status, the demo sender above
+  20 QOR, and the full public `verify`. `deploy/deploy.sh` refuses a new deploy after `deploy.freezeAfter` unless the
+  judges ask for a change (decision 0040).
+
 - A demo video of about 103 seconds, built from full-page captures of the live site with real clicks (one "Retire
   now" and the three failure buttons), excerpts of `evidence/testnet.json` and one real `pnpm verify` run. The narration
   is an AI clone of my own voice; the music is by Sascha Ende (CC BY 4.0). The workspace `video/` is not in git

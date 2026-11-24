@@ -71,8 +71,13 @@ Native" feature shows as verified.
 Following the plan I set before the test: when step 2 is accepted, the demo sender and the meter should use this
 Native route and need no EVM window. Decision 0025 records that. Since 23 November "Retire now" on the site is sent
 this way (decision 0026): the first live one, `EDAEF9C88E6C44FF39029F642A3B6CCDFA2423A2317CE44B58ED606B71124F0F`,
-used 1,005,093 gas, and the demo sender's EVM window, which the failure buttons still use, did not count it. The meter
-job can use the route too; its switch stays off until cases E and F are recorded.
+used 1,005,093 gas, and the demo sender's EVM window did not count it. Since 24 November the three failure buttons
+and the wallet grant go the same way (decision 0030). Pressed on the site that day, each failure button gave a Native
+transaction that the chain took into a block with code 14 in the `crossvm` codespace, and both ledgers kept their
+counts (runs 10 to 12 in `evidence/live.json`): Write, then revert `4F9B5F8D45472307558019A22A72DCF2BEB79B3599E572E8BAE6EA8D11396703`, Native side refuses
+`7D69CA4FCB6A3D21639E8A703E050D76E39E29348D7A7D151CCDD73F164FF89A`, Call a blocked contract
+`C003B67FFB655EB48A19965F0B7FD6E3A8C49A3C63FB2B2C85FCC0308DC4E07B`. The explorer shows these presses as "failed
+(code 14)" with the signature marked quantum-safe, ML-DSA-87. The daily meter uses the route too (decision 0031).
 
 ## What I did not test
 

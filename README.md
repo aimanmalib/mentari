@@ -23,10 +23,10 @@ commit is [`6012d2b`](https://github.com/aimanmalib/mentari/commit/6012d2b) on 2
 
 > **Where it stands today** (read from [`evidence/`](evidence/)):
 > - Testnet contracts: `Mentari` at `0xf5cb2c6048a7ce8c5a7accc66eb8efc33942a448`, `AtomicityProbe` at `0x7438df055f0d96e6ba1b9ac8e7334a1be56130e4`.
-> - 393,197 Wh minted from 10 meter readings, each checked on chain with ML-DSA-87: 9 at deployment ([`deploy.json`](evidence/deploy.json)) and 1 sent from the Native lane in case H.
-> - 16 retirements, 8,000 Wh retired, each matched to its Native receipt; `pnpm verify` passed 73 of 73 checks ([`verify.json`](evidence/verify.json)).
+> - 449,963 Wh minted from meter readings, each checked on chain with ML-DSA-87: 9 at deployment ([`deploy.json`](evidence/deploy.json)), 1 in case H, and the daily meter's readings sent from the Native lane since 24 November ([decision 0031](docs/decisions/0031-daily-meter-attest-gas.md)).
+> - 20 retirements, 10,000 Wh retired, each matched to its Native receipt; `pnpm verify` passed 92 of 92 checks ([`verify.json`](evidence/verify.json)).
 > - Cases A to H recorded with their transactions ([`testnet.json`](evidence/testnet.json)); case H is an attest and a retire sent from the Native lane with no EVM window ([`docs/findings.md`](docs/findings.md)).
-> - "Retire now" on the public site: 5 presses in a row, each moved both ledgers by one; each failure button moved neither ([`live.json`](evidence/live.json)).
+> - "Retire now" on the public site: 7 presses in a row, each moved both ledgers by one; each failure button moved neither, and since 24 November each one is a Native transaction that the chain reverts with code 14 ([`live.json`](evidence/live.json)).
 
 ## Check it in 3 steps
 

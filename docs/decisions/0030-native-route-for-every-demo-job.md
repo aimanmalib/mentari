@@ -46,8 +46,10 @@ is therefore a mined, failed transaction, as the buttons need, and not a refusal
 - A failure press costs 0.225 QOR (1,500,000 gas at 0.15 uqor) instead of drawing on the window's EVM gas. The daily
   cap in `config/limits.json` bounds the spend; the funds watch warns below its threshold.
 - The explorer labels these transactions as Native and hybrid-signed, like "Retire now".
-- Live presses of each button on the deployed site are still to be recorded; until then the Native route for cases
-  B, C, D and the grant is tested on a local node with a stand-in for the chain, not on the testnet.
+- Pressed on the deployed site on 24 November, cases B, C and D each landed in a block with code 14 in the
+  `crossvm` codespace, used 332,781 to 745,289 of the 1,500,000 gas limit, and left both ledgers unchanged. The
+  hashes are runs 10 to 12 in `evidence/live.json`, and `pnpm verify` reads each one back. The grant is tested on a local node with
+  a stand-in for the chain; it has not been pressed on the testnet.
 
 ## How to undo
 

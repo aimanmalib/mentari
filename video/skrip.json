@@ -1,0 +1,46 @@
+{
+ "_nota": "Narration for the Mentari demo film (eight scenes). sari = on-screen caption and the words spoken, sebut = how the voice says a term. Every claim maps to evidence/testnet.json, the press log and explorer text in video/tangkap/log.json, or the real pnpm demo run in video/tangkap/verify.txt.",
+ "baris": [
+  {
+   "id": "hook",
+   "sari": "A solar certificate is only worth something if it can be used once. Today the burn lives in one system and the public record in another. They can disagree."
+  },
+  {
+   "id": "retire",
+   "sari": "This is Mentari on the QoreChain testnet. I press Retire now. One transaction burns five hundred watt-hours in an EVM contract and writes a receipt into the Native receipts book through the Cross-VM bridge. Both ledgers go up by one. The explorer shows it signed with ML-DSA-87."
+  },
+  {
+   "id": "gagal",
+   "sari": "Now I make it fail. This button writes the Native receipt, then reverts on the EVM side. The receipt count does not move. The chain undid the Native write. The other two buttons fail on the Native side and at the bridge allowlist."
+  },
+  {
+   "id": "verify",
+   "sari": "Anyone can check a retirement. The page reads both records. Each one names the other, and the Mentari contract wrote the receipt. Then your browser checks the meter signatures again."
+  },
+  {
+   "id": "meter",
+   "sari": "Certificates are minted from meter readings signed with ML-DSA-87. The contract checks each signature with the pqcVerify precompile. A reading signed with another key mints nothing. A classical key alone cannot retire: the chain refuses it."
+  },
+  {
+   "id": "native",
+   "sari": "One thing I did not expect. The docs mark calls from a Native account into the EVM as not yet tested. I ran it. One hybrid-signed transaction, with no EVM window open, ran the contract and wrote the receipt back on the Native side. Retire now uses that route."
+  },
+  {
+   "id": "demo",
+   "sari": "You do not have to trust this video. Clone the repo and run pnpm demo. It needs no key. It checks every retirement and every recorded case again from public endpoints."
+  },
+  {
+   "id": "tutup",
+   "sari": "The meters are simulated. The signatures and the chain are real. I built Mentari on my own in Malaysia with AI coding agents. This voice is an AI clone of my own."
+  }
+ ],
+ "peta": {},
+ "sebut": {
+  "ML-DSA-87": "M L D S A eighty-seven",
+  "EVM": "E V M",
+  "pqcVerify": "P Q C verify",
+  "pnpm": "P N P M",
+  "QoreChain": "Core Chain",
+  "Cross-VM": "Cross V M"
+ }
+}

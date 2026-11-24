@@ -1,0 +1,102 @@
+$ pnpm demo
+Mentari 0xf5cb2c6048a7ce8c5a7accc66eb8efc33942a448 (qor17h9jcczg5l8gckn6enrxaw80cvu59fzg2335fw)
+EVM https://evm-testnet.qore.host · REST https://api-testnet.qore.host
+ok   contracts   Mentari has code at 0xf5cb2c6048a7ce8c5a7accc66eb8efc33942a448
+ok   contracts   AtomicityProbe has code at 0x7438df055f0d96e6ba1b9ac8e7334a1be56130e4
+ok   contracts   Mentari writes to the configured receipts book
+ok   retirements retirement 1 matches receipt 8
+ok   retirements retirement 2 matches receipt 9
+ok   retirements retirement 3 matches receipt 10
+ok   retirements retirement 4 matches receipt 13
+ok   retirements retirement 5 matches receipt 14
+ok   retirements retirement 6 matches receipt 15
+ok   retirements retirement 7 matches receipt 16
+ok   retirements retirement 8 matches receipt 17
+ok   retirements retirement 9 matches receipt 18
+ok   retirements retirement 10 matches receipt 19
+ok   retirements retirement 11 matches receipt 20
+ok   retirements retirement 12 matches receipt 21
+ok   retirements retirement 13 matches receipt 22
+ok   retirements retirement 14 matches receipt 23
+ok   retirements retirement 15 matches receipt 24
+ok   retirements retirement 16 matches receipt 25
+ok   retirements retirement 17 matches receipt 26
+ok   retirements retirement 18 matches receipt 27
+ok   retirements retirement 19 matches receipt 28
+ok   retirements retirement 20 matches receipt 29
+ok   retirements retirement 21 matches receipt 30
+ok   retirements retirement 22 matches receipt 31
+ok   retirements retirement 23 matches receipt 32
+ok   retirements receipt ids rise with the retirement number (23 retirements)
+ok   totals      minted 449963 - retired 11500 = supply 438463
+ok   totals      the 23 retirements add up to retired 11500 Wh
+ok   cases       case A EVM transaction success
+ok   cases       case A Cosmos transaction 5654336FDCC86E817D25DE3391FE76FFDAAC8CE92785C785E0AA276369E8A618
+ok   cases       case A receipts book gained a receipt at block 10609362 (7 -> 8)
+ok   cases       case A receipt 8 as recorded
+ok   cases       case B EVM transaction reverted
+ok   cases       case B Cosmos transaction 9837A24B4D575651DB50875540C94CC58A3F1D7C6734B05F0A82846D3F260CF8
+ok   cases       case B receipts book unchanged at block 10609364 (8 -> 8)
+ok   cases       case C EVM transaction reverted
+ok   cases       case C Cosmos transaction A6D4F2754F99ADE9A2BD35CA2F2668620D5799A7B7342876556E8C34F6B66CA3
+ok   cases       case C receipts book unchanged at block 10609366 (8 -> 8)
+ok   cases       case D EVM transaction reverted
+ok   cases       case D Cosmos transaction 55F936A67ACE5226F2EF1BF24CA212C7C994D2D565BC92C6D047CB6CA6B0E635
+ok   cases       case D receipts book unchanged at block 10609368 (8 -> 8)
+ok   cases       case E EVM transaction reverted
+ok   cases       case E Cosmos transaction 5B7A5856013C83DDAD15258DC6C87FFBA9B185A2EA8AB6D927A2B18ACB41900D
+ok   cases       case E receipts book unchanged at block 10637917 (25 -> 25)
+ok   cases       case E2 EVM transaction reverted
+ok   cases       case E2 Cosmos transaction C4589E9AB637B431AD13FB2CF3E4E90F6C3F1520F4845A4709C11EE6EDFC47D3
+ok   cases       case E2 receipts book unchanged at block 10609370 (8 -> 8)
+ok   cases       case F EVM transaction reverted
+ok   cases       case F Cosmos transaction CD9DDAE7155E6692C84E9038A8CB2D6DD196FEA3C394F79049814EFEBBFA9C34
+ok   cases       case F receipts book unchanged at block 10637919 (25 -> 25)
+ok   cases       case G EVM transaction reverted
+ok   cases       case G Cosmos transaction E405CBAB79FAC6335F5982E1396B65249AEC93BCF56484A0540D91B83C9A8F34
+ok   cases       case G receipts book unchanged at block 10609373 (8 -> 8)
+ok   cases       case H step 1 attest Cosmos transaction accepted (FC13A89597E46C3128D351B25C351461D2EC8B30A2D053017DFC6D7175AB2A3E)
+ok   cases       case H step 1 attest receipts book unchanged at block 10637935 (25 -> 25)
+ok   cases       case H step 2 retire Cosmos transaction accepted (8E15D319B2971FC5102C027BA8E3C8A8AAF1FDD72AD8E2172CEE2303B453B40A)
+ok   cases       case H step 2 retire receipts book gained a receipt at block 10613003 (13 -> 14)
+ok   cases       case I classic-key EVM transaction never ran (0x3c297530cadcd180945ca7ee06f292c20077b9a0b7bab683c037641c1d6ca515)
+ok   cases       case I step 2 retire Cosmos transaction accepted (97A5C80786442EC1C3866D0A890FE0E21915DB22B227F675A92F9873AE4CEA38)
+ok   cases       case I step 2 retire receipts book gained a receipt at block 10658815 (30 -> 31)
+ok   live        run 1 case-b (webkit 390x664 (iPhone 13) en) both ledgers unchanged
+ok   live        run 2 case-c (webkit 390x664 (iPhone 13) ms) both ledgers unchanged
+ok   live        run 3 case-d (chromium 1440x1000 en) both ledgers unchanged
+ok   live        run 4 retire (webkit 390x664 (iPhone 13) en) both ledgers up by one
+ok   live        run 5 retire (webkit 390x664 (iPhone 13) ms) both ledgers up by one
+ok   live        run 6 retire (chromium 1440x1000 en) both ledgers up by one
+ok   live        run 7 retire (chromium 1440x1000 ms) both ledgers up by one
+ok   live        run 8 retire (webkit 320x700 en) both ledgers up by one
+ok   live        run 9 retire (chromium 1440x1000 en) both ledgers up by one
+ok   live        run 10 case-b (chromium 1440x1000 en) both ledgers unchanged
+ok   live        run 11 case-c (webkit 390x664 (iPhone 13) en) both ledgers unchanged
+ok   live        run 12 case-d (webkit 390x664 (iPhone 13) ms) both ledgers unchanged
+ok   live        run 13 retire (webkit 320x700 ms) both ledgers up by one
+ok   live        Retire now succeeded 7 times in a row
+ok   live        run 1 case-b (webkit 390x664 (iPhone 13) en) EVM transaction reverted
+ok   live        run 2 case-c (webkit 390x664 (iPhone 13) ms) EVM transaction reverted
+ok   live        run 3 case-d (chromium 1440x1000 en) EVM transaction reverted
+ok   live        run 4 retire (webkit 390x664 (iPhone 13) en) Cosmos transaction accepted (C9E915DFBF6E64C8DB6285A06F75D92C62DFD550E66B40941580C6C9E65F8443)
+ok   live        run 4 retire (webkit 390x664 (iPhone 13) en) receipts book gained a receipt at block 10623201
+ok   live        run 5 retire (webkit 390x664 (iPhone 13) ms) Cosmos transaction accepted (76B4BA7AF4B3553E1144125707EA2941F76A2D36D9E18CE156B0C0568CB76ADA)
+ok   live        run 5 retire (webkit 390x664 (iPhone 13) ms) receipts book gained a receipt at block 10623204
+ok   live        run 6 retire (chromium 1440x1000 en) Cosmos transaction accepted (811BCF985F207B2E551F7E04E9EA44375C4329F3099082D8A647CE9909E2B222)
+ok   live        run 6 retire (chromium 1440x1000 en) receipts book gained a receipt at block 10623206
+ok   live        run 7 retire (chromium 1440x1000 ms) Cosmos transaction accepted (9D05A4A380BF70B7D6127EE154B50ED8F0DC99EB6666361420C03B410F3D444B)
+ok   live        run 7 retire (chromium 1440x1000 ms) receipts book gained a receipt at block 10623210
+ok   live        run 8 retire (webkit 320x700 en) Cosmos transaction accepted (3BCA230097D87905141B33ACD0922EF24C29798050ACC0A697994790CF8047AB)
+ok   live        run 8 retire (webkit 320x700 en) receipts book gained a receipt at block 10623214
+ok   live        run 9 retire (chromium 1440x1000 en) Cosmos transaction accepted (922C6AF21D20019EB82E332396DA3EC9E696B3BFFF0B6011BA2BFE0415D3F946)
+ok   live        run 9 retire (chromium 1440x1000 en) receipts book gained a receipt at block 10653781
+ok   live        run 10 case-b (chromium 1440x1000 en) Native transaction reverted inside the EVM call (4F9B5F8D45472307558019A22A72DCF2BEB79B3599E572E8BAE6EA8D11396703)
+ok   live        run 10 case-b (chromium 1440x1000 en) receipts book unchanged at block 10653787
+ok   live        run 11 case-c (webkit 390x664 (iPhone 13) en) Native transaction reverted inside the EVM call (7D69CA4FCB6A3D21639E8A703E050D76E39E29348D7A7D151CCDD73F164FF89A)
+ok   live        run 11 case-c (webkit 390x664 (iPhone 13) en) receipts book unchanged at block 10653792
+ok   live        run 12 case-d (webkit 390x664 (iPhone 13) ms) Native transaction reverted inside the EVM call (C003B67FFB655EB48A19965F0B7FD6E3A8C49A3C63FB2B2C85FCC0308DC4E07B)
+ok   live        run 12 case-d (webkit 390x664 (iPhone 13) ms) receipts book unchanged at block 10653798
+ok   live        run 13 retire (webkit 320x700 ms) Cosmos transaction accepted (3449E5913A0FE37E00FC47A3133ED45769D907BBE5AC2C118A9EBA15DD727B07)
+ok   live        run 13 retire (webkit 320x700 ms) receipts book gained a receipt at block 10653804
+98 of 98 checks passed, 0 failed.

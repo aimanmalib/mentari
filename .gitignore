@@ -24,8 +24,18 @@ coverage/
 test-results/
 playwright-report/
 deck/build/
-# Demo video workspace: the video engine writes here; the film is published with the submission, not in git
-/video/
+# Demo video workspace: the video engine writes here; the film is published with the submission, not in git.
+# Tracked: the narration, the capture script and what it captured as text, so every line of the film can be checked.
+/video/*
+!/video/README.md
+!/video/skrip.json
+!/video/tangkap/
+/video/tangkap/*
+!/video/tangkap/tangkap.e2e.ts
+!/video/tangkap/tangkap.config.ts
+!/video/tangkap/log.json
+!/video/tangkap/kotak.json
+!/video/tangkap/verify.txt
 
 # Local state and keys
 state/

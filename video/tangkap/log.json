@@ -1,0 +1,66 @@
+{
+ "try-retire": {
+  "status": 200,
+  "body": {
+   "ok": true,
+   "action": "retire",
+   "expect": "success",
+   "cosmosTx": "DF9F8C91C184F264D1A701FAEB30CEAE2E5D3A2E87D0CA7F4BE3DCFC171A0FEE",
+   "txStatus": "success",
+   "receipts": {
+    "before": 31,
+    "after": 32
+   },
+   "retirements": {
+    "before": 22,
+    "after": 23
+   },
+   "asExpected": true,
+   "evidenceCase": "A"
+  }
+ },
+ "try-b": {
+  "status": 200,
+  "body": {
+   "ok": true,
+   "action": "case-b",
+   "expect": "revert",
+   "cosmosTx": "6A1FB106BAB71A7BEE1514396439251D4EA474F77770AF09E75BD0D513ACA49E",
+   "txStatus": "reverted",
+   "receipts": {
+    "before": 32,
+    "after": 32
+   },
+   "retirements": {
+    "before": 23,
+    "after": 23
+   },
+   "asExpected": true,
+   "evidenceCase": "B"
+  }
+ },
+ "verifyN": 23,
+ "docs": {
+  "url": "https://docs.qorechain.io/developer-guide/cross-vm-reference",
+  "says": "Not yet tested against the live network: this direction was not run for this page."
+ },
+ "exp-retire": {
+  "hash": "DF9F8C91C184F264D1A701FAEB30CEAE2E5D3A2E87D0CA7F4BE3DCFC171A0FEE",
+  "text": "QoreChainEXPLORER\nBlocks\nTransactions\nValidators\nTestnet\nMainnet\nDocs\nDashboard\nTransaction\nPrevious transaction\nNext transaction\nHash\nDF9F8C91C184F264\u20264BE3DCFC171A0FEE\nStatus\nsuccess\nBlock\n#10,661,141\nTime\n11/24/2026, 10:04:35 AM (2m ago)\nFee\n0.195 QOR (195000uqor)\nGas (used / wanted)\n1,006,704 / 1,300,000 (77.4%)\nToken movements\n\nSome legs pass through a module account (a chain-controlled escrow with no private key, tagged below). EVM transfers, for example, route value through the EVM module, so a single payment appears as two bank legs \u2014 into the module, then out to the recipient. It is one transfer, not two.\n\nqor1skd69e\u20260u4nr4d3f4\nqor17xpfva\u20268c5lyj5r7l\nFee collector\n0.195 QOR\nfee\nMessages (1)\nMsgCrossVMCall\n/qorechain.crossvm.v1.MsgCrossVMCall\nsender\nqor1skd69e\u20260u4nr4d3f4\nsource vm\ncosmwasm\ntarget vm\nevm\ntarget contract\n0xF5cb2c6048a7\u2026B8efc33942a448\npayload\nXwn/vQAAAAAAAA\u2026AAAAAAAAAAAAAA\nfunds\nasync\nfalse\nasync gas limit\n0\nasync max factor\n0\nSignature security\nquantum-safe\nverified on-chain\nPost-quantum algorithm\nML-DSA-87 (Dilithium-5)\nStandard / strength\nFIPS 204 \u00b7 NIST security category 5 (highest)\nPQC signature size\n4,627 bytes\nExtension type\n/qorechain.pqc.v1.PQCHybridSignature\nRegistered key type\nhybrid\nChain policy\nhybrid signatures required\nCLASSICAL LAYER\nSignature scheme\nsecp256k1 (ECDSA)\nSign mode\nSIGN_MODE_DIRECT\nPublic key\nA5/nUHh7QxGw\u2026KF9skJXrO4qE\nSequence\n45\nEvents (17)\npqc_verify\naddress\nqor1skd69e\u20260u4nr4d3f4\nkey_type\nhybrid\nalgorithm_id\ndilithium5\nhybrid_mode\nrequired\nstatus\nalgorithm_active\npqc_hybrid_verify\naddress\nqor1skd69e\u20260u4nr4d3f4\nalgorithm_id\ndilithium5\nstatus\nverified\nai_anomaly_check\nscore_millionths\n0\naction\nallow\nis_anomalous\nfalse\ncoin_spent\nspender\nqor1skd69e\u20260u4nr4d3f4\namount\n195000uqor\ncoin_received\nreceiver\nqor17xpfva\u20268c5lyj5r7l\nFee collector\namount\n195000uqor\ntransfer\nrecipient\nqor17xpfva\u20268c5lyj5r7l\nFee collector\nsender\nqor1skd69e\u20260u4nr4d3f4\namount\n195000uqor\nmessage\nsender\nqor1skd69e\u20260u4nr4d3f4\ntx\nfee\n195000uqor\nfee_payer\nqor1skd69e\u20260u4nr4d3f4\ntx\nacc_seq\nqor1skd69eq006yju57wykhx0dul82900u4nr4d3f4/45\ntx\nsignature\nMhE76YUKpOetkA25eBZ0wm0kg3Q4sGGtEnk8ythTET4IuH9JA41YLqaauILKTv/sHg9hgIWNcM2iOa/3HejGXQ==\nmessage\naction\n/qorechain.crossvm.v1.MsgCrossVMCall\nsender\nqor1skd69e\u20260u4nr4d3f4\nmodule\ncrossvm\nexecute\n_contract_address\nqor1xjayq5\u2026ksgs3gltw8\nwasm\n_contract_address\nqor1xjayq5\u2026ksgs3gltw8\naction\nrecord\nid\n32\nsender\nqor17h9jcc\u20269fzg2335fw\ncrossvm_request\nmessage_id\n13e5116f47fabc1c7e7fbb1547d73075\nsource_vm\nevm\ntarget_vm\n",
+  "crossvmRequest": 2,
+  "crossvmResponse": 2
+ },
+ "exp-b": {
+  "hash": "6A1FB106BAB71A7BEE1514396439251D4EA474F77770AF09E75BD0D513ACA49E",
+  "text": "QoreChainEXPLORER\nBlocks\nTransactions\nValidators\nTestnet\nMainnet\nDocs\nDashboard\nTransaction\nPrevious transaction\nNext transaction\nHash\n6A1FB106BAB71A7B\u2026E75BD0D513ACA49E\nStatus\nfailed (code 14)\nError log\nfailed to execute message; message index: 0: execution reverted: EVM contract execution failed: EVM contract execution failed\nBlock\n#10,661,147\nTime\n11/24/2026, 10:04:44 AM (2m ago)\nFee\n0.225 QOR (225000uqor)\nGas (used / wanted)\n745,619 / 1,500,000 (49.7%)\nToken movements\n\nSome legs pass through a module account (a chain-controlled escrow with no private key, tagged below). EVM transfers, for example, route value through the EVM module, so a single payment appears as two bank legs \u2014 into the module, then out to the recipient. It is one transfer, not two.\n\nqor1skd69e\u20260u4nr4d3f4\nqor17xpfva\u20268c5lyj5r7l\nFee collector\n0.225 QOR\nfee\nMessages (1)\nMsgCrossVMCall\n/qorechain.crossvm.v1.MsgCrossVMCall\nsender\nqor1skd69e\u20260u4nr4d3f4\nsource vm\ncosmwasm\ntarget vm\nevm\ntarget contract\n0x7438Df055F0D\u2026334a1Be56130E4\npayload\nILrYRwAAAAAAAA\u2026AAAAAAAAAAAA==\nfunds\nasync\nfalse\nasync gas limit\n0\nasync max factor\n0\nSignature security\nquantum-safe\nverified on-chain\nPost-quantum algorithm\nML-DSA-87 (Dilithium-5)\nStandard / strength\nFIPS 204 \u00b7 NIST security category 5 (highest)\nPQC signature size\n4,627 bytes\nExtension type\n/qorechain.pqc.v1.PQCHybridSignature\nRegistered key type\nhybrid\nChain policy\nhybrid signatures required\nCLASSICAL LAYER\nSignature scheme\nsecp256k1 (ECDSA)\nSign mode\nSIGN_MODE_DIRECT\nPublic key\nA5/nUHh7QxGw\u2026KF9skJXrO4qE\nSequence\n46\nEvents (10)\npqc_verify\naddress\nqor1skd69e\u20260u4nr4d3f4\nkey_type\nhybrid\nalgorithm_id\ndilithium5\nhybrid_mode\nrequired\nstatus\nalgorithm_active\npqc_hybrid_verify\naddress\nqor1skd69e\u20260u4nr4d3f4\nalgorithm_id\ndilithium5\nstatus\nverified\nai_anomaly_check\nscore_millionths\n0\naction\nallow\nis_anomalous\nfalse\ncoin_spent\nspender\nqor1skd69e\u20260u4nr4d3f4\namount\n225000uqor\ncoin_received\nreceiver\nqor17xpfva\u20268c5lyj5r7l\nFee collector\namount\n225000uqor\ntransfer\nrecipient\nqor17xpfva\u20268c5lyj5r7l\nFee collector\nsender\nqor1skd69e\u20260u4nr4d3f4\namount\n225000uqor\nmessage\nsender\nqor1skd69e\u20260u4nr4d3f4\ntx\nfee\n225000uqor\nfee_payer\nqor1skd69e\u20260u4nr4d3f4\ntx\nacc_seq\nqor1skd69eq006yju57wykhx0dul82900u4nr4d3f4/46\ntx\nsignature\nsbGc0SJPQDhl3OyH3uDAq+3PeC05of+MKIvpohISoP8c1MMid61N2c5PmaW+fP5kDcaZU49TKNzkWNoQyQf9UA==\nRaw response\n",
+  "crossvmRequest": 0,
+  "crossvmResponse": 0
+ },
+ "exp-native": {
+  "hash": "8E15D319B2971FC5102C027BA8E3C8A8AAF1FDD72AD8E2172CEE2303B453B40A",
+  "text": "QoreChainEXPLORER\nBlocks\nTransactions\nValidators\nTestnet\nMainnet\nDocs\nDashboard\nTransaction\nPrevious transaction\nNext transaction\nHash\n8E15D319B2971FC5\u20262CEE2303B453B40A\nStatus\nsuccess\nBlock\n#10,613,003\nTime\n11/23/2026, 11:59:24 AM (22h ago)\nFee\n0.3 QOR (300000uqor)\nGas (used / wanted)\n1,009,253 / 2,000,000 (50.5%)\nToken movements\n\nSome legs pass through a module account (a chain-controlled escrow with no private key, tagged below). EVM transfers, for example, route value through the EVM module, so a single payment appears as two bank legs \u2014 into the module, then out to the recipient. It is one transfer, not two.\n\nqor14yc6fy\u2026vlgp5srudw\nqor17xpfva\u20268c5lyj5r7l\nFee collector\n0.3 QOR\nfee\nMessages (1)\nMsgCrossVMCall\n/qorechain.crossvm.v1.MsgCrossVMCall\nsender\nqor14yc6fy\u2026vlgp5srudw\nsource vm\ncosmwasm\ntarget vm\nevm\ntarget contract\n0xF5cb2c6048a7\u2026B8efc33942a448\npayload\nXwn/vQAAAAAAAA\u2026AAAAAAAAAAAAAA\nfunds\nasync\nfalse\nasync gas limit\n0\nasync max factor\n0\nSignature security\nquantum-safe\nverified on-chain\nPost-quantum algorithm\nML-DSA-87 (Dilithium-5)\nStandard / strength\nFIPS 204 \u00b7 NIST security category 5 (highest)\nPQC signature size\n4,627 bytes\nExtension type\n/qorechain.pqc.v1.PQCHybridSignature\nRegistered key type\nhybrid\nChain policy\nhybrid signatures required\nCLASSICAL LAYER\nSignature scheme\nsecp256k1 (ECDSA)\nSign mode\nSIGN_MODE_DIRECT\nPublic key\nA8nU6o0WGgpr\u20268SAKZ1vvbjgt\nSequence\n4\nEvents (17)\npqc_verify\naddress\nqor14yc6fy\u2026vlgp5srudw\nkey_type\nhybrid\nalgorithm_id\ndilithium5\nhybrid_mode\nrequired\nstatus\nalgorithm_active\npqc_hybrid_verify\naddress\nqor14yc6fy\u2026vlgp5srudw\nalgorithm_id\ndilithium5\nstatus\nverified\nai_anomaly_check\nscore_millionths\n0\naction\nallow\nis_anomalous\nfalse\ncoin_spent\nspender\nqor14yc6fy\u2026vlgp5srudw\namount\n300000uqor\ncoin_received\nreceiver\nqor17xpfva\u20268c5lyj5r7l\nFee collector\namount\n300000uqor\ntransfer\nrecipient\nqor17xpfva\u20268c5lyj5r7l\nFee collector\nsender\nqor14yc6fy\u2026vlgp5srudw\namount\n300000uqor\nmessage\nsender\nqor14yc6fy\u2026vlgp5srudw\ntx\nfee\n300000uqor\nfee_payer\nqor14yc6fy\u2026vlgp5srudw\ntx\nacc_seq\nqor14yc6fymv4c9nfyxmu85xfp8wp8m4vlgp5srudw/4\ntx\nsignature\nlP5cUy/qHRnc0hs8qdV+Sxmng/oSaqdROjXpGGaS46hsy1w5er3v1ITOwKSs48Rp4B92xFtt6Osb98kGC/j0CA==\nmessage\naction\n/qorechain.crossvm.v1.MsgCrossVMCall\nsender\nqor14yc6fy\u2026vlgp5srudw\nmodule\ncrossvm\nexecute\n_contract_address\nqor1xjayq5\u2026ksgs3gltw8\nwasm\n_contract_address\nqor1xjayq5\u2026ksgs3gltw8\naction\nrecord\nid\n14\nsender\nqor17h9jcc\u20269fzg2335fw\ncrossvm_request\nmessage_id\n325341ef4d1c2c26ef8331a52e7d6ff0\nsource_vm\nevm\ntarget_vm\ncosmw",
+  "crossvmRequest": 2,
+  "crossvmResponse": 2
+ },
+ "errors": []
+}

@@ -220,6 +220,11 @@ escaped, the page shot is embedded as a data URL with its aspect ratio, and an u
 stops the render. The committed `brand/mentari-cover.png` must have the size `web.cover` names and stay under its
 byte limit.
 
+`web/test/build-context.test.ts` reads `.dockerignore` and fails when a file in `web/src` imports from a folder the
+image build never sees (`brand/`, `docs/`, `deck/` and the rest). The first deploy of the new home page failed that
+way: the poster came from `brand/`. The home page now bundles `web.cover.webCopy`, and the test checks that it is
+byte for byte the committed cover. Pointing `HomeHero.tsx` back at `brand/` fails 1 test.
+
 After a deploy the preview is checked on the live site with the crawlers' own user agents:
 
 ```sh

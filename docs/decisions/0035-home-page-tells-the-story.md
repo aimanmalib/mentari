@@ -17,7 +17,8 @@ except in a note under the title.
   not a link. It opens Try it and asks that page to press Retire now once. The request rides in `history.state`
   (`web/src/data/pressOnOpen.ts`), never in the URL, so a crawler or a shared link cannot send a testnet transaction.
   Try it reads the request once, clears it, and presses after the demo status is known. A reload does not press again.
-- Next to the text is the cover art (`brand/mentari-cover.png`, bundled at build time) in a panel frame. When
+- Next to the text is the cover art (`brand/mentari-cover.png`, bundled at build time from its copy
+  `web.cover.webCopy`, because `brand/` is not in the Docker build context) in a panel frame. When
   `config/app.json` `web.links.video` holds a link, the picture opens that video with a "Watch the demo video" button.
   While it is empty the picture is a still and the page claims no video.
 - Live proof keeps the two ledgers and adds the newest retirement with a link to the Native transaction that wrote its

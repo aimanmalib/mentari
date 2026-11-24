@@ -148,8 +148,9 @@
       }
     },
     "cover": {
-      "_comment": "The submission cover image, drawn by web/og/render-cover.ts with a shot of the live page at shotPath, taken once shotReadySelector is on the page. image is relative to the repository root.",
+      "_comment": "The submission cover image, drawn by web/og/render-cover.ts with a shot of the live page at shotPath, taken once shotReadySelector is on the page. image and webCopy are relative to the repository root; webCopy is the copy the home page bundles, because brand/ stays out of the Docker build context.",
       "image": "brand/mentari-cover.png",
+      "webCopy": "web/src/assets/mentari-cover.png",
       "width": 1920,
       "height": 1080,
       "maxKb": 5120,
@@ -224,7 +225,7 @@
       "video": ""
     },
     "home": {
-      "_comment": "The home page (decision 0035). faq lists the questions in order; each id has home.faq.<id>.q and .a in web/locales. poster is drawn from brand/mentari-cover.png at build time.",
+      "_comment": "The home page (decision 0035). faq lists the questions in order; each id has home.faq.<id>.q and .a in web/locales. poster is web.cover.webCopy, bundled at build time.",
       "faq": [
         "meter",
         "network",

@@ -1,4 +1,4 @@
-import poster from "../../../brand/mentari-cover.png";
+import poster from "../assets/mentari-cover.png";
 import { siteConfig } from "../config.js";
 import { pressRequest } from "../data/pressOnOpen.js";
 import { useI18n } from "../i18n/I18n.js";

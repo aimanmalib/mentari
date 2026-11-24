@@ -34,10 +34,13 @@ try {
   await page.setContent(html, { waitUntil: "load" });
   await page.evaluate(() => document.fonts.ready.then(() => undefined));
   const out = join(repoDir, cover.image);
-  writeFileSync(out, await page.screenshot({ type: "png" }));
+  const png = await page.screenshot({ type: "png" });
+  writeFileSync(out, png);
+  // The home page bundles its own copy: brand/ is not in the Docker build context.
+  writeFileSync(join(repoDir, cover.webCopy), png);
   const kb = Math.ceil(statSync(out).size / 1024);
   if (kb > cover.maxKb) throw new Error(`cover image is ${kb} KB, over web.cover.maxKb ${cover.maxKb}`);
-  console.log(`wrote ${cover.image} (${kb} KB) from ${share.siteUrl}${cover.shotPath}`);
+  console.log(`wrote ${cover.image} and ${cover.webCopy} (${kb} KB) from ${share.siteUrl}${cover.shotPath}`);
 } finally {
   await browser.close();
 }

@@ -88,7 +88,7 @@ Foundry saves a failing sequence under `contracts/cache/` and replays it first o
 
 `server/test/` runs with vitest and no internet: the upstream `fetch` is a fake, the config is a frozen fixture, so
 changing `config/` never breaks a test, and the live meter job talks only to a local anvil node (as in the chain driver
-tests). `cd server && npx vitest run` reported 171 passed on 2026-11-23.
+tests). `cd server && npx vitest run` reported 214 passed on 2026-11-24.
 
 They cover the `/lcd` allowlist (other paths, other contracts, `//host`, `@host`, dot segments and `%2e` are refused
 without an upstream call), methods other than `GET` (405), the 5 second cache, joined concurrent requests, 502 on
@@ -147,6 +147,12 @@ not ready refuses before using the quota, and one chain read is reused for `stat
 turned four tests red; the status test also fails on the code before this change, which answered `"ready": true`
 with the window expired.
 
+The explorer redirects (`server/src/explorer.ts`, decisions 0033 and 0034) are tested with a fake REST API. A
+Cosmos hash goes straight to the explorer; an EVM hash is looked up at the fixed origin, in lower case, and redirects
+to the Cosmos hash that carries it. `/go/receipt/<id>` asks for the `record` call of this receipts book that wrote
+that id and redirects to its transaction. An unknown hash or receipt answers 404, a failing or garbled REST reply
+answers 502, and only `GET` and `HEAD` are answered.
+
 Each guard was removed from a copy of the code to check that a test notices:
 
 | Change to the server | Tests that failed |
@@ -164,7 +170,7 @@ Each guard was removed from a copy of the code to check that a test notices:
 
 ## Web tests
 
-`web/test/` runs with vitest in Node and no network. `cd web && npx vitest run` reported 165 passed on 2026-11-23.
+`web/test/` runs with vitest in Node and no network. `cd web && npx vitest run` reported 184 passed on 2026-11-24.
 
 They cover the check behind the "both ledgers agree" badge (sender, note, receipt id, nothing checked), the EVM to
 Native address encoding, the receipts book reader (a missing receipt is `null`, any other failure throws so the page
@@ -179,6 +185,12 @@ retirement the contract does not have, ids that do not point to each other, a wr
 shape, strict reading of the server's answer, every failure becomes the recorded case, the four routes match
 `server/src/demo/api.ts`), recorded cases and their live re-check, explorer links, and rendered components in both
 languages through `react-dom/server`.
+
+The `Retired` event search is split into ranges no longer than `config/limits.json` `evm.logWindowBlocks`, because
+the public node refuses a wider range (decision 0033). Tests on a fake node that enforces that limit check that a
+retirement older than one range is found, every block from the deploy block to the newest is asked for exactly once,
+the search stops when everything wanted is found, it makes at most `evm.logMaxWindows` calls, and the configured range
+stays inside the node's limit.
 
 | Change to the web data layer | Tests that failed |
 |---|---|
@@ -217,8 +229,8 @@ curl -s  -A 'TelegramBot (like TwitterBot)' https://mentari.sasateguh.com/ | gre
 
 ## Script tests
 
-`scripts/test/` runs with vitest and no network beyond a local anvil node. `cd scripts && npx vitest run` reported 134
-passed on 2026-11-23.
+`scripts/test/` runs with vitest and no network beyond a local anvil node. `cd scripts && npx vitest run` reported 140
+passed on 2026-11-24.
 
 `scripts/src/meter.ts` makes the simulated meter readings and the bytes a meter or the registrar signs. The meter tests
 use a frozen config, not `config/meter.json`. Two hashes pin the signed bytes from both sides: the vitest suite checks

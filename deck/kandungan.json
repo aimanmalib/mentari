@@ -96,11 +96,11 @@
           "label": "line coverage of contracts/src"
         },
         {
-          "nilai": "171",
+          "nilai": "214",
           "label": "server tests (vitest)"
         },
         {
-          "nilai": "165",
+          "nilai": "184",
           "label": "site tests (vitest)"
         },
         {

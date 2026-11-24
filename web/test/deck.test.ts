@@ -47,9 +47,14 @@ describe("deck stats", () => {
     expect(stats.get(label)).toBe(readmeCount(readme, suite));
   });
 
-  it("the coverage tile matches the README", () => {
+  it("the coverage tile and the AI_USAGE.md test counts match the README", () => {
     const cov = readme.match(/line coverage of `contracts\/src` (\d+) %/)?.[1];
     expect(stats.get("line coverage of contracts/src")).toBe(`${cov} %`);
+    const usage = read("AI_USAGE.md").replace(/\s+/g, " ");
+    const suites = ["server", "web", "scripts"].map((dir) => `vitest, \`${dir}/test/\``);
+    const vitest = suites.reduce((sum, suite) => sum + Number(readmeCount(readme, suite)), 0);
+    expect(usage.match(/their (\d+) vitest tests/)?.[1]).toBe(String(vitest));
+    expect(usage.match(/all (\d+) Foundry tests/)?.[1]).toBe(readmeCount(readme, "Foundry, `contracts/test/`"));
   });
 });
 

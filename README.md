@@ -33,7 +33,7 @@ commit is [`6012d2b`](https://github.com/aimanmalib/mentari/commit/6012d2b) on 2
 1. **Press.** Open <https://mentari.sasateguh.com/try> and press "Retire now". One hybrid-signed Native transaction runs
    the EVM contract, and the receipt count on both ledgers goes up by one. Then press a failure button: neither ledger
    moves. The buttons send real testnet transactions, 5 an hour for each visitor ([`config/limits.json`](config/limits.json)).
-2. **Check.** Open the transaction link the page shows. The explorer opens on Mainnet: click Testnet once. A failure
+2. **Check.** Open the transaction link the page shows. The explorer starts with Mainnet selected: click Testnet once. A failure
    press shows "failed (code 14)", and each Native press shows "quantum-safe · verified on-chain · ML-DSA-87". On
    [Verify](https://mentari.sasateguh.com/verify), your browser re-checks the meters' ML-DSA-87 signatures read from the chain.
 3. **Re-run.** In a fresh clone (Node 22, pnpm), run `pnpm install --frozen-lockfile && pnpm demo`. It needs no key: it
@@ -42,7 +42,7 @@ commit is [`6012d2b`](https://github.com/aimanmalib/mentari/commit/6012d2b) on 2
 
 ## Proof on testnet
 
-Every link opens the explorer on Mainnet. Click Testnet once, and the transaction shows.
+Every link opens the explorer with Mainnet selected. Click Testnet once, and the transaction shows.
 
 | Case | What it tries | What happened | Transaction |
 | --- | --- | --- | --- |

@@ -32,6 +32,11 @@ export interface SiteConfig {
    * redirect for the transaction that wrote a receipt (decision 0034).
    */
   explorer: { tx: string; evmTx: string; receiptTx: string; block: string; address: string };
+  /**
+   * The How it works finding: the Cross-VM reference section that marks Native account → EVM contract as not yet
+   * tested, case H's retire sent that way, and one "Retire now" press. Both hashes are Cosmos hashes.
+   */
+  nativeFinding: { docsUrl: string; caseTx: string; retireTx: string };
   /** Footer links (the public repository and the slides PDF) and the demo video page; an empty video means none yet. */
   links: { source: string; slides: string; video: string };
   /** The home page: the FAQ question ids, in order (text in web/locales `home.faq.<id>`). */
@@ -62,6 +67,7 @@ export const siteConfig: SiteConfig = {
   demoGrantWh: limits.demo.grantWh,
   wallet: app.web.wallet,
   explorer: app.web.explorer,
+  nativeFinding: app.web.nativeFinding,
   links: app.web.links,
   home: app.web.home,
   defaultLocale: app.web.defaultLocale,

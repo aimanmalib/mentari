@@ -1,5 +1,6 @@
 import { SimulatedTag } from "../components/Chrome.js";
 import { Diagram } from "../components/Diagram.js";
+import { NativeFinding } from "../components/NativeFinding.js";
 import { shorten } from "../data/address.js";
 import { siteConfig } from "../config.js";
 import { useI18n } from "../i18n/I18n.js";
@@ -28,6 +29,8 @@ export function HowItWorks() {
         </ol>
         <p className="fail-line">{t("how.fail")}</p>
       </section>
+
+      <NativeFinding />
 
       <section className="prose" aria-labelledby="note-title">
         <h2 id="note-title">{t("how.noteTitle")}</h2>

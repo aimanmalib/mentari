@@ -127,6 +127,33 @@
     "step4": "The Native receipts book stores the note and returns a receipt id.",
     "step5": "The contract checks that the id is newer than the last one, then stores the retirement.",
     "fail": "If any step fails, the whole transaction reverts. No burn, no receipt.",
+    "native": {
+      "eyebrow": "What I found",
+      "title": "A Native account can run the EVM contract",
+      "docsHeading": "Native account to EVM contract",
+      "docsQuote": "Not yet tested against the live network: this direction was not run for this page.",
+      "docsCite": "QoreChain docs, Cross-VM reference",
+      "body": "I ran it. One Native transaction, signed with secp256k1 plus ML-DSA-87, called Mentari.retire with no EVM window open. The contract burned the certificates, the bridge wrote the receipt back on the Native ledger, and the chain checked both signatures. Retire now on this site sends every press this way.",
+      "proofTitle": "Two transactions to open",
+      "caseLink": "Case H: the first retire sent this way",
+      "retireLink": "A Retire now press",
+      "openLabel": "Open transaction {hash} in the explorer",
+      "diagramLabel": "Diagram: a Native account signs one transaction, the Mentari contract runs on the EVM, and the receipt is written back on the Native ledger.",
+      "d": {
+        "native": "Native",
+        "evm": "EVM",
+        "account": "Native account",
+        "sign": "secp256k1 + ML-DSA-87",
+        "call": "MsgCrossVMCall",
+        "contract": "Mentari.retire",
+        "burn": "burns the certificates",
+        "bridge": "bridge 0x…0901",
+        "book": "Receipts book",
+        "receipt": "writes the receipt",
+        "window": "No EVM window open",
+        "tx": "One transaction"
+      }
+    },
     "diagramLabel": "Diagram of one retirement crossing from the EVM to the Native ledger and back.",
     "diagram": {
       "tx": "One transaction",

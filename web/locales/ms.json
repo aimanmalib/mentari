@@ -127,6 +127,33 @@
     "step4": "Buku resit Native menyimpan nota dan memulangkan id resit.",
     "step5": "Kontrak menyemak id itu lebih baharu daripada yang terakhir, kemudian menyimpan persaraan.",
     "fail": "Jika mana-mana langkah gagal, seluruh transaksi berbalik. Tiada bakar, tiada resit.",
+    "native": {
+      "eyebrow": "Apa yang saya temui",
+      "title": "Akaun Native boleh menjalankan kontrak EVM",
+      "docsHeading": "Native account to EVM contract",
+      "docsQuote": "Not yet tested against the live network: this direction was not run for this page.",
+      "docsCite": "Dokumen QoreChain, Cross-VM reference (petikan asal dalam bahasa Inggeris)",
+      "body": "Saya mencubanya. Satu transaksi Native, ditandatangani dengan secp256k1 dan ML-DSA-87, memanggil Mentari.retire tanpa tetingkap EVM dibuka. Kontrak membakar sijil, jambatan menulis resit kembali di lejar Native, dan rantai menyemak kedua-dua tandatangan. Retire now di laman ini menghantar setiap tekanan melalui laluan ini.",
+      "proofTitle": "Dua transaksi untuk dibuka",
+      "caseLink": "Kes H: persaraan pertama melalui laluan ini",
+      "retireLink": "Satu tekanan Retire now",
+      "openLabel": "Buka transaksi {hash} dalam penjelajah",
+      "diagramLabel": "Rajah: akaun Native menandatangani satu transaksi, kontrak Mentari berjalan di EVM, dan resit ditulis kembali di lejar Native.",
+      "d": {
+        "native": "Native",
+        "evm": "EVM",
+        "account": "Akaun Native",
+        "sign": "secp256k1 + ML-DSA-87",
+        "call": "MsgCrossVMCall",
+        "contract": "Mentari.retire",
+        "burn": "membakar sijil",
+        "bridge": "jambatan 0x…0901",
+        "book": "Buku resit",
+        "receipt": "menulis resit",
+        "window": "Tiada tetingkap EVM",
+        "tx": "Satu transaksi"
+      }
+    },
     "diagramLabel": "Rajah satu persaraan yang menyeberang dari EVM ke lejar Native dan kembali.",
     "diagram": {
       "tx": "Satu transaksi",

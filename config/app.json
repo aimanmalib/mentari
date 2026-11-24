@@ -120,6 +120,11 @@
       "block": "https://explore.qore.network/block/{height}",
       "address": "https://explore.qore.network/address/{address}"
     },
+    "nativeFinding": {
+      "docsUrl": "https://docs.qorechain.io/developer-guide/cross-vm-reference#native-to-evm",
+      "caseTx": "8E15D319B2971FC5102C027BA8E3C8A8AAF1FDD72AD8E2172CEE2303B453B40A",
+      "retireTx": "922C6AF21D20019EB82E332396DA3EC9E696B3BFFF0B6011BA2BFE0415D3F946"
+    },
     "wallet": {
       "memo": "from QoreX",
       "modalLocales": {

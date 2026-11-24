@@ -68,3 +68,44 @@ describe("generated deck", () => {
     expect(record.slaid).toBe(JSON.parse(read(record.kandungan.fail)).slaid.length);
   });
 });
+
+// AI_USAGE.md counts the builder sessions and lists every session that was not accepted in a table. The sentence, the
+// table and the AI usage slide must agree.
+function sessionCounts(text: string) {
+  const flat = text.replace(/\s+/g, " ");
+  const num = (re: RegExp) => {
+    const n = flat.match(re)?.[1];
+    if (!n) throw new Error(`no match for ${re}`);
+    return Number(n);
+  };
+  return {
+    total: num(/the builder ran (\d+) sessions/),
+    accepted: num(/(\d+) were accepted/),
+    rejected: num(/(\d+) were not(?: accepted)?\b/),
+    waited: num(/(\d+) stopped/),
+  };
+}
+
+describe("AI usage session counts", () => {
+  const usage = read("AI_USAGE.md");
+  const counts = sessionCounts(usage);
+  const lines = usage.split("\n");
+  const head = lines.findIndex((line) => line.startsWith("| Slice | Caught by |"));
+  const rows = lines.slice(head + 2).filter((line, i, all) => all.slice(0, i + 1).every((l) => l.startsWith("| ")));
+
+  it("the session outcomes add up to the total", () => {
+    expect(counts.accepted + counts.rejected + counts.waited).toBe(counts.total);
+  });
+
+  it("the table has one row for every session that was not accepted", () => {
+    expect(head).toBeGreaterThan(0);
+    expect(rows.length).toBe(counts.rejected);
+  });
+
+  it("the AI usage slide gives the same counts", () => {
+    const slides = read("deck/kandungan.json");
+    const point = slides.match(/"Generated work\.[^"]*"/)?.[0];
+    expect(point).toBeDefined();
+    expect(sessionCounts(point ?? "")).toEqual(counts);
+  });
+});

@@ -79,7 +79,6 @@
         "@qorechain/qorex-wallet-mock 0.1.0: QoreX in the browser tests."
       ],
       "kaki": [
-        "The fest project page declares the same list.",
         "README.md: Kits and network features"
       ]
     },

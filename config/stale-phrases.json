@@ -1,5 +1,5 @@
 {
-  "_comment": "Phrases that were true before the contracts were on testnet and are false now. web/test/stale-phrases.test.ts fails when one of them is in a scanned file while evidence/ records a retirement. scan lists the files and folders read (relative to the repository root); skip lists folders and files left out: decision records and the changelog are history, and this file and its test name the phrases on purpose. Matching ignores case.",
+  "_comment": "Phrases that were true before the contracts were on testnet and are false now, and claims that are not true yet (the fest project page does not exist yet, so nothing may say it declares the kit list). web/test/stale-phrases.test.ts fails when one of them is in a scanned file while evidence/ records a retirement. scan lists the files and folders read (relative to the repository root); skip lists folders and files left out: decision records and the changelog are history, and this file and its test name the phrases on purpose. Matching ignores case.",
   "phrases": [
     "No retirements yet",
     "after deployment",
@@ -11,6 +11,7 @@
     "28 of 28",
     "will be updated",
     "205 vitest",
+    "declares the same list",
     "Belum ada persaraan",
     "selepas deploy",
     "belum ada di testnet",

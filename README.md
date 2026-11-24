@@ -92,7 +92,7 @@ More detail: [`docs/architecture.md`](docs/architecture.md). Each design decisio
 
 ## Kits and network features
 
-This is what the code uses, and where. The fest project page declares the same list.
+This is what the code uses, and where.
 
 | Kit or feature | Version or address | Where |
 | --- | --- | --- |

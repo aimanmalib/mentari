@@ -31,7 +31,7 @@
   "links": []
  },
  {
-  "text": "Mentari · Build Before Q-Day · Cross-VM track\nKits and network features: declared and verified\nVerified features\n\nWhat the code uses, and where. Each kit is pinned in package.json.\n\n@qorechain/sdk 0.14.0: deriving the test accounts.\nBridge, pqcVerify, pqcKeyStatus at 0x…0901 · 0x…0a01 · 0x…0a02: contracts/src/lib.\nqday-receipts, Native contract code id 865: the target of every retirement.\n@qorechain/qorex-rainbowkit 0.1.0: QoreX as the wallet on the Try it page.\n@qorechain/qorex-wallet-mock 0.1.0: QoreX in the browser tests.\n\nThe fest project page declares the same list.\n\nREADME.md: Kits and network features",
+  "text": "Mentari · Build Before Q-Day · Cross-VM track\nKits and network features: declared and verified\nVerified features\n\nWhat the code uses, and where. Each kit is pinned in package.json.\n\n@qorechain/sdk 0.14.0: deriving the test accounts.\nBridge, pqcVerify, pqcKeyStatus at 0x…0901 · 0x…0a01 · 0x…0a02: contracts/src/lib.\nqday-receipts, Native contract code id 865: the target of every retirement.\n@qorechain/qorex-rainbowkit 0.1.0: QoreX as the wallet on the Try it page.\n@qorechain/qorex-wallet-mock 0.1.0: QoreX in the browser tests.\n\nREADME.md: Kits and network features",
   "links": []
  },
  {

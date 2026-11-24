@@ -10,6 +10,8 @@ contract is a new deployment, listed here with its new address.
 
 - The daily meter job sends `attest` from the Native lane (`config/app.json` `nativeRoute.meter` on), so the 00:20
   UTC run no longer needs an EVM window. It was left off until cases E and F were recorded (decision 0026).
+- `nativeRoute.attestGas` is 900,000, down from 2,000,000: three `attest` calls from the Native lane used 640,824
+  to 641,121 gas, and the whole limit is paid (decision 0031).
 
 ### Added
 

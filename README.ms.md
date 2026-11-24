@@ -85,7 +85,7 @@ panggilan kontrak selepasnya berbalik ([keputusan 0041](docs/decisions/0041-bank
 | QoreChain tech usage, verified in the repo and on chain | 25 % | [Kit dan ciri rangkaian](README.md#kits-and-network-features) (dalam bahasa Inggeris): jambatan, `pqcVerify`, `pqcKeyStatus`, `MsgCrossVMCall`, `@qorechain/sdk`, QoreX; pindahan bank dan panggilan kontrak dalam satu transaksi (kes J); alamat qor1 dalam [jadual trek](#keperluan-trek-cross-vm-dan-di-mana-ia-dipenuhi) |
 | Post-quantum correctness and security | 20 % | [Apa ditandatangani, dan di mana](#pasca-kuantum-apa-ditandatangani-dan-di-mana); kes I; [Verify](https://mentari.sasateguh.com/verify) menyemak semula ML-DSA-87 dalam pelayar anda; [`docs/threat-model.md`](docs/threat-model.md) |
 | Originality | 15 % | [Apa yang saya temui](#apa-yang-saya-temui-akaun-native-boleh-menjalankan-kontrak-evm); [`docs/findings.md`](docs/findings.md) |
-| Clarity, UX and documentation | 15 % | Fail ini dan [README.md](README.md); laman dalam bahasa Inggeris dan Melayu; [`docs/architecture.md`](docs/architecture.md); 41 [rekod keputusan](docs/decisions/), setiap satu dengan cara mengundurnya; [`AI_USAGE.md`](AI_USAGE.md) |
+| Clarity, UX and documentation | 15 % | Fail ini dan [README.md](README.md); laman dalam bahasa Inggeris dan Melayu; [`docs/architecture.md`](docs/architecture.md); 42 [rekod keputusan](docs/decisions/), setiap satu dengan cara mengundurnya; [`AI_USAGE.md`](AI_USAGE.md) |
 
 ## Apa yang saya temui: akaun Native boleh menjalankan kontrak EVM
 
@@ -144,15 +144,15 @@ pnpm build && pnpm start        # laman di http://localhost:8080, membaca testne
 
 ## Ujian
 
-Dikira pada 24 November 2026 daripada larian CI pada komit `1577e46` (suite Foundry kali terakhir berubah pada 22 November). CI menjalankan langkah yang sama pada setiap tolakan; `bash scripts/gerbang-ujian.sh` menjalankannya secara tempatan.
+Dikira pada 24 November 2026: Foundry dan server daripada larian CI pada komit `1577e46` (suite Foundry kali terakhir berubah pada 22 November), web, scripts dan Playwright daripada larian tempatan komit yang menambah laluan dompet Native. CI menjalankan langkah yang sama pada setiap tolakan; `bash scripts/gerbang-ujian.sh` menjalankannya secara tempatan.
 
 | Suite | Hasil |
 | --- | --- |
 | Foundry, `contracts/test/` | 115 lulus: 98 ujian unit, 16 ujian fuzz (512 larian setiap satu) dan satu suite invarian yang memegang 4 invarian (forge mengira suite itu sekali, jadi 98 + 16 + 1 = 115); liputan baris `contracts/src` 99 % |
 | vitest, `server/test/` | 223 lulus |
-| vitest, `web/test/` | 247 lulus |
-| vitest, `scripts/test/` | 172 lulus |
-| Playwright, `web/e2e/` | 12 lulus: halaman utama dan tindakan Retire now, serta laluan dompet dengan dompet tiruan QoreX, 6 kes dalam Chromium dan WebKit sebagai iPhone 13 |
+| vitest, `web/test/` | 249 lulus |
+| vitest, `scripts/test/` | 175 lulus |
+| Playwright, `web/e2e/` | 16 lulus: halaman utama dan tindakan Retire now, serta laluan dompet dengan dompet tiruan QoreX (persaraan lorong Native, pendaftaran kunci, tiada dana, sandaran EVM, permintaan ditolak, bahasa Melayu), 8 kes dalam Chromium dan WebKit sebagai iPhone 13 |
 
 Empat invarian: dicetak tolak dibersara sama dengan bekalan; bilangan persaraan sama dengan bilangan resit yang jambatan
 terima daripada kontrak; id resit setiap persaraan unik dan menaik; tiada baki pada alamat tanpa kunci pasca-kuantum.
@@ -200,11 +200,13 @@ Versi penuh dengan sumber (dalam bahasa Inggeris): [`docs/threat-model.md`](docs
 - **Testnet sahaja.** Ini demo di testnet Diana, bukan skim sijil yang diiktiraf, dan sijilnya tiada nilai.
 - **Pihak Native merekod, bukan menguatkuasa.** `qday-receipts` ialah buku resit kongsi dari bengkel. Sesiapa boleh
   menulis kepadanya; resit Mentari ialah yang pengirimnya kontrak Mentari.
-- **Laluan dompet diuji dengan dompet tiruan sahaja.** "Bersarakan dari dompet anda sendiri" menyambung QoreX, meminta
-  500 Wh daripada akaun demo dan bersara dari dompet. QoreX belum menandatangani transaksi EVM, jadi hari ini ia menolak
-  langkah terakhir itu, dan laman menyatakannya. Ujian pelayar memakai dompet tiruan QoreX: profil `current` ditolak,
-  profil `planned` menghantar `retire` ke kontrak. Saya belum mencubanya dengan sambungan sebenar
-  ([ADR 0010](docs/decisions/0010-qorex-wallet-path.md)). "Retire now" tidak memerlukan dompet.
+- **Laluan dompet berjalan di testnet dengan dompet tiruan, bukan sambungan sebenar.** "Bersarakan dari dompet anda
+  sendiri" menyerahkan satu `MsgCrossVMCall` ke `Mentari.retire` kepada QoreX; QoreX menandatanganinya dengan tandatangan
+  hibrid ML-DSA-87 dan menghantarnya di lorong Native. `pnpm wallet-run` melakukannya pada 24 November 2026 dengan profil
+  `current` dompet tiruan QoreX (persaraan 25, [`evidence/wallet-native.json`](evidence/wallet-native.json)). Saya belum
+  mencubanya dengan sambungan QoreX. QoreX menyimpan akaun Native dan akaun EVM yang berasingan, dan laluan ini
+  menggunakan akaun Native ([ADR 0042](docs/decisions/0042-wallet-retires-through-the-native-lane.md)). "Retire now"
+  tidak memerlukan dompet.
 - **Tiada audit.** Kontrak ada ujian, fuzz dan invarian, bukan audit profesional.
 
 ## Pendedahan AI

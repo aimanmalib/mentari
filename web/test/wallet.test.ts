@@ -118,6 +118,16 @@ describe("classifyWalletError", () => {
     expect(classifyWalletError({ message: "reverted", shortMessage })).toBe(want);
   });
 
+  it("reads QoreX's Native refusal for an account the chain has never seen", () => {
+    const msg = "QoreX: account qor1abc does not exist on qorechain-diana yet. Fund it first.";
+    expect(classifyWalletError(new Error(msg))).toBe("unfunded");
+  });
+
+  it("reads the kit's answer for a QoreX build without signAndBroadcast", () => {
+    const msg = "QOREX_NOT_SUPPORTED_YET: signAndBroadcast in this QoreX version; update QoreX is not supported yet";
+    expect(classifyWalletError({ code: "QOREX_NOT_SUPPORTED_YET", message: msg })).toBe("unsupported");
+  });
+
   it("calls anything else a failure", () => {
     expect(classifyWalletError(new Error("socket hang up"))).toBe("failed");
     expect(classifyWalletError(undefined)).toBe("failed");

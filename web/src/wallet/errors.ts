@@ -1,9 +1,10 @@
 /**
  * Why a wallet request did not go through, in words the page can explain. QoreX answers unsupported EVM methods with
  * "QoreX: EVM method … not yet supported" (code 4200 in its announced version). A declined request is code 4001 in
- * EIP-1193 wallets, and "QoreX: signature rejected" (no code) in QoreX.
+ * EIP-1193 wallets, and "QoreX: signature rejected" (no code) in QoreX. QoreX refuses a Native transaction from an
+ * account the chain has never seen with "QoreX: account … does not exist on … yet. Fund it first."
  */
-export type WalletProblem = "declined" | "unsupported" | "not-quantum-ready" | "insufficient" | "failed";
+export type WalletProblem = "declined" | "unsupported" | "not-quantum-ready" | "insufficient" | "unfunded" | "failed";
 
 interface ErrorLike {
   code?: unknown;
@@ -32,8 +33,9 @@ export function classifyWalletError(err: unknown): WalletProblem {
     .filter((t): t is string => typeof t === "string")
     .join("\n");
   if (codes.includes(4001) || /\brejected\b|declined/i.test(text)) return "declined";
-  if (codes.includes(4200) || /not yet supported|method not supported|does not support/i.test(text)) return "unsupported";
+  if (codes.includes(4200) || /not yet supported|method not supported|does not support|QOREX_NOT_SUPPORTED_YET/i.test(text)) return "unsupported";
   if (/NotQuantumReady/.test(text)) return "not-quantum-ready";
   if (/InsufficientBalance/.test(text)) return "insufficient";
+  if (/does not exist on \S+ yet|insufficient funds/i.test(text)) return "unfunded";
   return "failed";
 }

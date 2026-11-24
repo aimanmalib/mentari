@@ -30,7 +30,10 @@ export interface SiteConfig {
   /** Watt-hours the demo account sends to a visitor's wallet (config/limits.json `demo.grantWh`). */
   demoGrantWh: number;
   /** Wallet path: memo on wallet retirements, and the wallet dialog's locale for each site locale. */
-  wallet: { memo: string; modalLocales: Record<string, string> };
+  wallet: { memo: string; modalLocales: Record<string, string>; keySetupUqor: string };
+  /** Native chain id QoreX signs for, and the gas limit of a retire sent from the Native lane (config/app.json `nativeRoute.retireGas`). */
+  chainId: string;
+  nativeRetireGas: number;
   /**
    * `tx` takes a Cosmos hash; `evmTx` is this server's redirect for an EVM hash (decision 0033) and `receiptTx` its
    * redirect for the transaction that wrote a receipt (decision 0034).
@@ -72,6 +75,8 @@ export const siteConfig: SiteConfig = {
   demoRetireWh: limits.demo.retireWh,
   demoGrantWh: limits.demo.grantWh,
   wallet: app.web.wallet,
+  chainId: app.network.chainId,
+  nativeRetireGas: app.nativeRoute.retireGas,
   explorer: app.web.explorer,
   nativeFinding: app.web.nativeFinding,
   links: app.web.links,

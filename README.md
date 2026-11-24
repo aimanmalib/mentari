@@ -81,7 +81,7 @@ ran being undone when the contract call after it reverts ([decision 0041](docs/d
 | QoreChain tech usage, verified in the repo and on chain | 25 % | [Kits and network features](#kits-and-network-features): the bridge, `pqcVerify`, `pqcKeyStatus`, `MsgCrossVMCall`, `@qorechain/sdk`, QoreX; a bank transfer and a contract call in one transaction (case J); the qor1 addresses in the [track table](#cross-vm-track-requirements-and-where-they-are-met) |
 | Post-quantum correctness and security | 20 % | [What is signed, and where](#post-quantum-what-is-signed-and-where); case I; [Verify](https://mentari.sasateguh.com/verify) re-checks ML-DSA-87 in your browser; [`docs/threat-model.md`](docs/threat-model.md) |
 | Originality | 15 % | [What I found](#what-i-found-a-native-account-can-run-the-evm-contract); [`docs/findings.md`](docs/findings.md) |
-| Clarity, UX and documentation | 15 % | This file and [README.ms.md](README.ms.md); the site in English and Malay; [`docs/architecture.md`](docs/architecture.md); 41 [decision records](docs/decisions/), each with how to undo it; [`AI_USAGE.md`](AI_USAGE.md) |
+| Clarity, UX and documentation | 15 % | This file and [README.ms.md](README.ms.md); the site in English and Malay; [`docs/architecture.md`](docs/architecture.md); 42 [decision records](docs/decisions/), each with how to undo it; [`AI_USAGE.md`](AI_USAGE.md) |
 
 ## What I found: a Native account can run the EVM contract
 
@@ -156,7 +156,8 @@ This is what the code uses, and where.
 | `pqcKeyStatus` precompile | `0x0000000000000000000000000000000000000a02` | [`contracts/src/lib/Pqc.sol`](contracts/src/lib/Pqc.sol) |
 | `qday-receipts` Native contract | code id 865 | the target of every retirement |
 | `@qorechain/qorex-rainbowkit` | 0.1.0 (pinned) | [`web/src/wallet/setup.ts`](web/src/wallet/setup.ts): QoreX as the wallet on the Try it page |
-| `@qorechain/qorex-wallet-mock` | 0.1.0 (pinned, tests only) | [`web/e2e/wallet.e2e.ts`](web/e2e/wallet.e2e.ts): QoreX in the browser tests |
+| `@qorechain/qorex-types` | 0.1.0 (pinned) | [`web/src/wallet/useWalletActions.ts`](web/src/wallet/useWalletActions.ts): `qorexSignAndBroadcast`, so the wallet path retires through the Native lane |
+| `@qorechain/qorex-wallet-mock` | 0.1.0 (pinned, tests and `pnpm wallet-run`) | [`web/e2e/wallet.e2e.ts`](web/e2e/wallet.e2e.ts): QoreX in the browser tests; [`scripts/wallet-run.ts`](scripts/wallet-run.ts): the same path on the testnet |
 
 ## Run it
 
@@ -185,15 +186,15 @@ cd contracts && forge test
 
 ## Tests
 
-Counted on 24 November 2026 from the CI run on commit `1577e46` (the Foundry suite was last changed on 22 November). CI runs the same steps on every push; `bash scripts/gerbang-ujian.sh` runs them locally.
+Counted on 24 November 2026: Foundry and server from the CI run on commit `1577e46` (the Foundry suite was last changed on 22 November), web, scripts and Playwright from local runs of the commit that added the Native wallet path. CI runs the same steps on every push; `bash scripts/gerbang-ujian.sh` runs them locally.
 
 | Suite | Result | What it covers |
 | --- | --- | --- |
 | Foundry, `contracts/test/` | 115 passed, 0 failed | 98 unit tests, 16 fuzz tests (512 runs each) and one invariant suite holding 4 invariants (128 sequences of 64 calls; forge counts the suite once, so 98 + 16 + 1 = 115); line coverage of `contracts/src` 99 % |
 | vitest, `server/test/` | 223 passed | the `/lcd` allowlist, client IP behind Cloudflare, demo rate limits, the off switch, fallbacks, the wallet grant, the live demo sender on a local node, the hybrid-signed Native route for "Retire now", the daily meter run and its chain job, the `/go/tx` and `/go/receipt` explorer redirects, the failure buttons sent on the Native lane and the honest demo status |
-| vitest, `web/test/` | 247 passed | the "both ledgers agree" check, the ML-DSA-87 re-check in the browser against real testnet signatures and a one-byte change, the home page story, the Native-lane finding, the link preview tags, preview and cover image sizes, the slide counts match this table, each of the five judging criteria heads a slide, the session counts in AI_USAGE.md add up and match the slides, its test counts match this table, the slide PDF is the one printed from the slide source, address encoding, the receipts reader, both languages have the same keys, wallet errors, the event search split into ranges the public node accepts, the stale phrases guard, the README numbers and links |
-| vitest, `scripts/test/` | 172 passed | account derivation, balances, funding, key registration and EVM windows on the Native lane, the Native-entry experiment (case H), simulated meter readings and the bytes a meter signs, deploy, registration and attestation on a local node, the one-command testnet setup, the health watch, the low-funds watch, the account evidence file, the live Try it record, the test counter, the classic-key refusal (case I), the bank transfer and retire in one transaction (cases J and J2), the live self-test, the deploy freeze |
-| Playwright, `web/e2e/` | 12 passed | the home page and its Retire now action, and the wallet path with the QoreX wallet mock: 6 cases in Chromium and in WebKit as an iPhone 13 |
+| vitest, `web/test/` | 249 passed | the "both ledgers agree" check, the ML-DSA-87 re-check in the browser against real testnet signatures and a one-byte change, the home page story, the Native-lane finding, the link preview tags, preview and cover image sizes, the slide counts match this table, each of the five judging criteria heads a slide, the session counts in AI_USAGE.md add up and match the slides, its test counts match this table, the slide PDF is the one printed from the slide source, address encoding, the receipts reader, both languages have the same keys, wallet errors, the event search split into ranges the public node accepts, the stale phrases guard, the README numbers and links |
+| vitest, `scripts/test/` | 175 passed | account derivation, the wallet messages the site encodes against the SDK, balances, funding, key registration and EVM windows on the Native lane, the Native-entry experiment (case H), simulated meter readings and the bytes a meter signs, deploy, registration and attestation on a local node, the one-command testnet setup, the health watch, the low-funds watch, the account evidence file, the live Try it record, the test counter, the classic-key refusal (case I), the bank transfer and retire in one transaction (cases J and J2), the live self-test, the deploy freeze |
+| Playwright, `web/e2e/` | 16 passed | the home page and its Retire now action, and the wallet path with the QoreX wallet mock (Native lane retire, key registration, no funds, EVM fallback, a declined request, Malay): 8 cases in Chromium and in WebKit as an iPhone 13 |
 
 The four invariants hold after every random call:
 
@@ -248,11 +249,12 @@ Full version with sources: [`docs/threat-model.md`](docs/threat-model.md).
   have no value.
 - **The Native side records, it does not enforce.** `qday-receipts` is the shared receipt book from the workshop. Anyone
   can write to it; Mentari's receipts are the ones whose sender is the Mentari contract.
-- **The wallet path is tested with a mock only.** "Retire from your own wallet" connects QoreX, asks the demo account
-  for 500 Wh and retires from the wallet. QoreX does not sign EVM transactions yet, so today it refuses that last step,
-  and the page says so. The browser tests use the QoreX wallet mock: its `current` profile is refused, its `planned`
-  profile sends `retire` to the contract. I have not tried it with the real extension
-  ([ADR 0010](docs/decisions/0010-qorex-wallet-path.md)). "Retire now" needs no wallet.
+- **The wallet path ran on the testnet with the wallet mock, not the real extension.** "Retire from your own wallet"
+  hands QoreX one `MsgCrossVMCall` into `Mentari.retire`; QoreX signs it with the hybrid ML-DSA-87 signature and sends
+  it on the Native lane. `pnpm wallet-run` did that on 24 November 2026 with the QoreX wallet mock's `current` profile
+  (retirement 25, [`evidence/wallet-native.json`](evidence/wallet-native.json)). I have not run it with the QoreX
+  extension. QoreX keeps separate Native and EVM accounts, and this path uses the Native one
+  ([ADR 0042](docs/decisions/0042-wallet-retires-through-the-native-lane.md)). "Retire now" needs no wallet.
 - **No audit.** The contracts have tests, fuzzing and invariants, not a professional audit.
 
 ## AI disclosure

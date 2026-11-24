@@ -115,17 +115,17 @@
           "label": "server tests (vitest)"
         },
         {
-          "nilai": "247",
+          "nilai": "249",
           "label": "site tests (vitest)"
         },
         {
-          "nilai": "12",
+          "nilai": "16",
           "label": "browser tests, Chromium and WebKit"
         }
       ],
       "kaki": [
         "Four invariants hold after every random call, and I broke Mentari.sol on purpose for each one: each break turned its invariant red.",
-        "The site and the README are in English and Bahasa Melayu. 41 decision records, each with how to undo it. README.md: Tests"
+        "The site and the README are in English and Bahasa Melayu. 42 decision records, each with how to undo it. README.md: Tests"
       ]
     },
     {

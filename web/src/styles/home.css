@@ -250,7 +250,7 @@
   color: var(--muted);
 }
 
-/* The wallet panel on Try it is a preview until QoreX signs EVM transactions. */
+/* The tag above the wallet panel on Try it: which lane QoreX signs on. */
 .wallet-preview {
   justify-self: start;
   padding: var(--space-1) var(--space-3);

@@ -1,0 +1,52 @@
+{
+  "what": "The Try it wallet path on the testnet: QoreX signAndBroadcast, Native lane, no EVM window",
+  "signer": "@qorechain/qorex-wallet-mock 0.1.0, profile current (what QoreX does today), not the QoreX extension",
+  "recorded_at": "2026-11-24T13:09:13.326Z",
+  "account": {
+    "native": "qor1zwrrx08lapmdncsjcs9sw6g64nh84aj3jwz6y7",
+    "evm": "0x1386333cffe876D9E212C40B07691aAceE7Af651",
+    "key_ready_before": false,
+    "key_ready_after": true
+  },
+  "steps": [
+    {
+      "step": "fund: demo sender sends 600000 uqor (project script, not the wallet)",
+      "cosmos_tx": "BBB95BC22C2009DC7FC2E9F1DCF65D86AF4F94BA3A2521124D88A433566D6062",
+      "code": 0
+    },
+    {
+      "step": "register key: the page's 1 uqor send to itself; QoreX registers ML-DSA-87 first",
+      "cosmos_tx": "77629494204DCA380B28C9AFE24A20124ACC301A99D988BC3DE5EDD584326575",
+      "code": 0,
+      "shield": "shielded"
+    },
+    {
+      "step": "grant: the live site's demo account sends 500 Wh (native lane)",
+      "cosmos_tx": "142E4C326F41D5A5E538D9D9EEB9137448F694D0E149078B93805E9BF9E3FEC5",
+      "code": 0
+    },
+    {
+      "step": "retire: Mentari.retire from the Native lane, signed in the wallet",
+      "cosmos_tx": "741D7DFCE79F2568B3F1242CFE473B9B6D90F0F2796F5D166F7287408B1B6E3E",
+      "code": 0,
+      "shield": "shielded"
+    }
+  ],
+  "retirement": {
+    "n": 25,
+    "holder": "0x1386333cffe876D9E212C40B07691aAceE7Af651",
+    "wh": 500,
+    "receipt_id": 34,
+    "holder_is_wallet": true
+  },
+  "certificates": {
+    "before": 500,
+    "after": 0
+  },
+  "native_receipt": {
+    "id": 34,
+    "sender": "qor17h9jcczg5l8gckn6enrxaw80cvu59fzg2335fw",
+    "note": "MTR1 n=25 wh=500 by=0x1386333cffe876d9e212c40b07691aacee7af651 m=from QoreX",
+    "height": 10668901
+  }
+}

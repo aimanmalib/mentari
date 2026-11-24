@@ -170,7 +170,7 @@ Each guard was removed from a copy of the code to check that a test notices:
 
 ## Web tests
 
-`web/test/` runs with vitest in Node and no network. `cd web && npx vitest run` reported 247 passed on 2026-11-24 in CI.
+`web/test/` runs with vitest in Node and no network. `cd web && npx vitest run` reported 249 passed on 2026-11-24.
 
 They cover the check behind the "both ledgers agree" badge (sender, note, receipt id, nothing checked), the EVM to
 Native address encoding, the receipts book reader (a missing receipt is `null`, any other failure throws so the page
@@ -208,7 +208,7 @@ stays inside the node's limit.
 
 The wallet path adds tests for the grant client (request shape, refusals, a malformed address is never sent), the
 reading of wallet errors (QoreX's "not yet supported" and "signature rejected" wording, codes 4001 and 4200, the
-contract errors), and that the wallet ABI and its errors match `contracts/src/Mentari.sol`.
+contract errors, an account the chain has never seen, a QoreX without `signAndBroadcast`), and that the wallet ABI and its errors match `contracts/src/Mentari.sol`.
 
 The link preview adds tests for `web/share-meta.ts` over a frozen config: every Open Graph and X card tag is present
 once, the image address is absolute https, values come from config and the default locale, `& < > "` are escaped, a
@@ -238,7 +238,7 @@ curl -s  -A 'TelegramBot (like TwitterBot)' https://mentari.sasateguh.com/ | gre
 
 ## Script tests
 
-`scripts/test/` runs with vitest and no network beyond a local anvil node. `cd scripts && npx vitest run` reported 172
+`scripts/test/` runs with vitest and no network beyond a local anvil node. `cd scripts && npx vitest run` reported 175
 passed on 2026-11-24.
 
 `scripts/src/meter.ts` makes the simulated meter readings and the bytes a meter or the registrar signs. The meter tests
@@ -354,17 +354,20 @@ Changes checked to fail:
 
 `web/e2e/` runs with Playwright in Chromium and in WebKit as an iPhone 13 (`playwright.config.ts`). The site is built
 with `vite build --mode e2e`, which only sets a test contract address, and served by `vite preview`.
-`@qorechain/qorex-wallet-mock` 0.1.0 is injected into the page, and a fake EVM node inside the test answers the chain
-calls (`web/e2e/fake-chain.ts`); nothing reaches the testnet. `pnpm exec playwright test` reported 12 passed (6 cases in
-2 browsers) in CI on 2026-11-24.
+`@qorechain/qorex-wallet-mock` 0.1.0 is injected into the page. A fake EVM node (`web/e2e/fake-chain.ts`) and a fake
+Native REST endpoint (`web/e2e/fake-native.ts`, which decodes each broadcast and runs it against the fake node) answer
+the chain calls; nothing reaches the testnet. `pnpm exec playwright test` reported 16 passed (8 cases in 2 browsers) on
+2026-11-24.
 
 | Case | What it checks |
 |---|---|
 | home page (`web/e2e/home.e2e.ts`) | the first screen shows the Retire now action, the story has its sections, and the action presses Retire now once |
-| QoreX today (`current` profile) | connect, the account's addresses and key status, get 500 Wh, then the wallet refuses `eth_sendTransaction` and the page says nothing was sent; the fake node received no transaction |
-| QoreX as announced (`planned` profile) | the wallet signs and sends one transaction to the contract, decoded as `retire(500, "from QoreX")`, and the page links retirement 7 |
-| declined in the wallet | nothing is sent and the page says so |
-| no ML-DSA-87 key | the page says so and "Get 500 Wh" is disabled |
+| QoreX today (`current` profile) | connect; the panel shows QoreX's Native account and its EVM form (not QoreX's separate EVM account); get 500 Wh to that form; retire: one `MsgCrossVMCall` from the Native account, decoded as `retire(500, "from QoreX")` into the contract; the page links retirement 7 and the Cosmos hash and says the signature is shielded; no EVM transaction was sent |
+| no ML-DSA-87 key | "Get 500 Wh" is disabled; "Register my key" sends QoreX's key registration, then a `MsgSend` to itself; the key reads as registered and "Get 500 Wh" opens |
+| account never funded | "Register my key" ends with the faucet message and nothing is broadcast |
+| QoreX without Native sending (`current`) | the page falls back to the EVM path; the wallet refuses `eth_sendTransaction` and the page says nothing was sent |
+| QoreX as announced, without Native sending (`planned`) | the wallet signs and sends one EVM transaction, decoded as `retire(500, "from QoreX")`, and the page links retirement 7 |
+| declined in the wallet | nothing is broadcast or sent and the page says so |
 | Bahasa Melayu | the Malay text, no sideways scroll, and no backdrop filter anywhere in the wallet dialog |
 
 Changes checked to fail:

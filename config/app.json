@@ -128,11 +128,13 @@
       "retireTx": "922C6AF21D20019EB82E332396DA3EC9E696B3BFFF0B6011BA2BFE0415D3F946"
     },
     "wallet": {
+      "_comment": "Wallet path on Try it. memo: memo on wallet retirements. keySetupUqor: what the one-time self send moves (in uqor) when QoreX has no ML-DSA-87 key registered yet; QoreX registers the key before its first transaction (decision 0042). Retirements from QoreX go through the Native lane at nativeRoute.retireGas.",
       "memo": "from QoreX",
       "modalLocales": {
         "en": "en-US",
         "ms": "ms-MY"
-      }
+      },
+      "keySetupUqor": "1"
     },
     "share": {
       "siteUrl": "https://mentari.sasateguh.com",
@@ -276,5 +278,12 @@
     "memo": "Case J",
     "gas": 1700000,
     "stockWh": 1000
+  },
+  "walletRun": {
+    "_comment": "pnpm wallet-run (decision 0042): the Try it wallet path on the testnet, signed by the QoreX wallet mock in its `current` profile (what QoreX does today). accountIndex: the mock's account on the shared seed; it must not be an index in `accounts`. fundFrom: the role that sends it fundUqor when it holds less than half of that. The grant goes through the live site's demo API.",
+    "accountIndex": 12,
+    "fundFrom": "demo sender",
+    "fundUqor": "600000",
+    "site": "https://mentari.sasateguh.com"
   }
 }

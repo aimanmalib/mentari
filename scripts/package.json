@@ -10,11 +10,13 @@
     "native-entry": "tsx native-entry.ts",
     "classic-only": "tsx classic-only.ts",
     "bank-fee": "tsx bank-fee.ts",
+    "wallet-run": "tsx wallet-run.ts",
     "verify": "tsx verify.ts",
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {
+    "@qorechain/qorex-wallet-mock": "0.1.0",
     "@qorechain/sdk": "0.14.0",
     "viem": "2.57.20"
   }

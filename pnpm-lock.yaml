@@ -184,6 +184,9 @@ importers:
 
   scripts:
     dependencies:
+      '@qorechain/qorex-wallet-mock':
+        specifier: 0.1.0
+        version: 0.1.0(bufferutil@4.2.0)(typescript@7.0.2)(utf-8-validate@5.0.10)(zod@4.6.7)
       '@qorechain/sdk':
         specifier: 0.14.0
         version: 0.14.0(bufferutil@4.2.0)(utf-8-validate@5.0.10)(viem@2.57.20(bufferutil@4.2.0)(typescript@7.0.2)(utf-8-validate@5.0.10)(zod@4.6.7))
@@ -221,6 +224,9 @@ importers:
       '@qorechain/qorex-rainbowkit':
         specifier: 0.1.0
         version: 0.1.0(@rainbow-me/rainbowkit@2.2.11(@tanstack/react-query@5.108.2(@types/react@19.3.0)(react@19.3.1))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)(viem@2.58.4(bufferutil@4.2.0)(typescript@7.0.2)(utf-8-validate@5.0.10)(zod@4.6.7))(wagmi@2.19.5(@tanstack/query-core@5.108.2)(@tanstack/react-query@5.108.2(@types/react@19.3.0)(react@19.3.1))(@types/react@19.3.0)(bufferutil@4.2.0)(debug@4.4.3)(react@19.3.1)(typescript@7.0.2)(utf-8-validate@5.0.10)(viem@2.58.4(bufferutil@4.2.0)(typescript@7.0.2)(utf-8-validate@5.0.10)(zod@4.6.7))(zod@4.6.7)))(viem@2.58.4(bufferutil@4.2.0)(typescript@7.0.2)(utf-8-validate@5.0.10)(zod@4.6.7))(wagmi@2.19.5(@tanstack/query-core@5.108.2)(@tanstack/react-query@5.108.2(@types/react@19.3.0)(react@19.3.1))(@types/react@19.3.0)(bufferutil@4.2.0)(debug@4.4.3)(react@19.3.1)(typescript@7.0.2)(utf-8-validate@5.0.10)(viem@2.58.4(bufferutil@4.2.0)(typescript@7.0.2)(utf-8-validate@5.0.10)(zod@4.6.7))(zod@4.6.7))
+      '@qorechain/qorex-types':
+        specifier: 0.1.0
+        version: 0.1.0
       '@rainbow-me/rainbowkit':
         specifier: 2.2.11
         version: 2.2.11(@tanstack/react-query@5.108.2(@types/react@19.3.0)(react@19.3.1))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)(viem@2.58.4(bufferutil@4.2.0)(typescript@7.0.2)(utf-8-validate@5.0.10)(zod@4.6.7))(wagmi@2.19.5(@tanstack/query-core@5.108.2)(@tanstack/react-query@5.108.2(@types/react@19.3.0)(react@19.3.1))(@types/react@19.3.0)(bufferutil@4.2.0)(debug@4.4.3)(react@19.3.1)(typescript@7.0.2)(utf-8-validate@5.0.10)(viem@2.58.4(bufferutil@4.2.0)(typescript@7.0.2)(utf-8-validate@5.0.10)(zod@4.6.7))(zod@4.6.7))

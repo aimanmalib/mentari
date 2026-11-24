@@ -10,7 +10,7 @@ import {
   type Hex,
 } from "viem";
 import app from "../../config/app.json" with { type: "json" };
-import { mentariWalletAbi, retiredEvent } from "../src/data/abi.js";
+import { mentariReadAbi, mentariWalletAbi, retiredEvent } from "../src/data/abi.js";
 import fixture from "./fixture.json" with { type: "json" };
 
 /** A sent transaction the fake node has seen, decoded. */
@@ -29,6 +29,8 @@ export class FakeChain {
   quantumReady = true;
   nextRetirement = 7;
   readonly sent: SentTx[] = [];
+  /** Holder of each retirement made through the Native lane (`FakeNative`), for the page's `retirement(n)` read. */
+  readonly retirements = new Map<bigint, string>();
   readonly #receipts = new Map<string, { status: "0x1" | "0x0"; logs: unknown[]; from: string }>();
 
   constructor(readonly contract = fixture.contract.toLowerCase()) {}
@@ -43,6 +45,15 @@ export class FakeChain {
     const hash = keccak256(`0x${(this.#receipts.size + 1).toString(16).padStart(8, "0")}` as Hex);
     this.#receipts.set(hash, { status: "0x1", logs: [], from: "0x000000000000000000000000000000000000d3e7" });
     return hash;
+  }
+
+  /** `Mentari.retire` run by a Native `MsgCrossVMCall`: the EVM sender is the Native signer's own address. */
+  retireFromNative(holder: string, wh: bigint): bigint | null {
+    if (this.balance(holder) < wh) return null;
+    this.balances.set(holder.toLowerCase(), this.balance(holder) - wh);
+    const n = BigInt(this.nextRetirement++);
+    this.retirements.set(n, holder);
+    return n;
   }
 
   async install(page: Page): Promise<void> {
@@ -86,8 +97,16 @@ export class FakeChain {
   }
 
   #call(req: Rpc, tx: { from?: string; to?: string; data: Hex }): unknown {
-    const { functionName, args } = decodeFunctionData({ abi: mentariWalletAbi, data: tx.data });
     const result = (data: Hex) => ({ jsonrpc: "2.0", id: req.id, result: data });
+    const read = readCall(tx.data);
+    if (read?.functionName === "retirement") {
+      const n = read.args[0] as bigint;
+      const holder = this.retirements.get(n);
+      if (!holder) return { jsonrpc: "2.0", id: req.id, error: { code: 3, message: "execution reverted", data: "0x" } };
+      const value = { holder: holder as Hex, wh: 500n, receiptId: 900n, timestamp: 1_732_000_000n };
+      return result(encodeFunctionResult({ abi: mentariReadAbi, functionName: "retirement", result: value as never }));
+    }
+    const { functionName, args } = decodeFunctionData({ abi: mentariWalletAbi, data: tx.data });
     if (functionName === "balanceOf") {
       return result(encodeFunctionResult({ abi: mentariWalletAbi, functionName, result: this.balance(args[0]) }));
     }
@@ -135,6 +154,15 @@ export class FakeChain {
       status: r.status,
       type: "0x2",
     };
+  }
+}
+
+/** A call to one of the read-only functions the Verify pages use, or null for the wallet functions. */
+function readCall(data: Hex): { functionName: string; args: readonly unknown[] } | null {
+  try {
+    return decodeFunctionData({ abi: mentariReadAbi, data }) as { functionName: string; args: readonly unknown[] };
+  } catch {
+    return null;
   }
 }
 

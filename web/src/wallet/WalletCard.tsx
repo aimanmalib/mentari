@@ -1,7 +1,7 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount, useDisconnect, useSwitchChain } from "wagmi";
 import { siteConfig } from "../config.js";
-import { evmToNative, shorten } from "../data/address.js";
+import { shorten } from "../data/address.js";
 import { explorer } from "../data/explorer.js";
 import { useI18n } from "../i18n/I18n.js";
 import { Link, routes } from "../router.js";
@@ -33,16 +33,24 @@ function Result({ result }: { result: WalletResult }) {
           {result.reason === "not-quantum-ready" ? t("wallet.problem.not-quantum-ready") : t(`tryit.reason.${result.reason}`)}
         </p>
       );
+    case "key-registered":
+      return (
+        <p className="wallet-ok">
+          {t("wallet.keyRegistered")} <TxLink hash={result.hash} /> <span className="wallet-note">{t("records.explorerNote")}</span>
+        </p>
+      );
     case "retired":
       return (
         <p className="wallet-ok">
-          {t("wallet.retired")} <TxLink hash={result.hash} />
+          {t(result.lane === "native" ? "wallet.retiredNative" : "wallet.retired")} <TxLink hash={result.hash} />
           {result.n !== null && (
             <>
               {" · "}
               <Link href={`${routes.verify}?n=${result.n}`}>{t("wallet.retiredN", { n: num(result.n) })}</Link>
             </>
           )}
+          {result.shielded && <>. {t("wallet.shielded")}</>}
+          {result.lane === "native" && <span className="wallet-note"> {t("records.explorerNote")}</span>}
         </p>
       );
     case "problem":
@@ -54,25 +62,26 @@ function Result({ result }: { result: WalletResult }) {
   }
 }
 
-/** The connected part: who you are, whether the contract will pay you, and the two steps. */
-function Connected({ address }: { address: `0x${string}` }) {
+/** The connected part: who you are, whether the contract will pay you, and the steps (a key first, when it is missing). */
+function Connected() {
   const { t, num } = useI18n();
   const { disconnect } = useDisconnect();
   const w = useWalletActions();
-  const native = evmToNative(address, siteConfig.nativePrefix);
   const value = (v: string | null) => (w.contract === null ? t("wallet.unknown") : w.reading ? t("wallet.loading") : (v ?? t("wallet.unknown")));
-  const readyText = w.ready === null ? null : w.ready ? t("wallet.readyYes") : t("wallet.readyNo");
+  const readyText = w.ready === null ? null : w.ready ? t("wallet.readyYes") : t(w.lane === "native" ? "wallet.readyNoNative" : "wallet.readyNo");
   const enough = w.balance !== null && w.balance >= BigInt(siteConfig.demoRetireWh);
+  // QoreX registers the key before its first Native transaction, so the page can offer that step itself.
+  const needsKey = w.ready === false && w.lane === "native" && w.contract !== null;
   return (
     <>
       <dl className="wallet-facts" aria-label={t("wallet.factsLabel")}>
         <div>
           <dt>{t("wallet.evmAddress")}</dt>
-          <dd className="mono" title={address}>{shorten(address, 8, 6)}</dd>
+          <dd className="mono" title={w.address}>{w.address ? shorten(w.address, 8, 6) : t("wallet.loading")}</dd>
         </div>
         <div>
           <dt>{t("wallet.nativeAddress")}</dt>
-          <dd className="mono" title={native}>{shorten(native, 9, 6)}</dd>
+          <dd className="mono" title={w.nativeAddress ?? undefined}>{w.nativeAddress ? shorten(w.nativeAddress, 9, 6) : t("wallet.loading")}</dd>
         </div>
         <div>
           <dt>{t("wallet.ready")}</dt>
@@ -83,12 +92,19 @@ function Connected({ address }: { address: `0x${string}` }) {
           <dd>{value(w.balance === null ? null : t("unit.wh", { value: num(Number(w.balance)) }))}</dd>
         </div>
       </dl>
+      {w.lane === "native" && <p className="wallet-note">{t("wallet.nativeAccount")}</p>}
       {w.contract === null && <p className="wallet-note">{t("wallet.notDeployed")}</p>}
+      {needsKey && <p className="wallet-note">{t("wallet.keyHint", { uqor: siteConfig.wallet.keySetupUqor })}</p>}
       <div className="wallet-actions">
-        <button type="button" className="button" onClick={w.grant} disabled={w.contract === null || w.busy !== null || w.ready === false}>
+        {needsKey && (
+          <button type="button" className="button button-solid" onClick={w.registerKey} disabled={w.busy !== null}>
+            {w.busy === "key" ? t("wallet.retireSending") : t("wallet.registerKey")}
+          </button>
+        )}
+        <button type="button" className="button" onClick={w.grant} disabled={w.contract === null || !w.address || w.busy !== null || w.ready === false}>
           {w.busy === "grant" ? t("wallet.grantSending") : t("wallet.grant", { wh: num(siteConfig.demoGrantWh) })}
         </button>
-        <button type="button" className="button button-solid" onClick={w.retire} disabled={w.contract === null || w.busy !== null || !enough}>
+        <button type="button" className="button button-solid" onClick={w.retire} disabled={w.contract === null || !w.address || w.busy !== null || !enough}>
           {w.busy === "retire" ? t("wallet.retireSending") : t("wallet.retire", { wh: num(siteConfig.demoRetireWh) })}
         </button>
         <button type="button" className="wallet-disconnect" onClick={() => disconnect()}>
@@ -117,7 +133,7 @@ export function WalletCard() {
       </div>
     );
   } else if (status === "connected" && address) {
-    body = <Connected address={address} />;
+    body = <Connected />;
   } else {
     body = (
       <ConnectButton.Custom>

@@ -39,7 +39,7 @@
   "links": []
  },
  {
-  "text": "Mentari · Build Before Q-Day · Cross-VM track\nClarity, UX and documentation · 15 %\nTested, then broken on purpose\n115\nFoundry tests, including fuzz and invariants\n99 %\nline coverage of contracts/src\n223\nserver tests (vitest)\n247\nsite tests (vitest)\n12\nbrowser tests, Chromium and WebKit\n\nFour invariants hold after every random call, and I broke Mentari.sol on purpose for each one: each break turned its invariant red.\n\nThe site and the README are in English and Bahasa Melayu. 41 decision records, each with how to undo it. README.md: Tests",
+  "text": "Mentari · Build Before Q-Day · Cross-VM track\nClarity, UX and documentation · 15 %\nTested, then broken on purpose\n115\nFoundry tests, including fuzz and invariants\n99 %\nline coverage of contracts/src\n223\nserver tests (vitest)\n249\nsite tests (vitest)\n16\nbrowser tests, Chromium and WebKit\n\nFour invariants hold after every random call, and I broke Mentari.sol on purpose for each one: each break turned its invariant red.\n\nThe site and the README are in English and Bahasa Melayu. 42 decision records, each with how to undo it. README.md: Tests",
   "links": []
  },
  {

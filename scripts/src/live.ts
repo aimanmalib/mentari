@@ -15,7 +15,7 @@ export interface LiveRun {
   browser: "chromium" | "webkit";
   viewport: string;
   lang: "en" | "ms";
-  /** Retire now goes from the Native lane (a Cosmos transaction); the failure buttons send an EVM transaction. */
+  /** Native lane runs record a Cosmos transaction; failure buttons pressed before decision 0030 recorded an EVM one. */
   cosmosTx?: string;
   evmTx?: string;
   /** Block of the Cosmos transaction, read back from the node when the record was written. */
@@ -68,16 +68,40 @@ export function streakCheck(record: LiveRecord, count: number): Check {
   return best >= count ? pass("live", name) : fail("live", name, `longest run ${best}`);
 }
 
-async function chainCheck(evm: EvmReader, book: BookReader, contracts: readonly string[], r: LiveRun): Promise<Check[]> {
+type CosmosTx = Awaited<ReturnType<BookReader["cosmosTx"]>>;
+
+/** The Cosmos transaction, or null when the node cannot find it or does not answer (reported as unavailable). */
+async function readCosmos(book: BookReader, hash: string): Promise<CosmosTx> {
+  try {
+    return await book.cosmosTx(hash);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * A failure button sent from the Native lane (decision 0030): the chain must have taken the transaction into a block
+ * with the EVM revert code (`revertCodespace`), and the receipts book must hold the same count before and after it.
+ */
+async function nativeRevertCheck(book: BookReader, r: LiveRun & { cosmosTx: string }, revertCodespace: string): Promise<Check[]> {
+  const name = `${label(r)} Native transaction reverted inside the EVM call`;
+  const tx = await readCosmos(book, r.cosmosTx);
+  if (!tx) return [{ group: "live", name, outcome: "unavailable", detail: "the node did not find it" }];
+  const reverted = tx.code !== 0 && tx.codespace === revertCodespace && (r.height === undefined || tx.height === r.height);
+  const out = [reverted ? pass("live", name, r.cosmosTx) : fail("live", name, `code ${tx.code} ${tx.codespace ?? ""} at block ${tx.height}`.trim())];
+  const counts = await countsAround(book, tx.height);
+  const bookName = `${label(r)} receipts book unchanged at block ${tx.height}`;
+  if (!counts) out.push({ group: "live", name: bookName, outcome: "unavailable", detail: "the node does not keep state that old" });
+  else out.push(counts[1] === counts[0] ? pass("live", bookName) : fail("live", bookName, `${counts[0]} -> ${counts[1]}`));
+  return out;
+}
+
+async function chainCheck(evm: EvmReader, book: BookReader, contracts: readonly string[], r: LiveRun, revertCodespace: string): Promise<Check[]> {
+  if (r.action !== "retire" && r.cosmosTx && !r.evmTx) return nativeRevertCheck(book, { ...r, cosmosTx: r.cosmosTx }, revertCodespace);
   if (r.action === "retire") {
     const name = `${label(r)} Cosmos transaction accepted`;
     if (!r.cosmosTx) return [fail("live", name, "no Cosmos transaction recorded")];
-    let tx: { code: number; height: number } | null = null;
-    try {
-      tx = await book.cosmosTx(r.cosmosTx);
-    } catch {
-      // reported as unavailable below
-    }
+    const tx = await readCosmos(book, r.cosmosTx);
     if (!tx) return [{ group: "live", name, outcome: "unavailable", detail: "the node did not find it" }];
     const out = [tx.code === 0 && (r.height === undefined || tx.height === r.height) ? pass("live", name, r.cosmosTx) : fail("live", name, `code ${tx.code} at block ${tx.height}`)];
     const counts = await countsAround(book, tx.height);
@@ -94,7 +118,13 @@ async function chainCheck(evm: EvmReader, book: BookReader, contracts: readonly 
 }
 
 /** All live checks: what the page showed, the streak, and each transaction read back from the chain. */
-export async function liveChecks(evm: EvmReader, book: BookReader, record: LiveRecord, contracts: readonly string[]): Promise<Check[]> {
-  const onChain = await Promise.all(record.runs.map((r) => chainCheck(evm, book, contracts, r)));
+export async function liveChecks(
+  evm: EvmReader,
+  book: BookReader,
+  record: LiveRecord,
+  contracts: readonly string[],
+  revertCodespace: string,
+): Promise<Check[]> {
+  const onChain = await Promise.all(record.runs.map((r) => chainCheck(evm, book, contracts, r, revertCodespace)));
   return [...recordChecks(record), streakCheck(record, record.retireStreak), ...onChain.flat()];
 }

@@ -26,7 +26,7 @@ const repoRoot = fileURLToPath(new URL("..", import.meta.url));
 const CONCURRENCY = 4;
 
 async function main(): Promise<void> {
-  const app = loadAppConfig() as ReturnType<typeof loadAppConfig> & { native: { receiptsBook: string } };
+  const app = loadAppConfig() as ReturnType<typeof loadAppConfig> & { native: { receiptsBook: string }; nativeRoute: { revertCodespace: string } };
   const testnet = JSON.parse(readFileSync(join(repoRoot, "evidence", "testnet.json"), "utf8")) as { cases: (RecordedCase | RecordedEntry)[] };
   const pub = publicClient(app.network.evmRpc, app.network.evmChainId);
   const book = bookReader({ rest: app.network.rest, book: app.native.receiptsBook });
@@ -46,7 +46,7 @@ async function main(): Promise<void> {
   if (existsSync(livePath)) {
     const live = JSON.parse(readFileSync(livePath, "utf8")) as LiveRecord;
     const evm = mentariReader(pub, app.contracts.mentari);
-    checks.push(...(await liveChecks(evm, book, live, [app.contracts.mentari, app.contracts.atomicityProbe])));
+    checks.push(...(await liveChecks(evm, book, live, [app.contracts.mentari, app.contracts.atomicityProbe], app.nativeRoute.revertCodespace)));
   }
   console.log(formatReport(checks));
 

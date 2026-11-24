@@ -32,7 +32,7 @@ function record(): LiveRecord {
   return { site: "https://example.test", retireStreak: 2, runs: [failure(1, "case-b"), failure(2, "case-c"), failure(3, "case-d"), retire(4, 100), retire(5, 200)] };
 }
 
-function readers(change: { txs?: Map<string, TxResult>; counts?: Map<number, number>; native?: Map<string, { code: number; height: number }> } = {}): { evm: EvmReader; book: BookReader } {
+function readers(change: { txs?: Map<string, TxResult>; counts?: Map<number, number>; native?: Map<string, { code: number; height: number; codespace?: string }> } = {}): { evm: EvmReader; book: BookReader } {
   const txs = change.txs ?? new Map<string, TxResult>([["0x1", { status: "reverted", to: PROBE }], ["0x2", { status: "reverted", to: PROBE }], ["0x3", { status: "reverted", to: PROBE }]]);
   const counts = change.counts ?? new Map([[99, 14], [100, 15], [199, 15], [200, 16]]);
   const native = change.native ?? new Map([["C4", { code: 0, height: 100 }], ["C5", { code: 0, height: 200 }]]);
@@ -59,7 +59,7 @@ const failed = (checks: { outcome: string; name: string }[]) => checks.filter((c
 describe("live record", () => {
   it("passes a record the chain agrees with", async () => {
     const { evm, book } = readers();
-    const checks = await liveChecks(evm, book, record(), [MENTARI, PROBE]);
+    const checks = await liveChecks(evm, book, record(), [MENTARI, PROBE], "crossvm");
     expect(checks.every((c) => c.outcome === "pass")).toBe(true);
     expect(checks.length).toBe(5 + 1 + 3 + 2 * 2);
   });
@@ -92,7 +92,7 @@ describe("live record", () => {
   it("fails when the chain disagrees: a failure that succeeded, a retire the book did not record, a rejected Native tx", async () => {
     const txs = new Map<string, TxResult>([["0x1", { status: "success", to: PROBE }], ["0x2", { status: "reverted", to: "0x00000000000000000000000000000000000000cc" }], ["0x3", { status: "reverted", to: PROBE }]]);
     const { evm, book } = readers({ txs, counts: new Map([[99, 14], [100, 14], [199, 15], [200, 16]]), native: new Map([["C4", { code: 0, height: 100 }], ["C5", { code: 5, height: 200 }]]) });
-    expect(failed(await liveChecks(evm, book, record(), [MENTARI, PROBE]))).toEqual([
+    expect(failed(await liveChecks(evm, book, record(), [MENTARI, PROBE], "crossvm"))).toEqual([
       "run 1 case-b (webkit 390x664 en) EVM transaction reverted",
       "run 2 case-c (webkit 390x664 en) EVM transaction reverted",
       "run 4 retire (webkit 390x664 en) receipts book gained a receipt at block 100",
@@ -102,7 +102,30 @@ describe("live record", () => {
 
   it("marks a transaction the node cannot find as unavailable, not passed", async () => {
     const { evm, book } = readers({ native: new Map([["C5", { code: 0, height: 200 }]]) });
-    const c = (await liveChecks(evm, book, record(), [MENTARI, PROBE])).find((x) => x.name.startsWith("run 4 retire") && x.name.endsWith("accepted"));
+    const c = (await liveChecks(evm, book, record(), [MENTARI, PROBE], "crossvm")).find((x) => x.name.startsWith("run 4 retire") && x.name.endsWith("accepted"));
     expect(c?.outcome).toBe("unavailable");
+  });
+
+  it("checks a failure button sent from the Native lane by its Cosmos transaction: EVM revert code, book unchanged", async () => {
+    const nativeFail = (n: number, height: number): LiveRun => {
+      const { evmTx: _evm, ...rest } = failure(n, "case-b");
+      return { ...rest, cosmosTx: `N${n}`, height };
+    };
+    const r: LiveRecord = { ...record(), runs: [...record().runs, nativeFail(6, 300), nativeFail(7, 400), nativeFail(8, 500)] };
+    const native = new Map([
+      ["C4", { code: 0, height: 100 }],
+      ["C5", { code: 0, height: 200 }],
+      ["N6", { code: 14, height: 300, codespace: "crossvm" }],
+      ["N7", { code: 11, height: 400, codespace: "sdk" }],
+      ["N8", { code: 14, height: 500, codespace: "crossvm" }],
+    ]);
+    const counts = new Map([[99, 14], [100, 15], [199, 15], [200, 16], [299, 16], [300, 16], [399, 16], [400, 16], [499, 16], [500, 17]]);
+    const { evm, book } = readers({ native, counts });
+    const checks = await liveChecks(evm, book, r, [MENTARI, PROBE], "crossvm");
+    expect(checks.find((c) => c.name === "run 6 case-b (webkit 390x664 en) Native transaction reverted inside the EVM call")?.outcome).toBe("pass");
+    expect(failed(checks)).toEqual([
+      "run 7 case-b (webkit 390x664 en) Native transaction reverted inside the EVM call",
+      "run 8 case-b (webkit 390x664 en) receipts book unchanged at block 500",
+    ]);
   });
 });

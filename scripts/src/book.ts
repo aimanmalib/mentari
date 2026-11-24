@@ -18,8 +18,8 @@ export interface BookReader {
   receipt(id: number): Promise<Receipt>;
   /** Hash of the Cosmos transaction that carried the EVM transaction, or null when the node does not find it. */
   cosmosTxOf(evmHash: string): Promise<string | null>;
-  /** Result code and block of a Cosmos transaction by hash, or null when the node does not find it. */
-  cosmosTx(hash: string): Promise<{ code: number; height: number } | null>;
+  /** Result code, codespace and block of a Cosmos transaction by hash, or null when the node does not find it. */
+  cosmosTx(hash: string): Promise<{ code: number; height: number; codespace?: string } | null>;
 }
 
 const obj = (x: unknown): Record<string, unknown> => (x && typeof x === "object" ? (x as Record<string, unknown>) : {});
@@ -62,7 +62,8 @@ export function bookReader(opts: { rest: string; book: string; fetch?: Fetch }):
       const res = await f(`${base}/cosmos/tx/v1beta1/txs/${hash}`, { headers: { accept: "application/json" } });
       if (res.status !== 200) return null;
       const r = obj(obj(await res.json().catch(() => undefined)).tx_response);
-      return r.height === undefined ? null : { code: Number(r.code ?? 0), height: Number(r.height) };
+      if (r.height === undefined) return null;
+      return { code: Number(r.code ?? 0), height: Number(r.height), codespace: typeof r.codespace === "string" ? r.codespace : "" };
     },
   };
 }

@@ -51,15 +51,15 @@ describe("bookReader", () => {
     expect(await book.cosmosTxOf("0xdef")).toBeNull();
   });
 
-  it("reads a Cosmos transaction's code and block by hash, or null when the node does not have it", async () => {
+  it("reads a Cosmos transaction's code, codespace and block by hash, or null when the node does not have it", async () => {
     const { f, seen } = fakeFetch({
-      "/txs/AA": { status: 200, body: { tx_response: { code: 14, height: "12" } } },
+      "/txs/AA": { status: 200, body: { tx_response: { code: 14, codespace: "crossvm", height: "12" } } },
       "/txs/BB": { status: 200, body: { tx_response: { height: "13" } } },
     });
     const book = bookReader({ rest: "https://rest.example", book: "qor1book", fetch: f });
-    expect(await book.cosmosTx("AA")).toEqual({ code: 14, height: 12 });
+    expect(await book.cosmosTx("AA")).toEqual({ code: 14, height: 12, codespace: "crossvm" });
     expect(seen[0]!.url).toBe("https://rest.example/cosmos/tx/v1beta1/txs/AA");
-    expect(await book.cosmosTx("BB")).toEqual({ code: 0, height: 13 });
+    expect(await book.cosmosTx("BB")).toEqual({ code: 0, height: 13, codespace: "" });
     expect(await book.cosmosTx("CC")).toBeNull();
   });
 });

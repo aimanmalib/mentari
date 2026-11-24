@@ -45,6 +45,27 @@ const demoFor = (account: Address, send: DemoSendConfig = SEND): DemoChain => {
   return chainDemo({ pub: chain.pub, wallet, mentari, probe, receipts, send });
 };
 const nonce = (a: Address) => chain.pub.getTransactionCount({ address: a });
+const walletFor = (account: Address) => {
+  const key = mnemonicToAccount(ANVIL_MNEMONIC, { addressIndex: chain.accounts.indexOf(account) }).getHdKey().privateKey!;
+  return evmClients(chain.rpcUrl, 9800, `0x${Buffer.from(key).toString("hex")}`);
+};
+/**
+ * Stands in for the chain running a MsgCrossVMCall: the same call, from the same account, with the given gas limit
+ * and no estimate. A revert comes back in `codespace` (the testnet's is "crossvm", case H step 1).
+ */
+const nativeStandIn = (account: Address, calls: NativeCall[], codespace = "crossvm"): NativeCaller => {
+  const { wallet } = walletFor(account);
+  return {
+    address: "qor1fixturedemo",
+    call: async (c) => {
+      calls.push(c);
+      const call = { address: c.contract, abi: c.abi, functionName: c.functionName, args: c.args, gas: BigInt(c.gas), account: wallet.account, chain: wallet.chain };
+      const r = await chain.pub.waitForTransactionReceipt({ hash: await wallet.writeContract(call as never) });
+      const ok = r.status === "success";
+      return { cosmosTx: "C0FFEE".padEnd(64, "1"), status: r.status, height: Number(r.blockNumber), gasUsed: Number(r.gasUsed), code: ok ? 0 : 14, codespace: ok ? "" : codespace };
+    },
+  };
+};
 
 beforeAll(async () => {
   chain = await startAnvil();
@@ -93,10 +114,10 @@ describe("chainDemo", () => {
         const call = { address: c.contract, abi: c.abi, functionName: c.functionName, args: c.args, account: wallet.account, chain: wallet.chain };
         const hash = await wallet.writeContract(call as never);
         const r = await chain.pub.waitForTransactionReceipt({ hash });
-        return { cosmosTx: "C0FFEE".padEnd(64, "0"), status: r.status, height: Number(r.blockNumber), gasUsed: Number(r.gasUsed) };
+        return { cosmosTx: "C0FFEE".padEnd(64, "0"), status: r.status, height: Number(r.blockNumber), gasUsed: Number(r.gasUsed), code: 0, codespace: "" };
       },
     };
-    const demo = chainDemo({ pub: chain.pub, wallet, mentari, probe, receipts, send: SEND, nativeRetire: { caller, gas: 1_300_000 } });
+    const demo = chainDemo({ pub: chain.pub, wallet, mentari, probe, receipts, send: SEND, native: { retire: { caller, gas: 1_300_000 } } });
     const before = await demo.counts();
     const sent = await demo.send("retire", { retireWh: 500 });
     expect(sent).toEqual({ cosmosTx: "C0FFEE".padEnd(64, "0"), status: "success" });
@@ -112,9 +133,51 @@ describe("chainDemo", () => {
     const index = chain.accounts.indexOf(stranger);
     const key = mnemonicToAccount(ANVIL_MNEMONIC, { addressIndex: index }).getHdKey().privateKey!;
     const { wallet } = evmClients(chain.rpcUrl, 9800, `0x${Buffer.from(key).toString("hex")}`);
-    const demo = chainDemo({ pub: chain.pub, wallet, mentari, probe, receipts, send: SEND, nativeRetire: { caller, gas: 1 } });
+    const demo = chainDemo({ pub: chain.pub, wallet, mentari, probe, receipts, send: SEND, native: { retire: { caller, gas: 1 } } });
     await expect(demo.send("retire", { retireWh: 500 })).rejects.toThrow(/holds 0 Wh/);
     expect(caller.call).not.toHaveBeenCalled();
+  });
+
+  it("sends the failure buttons and the grant from the Native lane when their routes are on (decision 0030)", async () => {
+    const calls: NativeCall[] = [];
+    const caller = nativeStandIn(demoAccount, calls);
+    const { wallet } = walletFor(demoAccount);
+    const demo = chainDemo({
+      pub: chain.pub,
+      wallet,
+      mentari,
+      probe,
+      receipts,
+      send: SEND,
+      revertCodespace: "crossvm",
+      native: { cases: { caller, gas: 1_500_000 }, grant: { caller, gas: 800_000 } },
+    });
+    expect((await demo.state()).lanes).toEqual({ retire: "evm-window", cases: "native", grant: "native" });
+    const n = await nonce(demoAccount);
+    for (const action of ["case-b", "case-c", "case-d"] as const) {
+      const before = await demo.counts();
+      const sent = await demo.send(action, { retireWh: 500 });
+      expect(sent).toEqual({ cosmosTx: "C0FFEE".padEnd(64, "1"), status: "reverted" });
+      expect(asExpected({ expect: "revert" }, sent, before, await demo.counts())).toBe(true);
+    }
+    expect(await demo.grant(visitor, 1)).toEqual({ cosmosTx: "C0FFEE".padEnd(64, "1"), status: "success" });
+    expect(calls.map((c) => [c.functionName, c.gas])).toEqual([
+      ["recordThenRevert", 1_500_000],
+      ["nativeRefuses", 1_500_000],
+      ["callTarget", 1_500_000],
+      ["transfer", 800_000],
+    ]);
+    expect(calls[2]!.args).toEqual([SEND.caseDTarget, SEND.probeNote]);
+    // Four transactions from the account, all through the stand-in; none was an EVM send from chainDemo itself.
+    expect(await nonce(demoAccount)).toBe(n + 4);
+  });
+
+  it("does not report a Native failure outside the EVM call (out of gas, say) as the expected revert", async () => {
+    const calls: NativeCall[] = [];
+    const { wallet } = walletFor(demoAccount);
+    const caller = nativeStandIn(demoAccount, calls, "sdk");
+    const demo = chainDemo({ pub: chain.pub, wallet, mentari, probe, receipts, send: SEND, revertCodespace: "crossvm", native: { cases: { caller, gas: 1_500_000 } } });
+    await expect(demo.send("case-c", { retireWh: 500 })).rejects.toThrow(/failed outside the EVM call \(sdk code 14\)/);
   });
 
   it.each<[DemoAction, string]>([
@@ -148,16 +211,29 @@ describe("chainDemo", () => {
     const demo = demoFor(demoAccount);
     expect(await demo.isQuantumReady(visitor)).toBe(true);
     expect(await demo.isQuantumReady(stranger.toLowerCase())).toBe(false);
+    const held = () => chain.pub.readContract({ address: mentari, abi: loadArtifact("Mentari").abi, functionName: "balanceOf", args: [visitor] });
+    const before = (await held()) as bigint;
     const sent = await demo.grant(visitor.toLowerCase(), 500);
     expect(sent.status).toBe("success");
-    const balance = await chain.pub.readContract({ address: mentari, abi: loadArtifact("Mentari").abi, functionName: "balanceOf", args: [visitor] });
-    expect(balance).toBe(500n);
+    expect(await held()).toBe(before + 500n);
   });
 
-  it("reports the sender's QOR balance in whole units", async () => {
-    const qor = await demoFor(demoAccount).senderBalanceQor();
-    expect(qor).toBeGreaterThan(9000);
-    expect(qor).toBeLessThanOrEqual(10000);
+  it("reports the sender's QOR balance in whole units, its certificates, and the EVM lane for every job by default", async () => {
+    const s = await demoFor(demoAccount).state();
+    expect(s.senderBalanceQor).toBeGreaterThan(9000);
+    expect(s.senderBalanceQor).toBeLessThanOrEqual(10000);
+    expect(s.certificatesWh).toBeGreaterThan(500);
+    expect(s.lanes).toEqual({ retire: "evm-window", cases: "evm-window", grant: "evm-window" });
+    // No window reader: the window counts as unreadable, so an EVM-lane job is not reported ready.
+    expect(s.evmWindow).toBeNull();
+  });
+
+  it("reads the EVM window through the reader it is given, and a reader that fails counts as unreadable", async () => {
+    const { wallet } = walletFor(demoAccount);
+    const open = chainDemo({ pub: chain.pub, wallet, mentari, probe, receipts, send: SEND, window: async () => ({ live: true, untilBlock: 99 }) });
+    expect((await open.state()).evmWindow).toEqual({ live: true, untilBlock: 99 });
+    const broken = chainDemo({ pub: chain.pub, wallet, mentari, probe, receipts, send: SEND, window: () => Promise.reject(new Error("HTTP 500")) });
+    expect((await broken.state()).evmWindow).toBeNull();
   });
 });
 
@@ -182,13 +258,15 @@ describe("liveDemoChain", () => {
     expect(liveDemoChain({ chain: deployed, keysDir: keys }).ready()).toBe(true);
   });
 
-  it("keeps Retire now on the EVM route, and says so, when the Native route is on but the key file has no ML-DSA-87 key", () => {
+  it("keeps every job on the EVM route, and says so, when a Native route is on but the key file has no ML-DSA-87 key", () => {
     const lines: string[] = [];
-    const native = { lane: testConfig().nativeRoute.lane, enabled: true, gas: 1 };
+    const job = (enabled: boolean) => ({ enabled, gas: 1 });
+    const native = { lane: testConfig().nativeRoute.lane, jobs: { retire: job(true), cases: job(true), grant: job(false) }, revertCodespace: "crossvm" };
     const demo = liveDemoChain({ chain: deployed, keysDir: folder(JSON.stringify({ privateKey: KEY })), native, log: (l) => lines.push(l) });
     expect(demo.ready()).toBe(true);
-    expect(lines).toEqual(["demo sender key: no ML-DSA-87 key, so Retire now stays on the EVM route"]);
-    const off = liveDemoChain({ chain: deployed, keysDir: folder(JSON.stringify({ privateKey: KEY })), native: { ...native, enabled: false }, log: (l) => lines.push(l) });
+    expect(lines).toEqual(["demo sender key: no ML-DSA-87 key, so every demo job stays on the EVM route"]);
+    const allOff = { ...native, jobs: { retire: job(false), cases: job(false), grant: job(false) } };
+    const off = liveDemoChain({ chain: deployed, keysDir: folder(JSON.stringify({ privateKey: KEY })), native: allOff, log: (l) => lines.push(l) });
     expect(off.ready()).toBe(true);
     expect(lines).toHaveLength(1);
   });

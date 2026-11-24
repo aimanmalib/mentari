@@ -129,13 +129,23 @@ from a public test phrase. The account rebuilt from the two keys alone has the s
 key as the one derived from the phrase. The signed transaction carries one `MsgCrossVMCall`, the `retire` call data,
 the sender, the fee for the gas limit at the configured price, and an ML-DSA-87 signature; a call that reverts in its
 block is reported as reverted, and a refusal before any block is an error. On the local anvil node, "Retire now" goes
-through the Native caller when one is set (both ledgers gain one), the failure buttons stay EVM transactions, and an
+through the Native caller when one is set (both ledgers gain one), and an
 account without certificates sends nothing. The meter job sends each `attest` through the route when it has one and
 treats a reverted call as a failed run. A route that is on with no ML-DSA-87 key in the key file logs that and keeps
 the EVM route. Nine changes were tried on purpose (a classical signature, the compressed key prefix swapped, a refusal
 before the block not thrown, the route ignored, no certificate check before a Native retirement, the ML-DSA-87 pair
 dropped from the demo key file, the Cosmos hash not answered, a reverted meter call not thrown, no log for a missing
 key); each turned a test red.
+
+Every demo job has its own route switch (decision 0030). On the local node, with a stand-in that runs the same call
+from the same account with the configured gas limit, cases B, C and D sent from the Native lane come back reverted
+with neither ledger moved, and the grant pays the wallet; the account sends nothing through the EVM path itself. A
+Native failure outside the `crossvm` codespace (out of gas, say) is an error, not the expected revert. The status
+route is tested with the chain double: each job reports its lane and why it cannot send (`window-closed`, `low-funds`,
+`no-certificates`, `unavailable`), a job on the EVM lane is not ready once the window has expired, a send whose job is
+not ready refuses before using the quota, and one chain read is reused for `statusCacheMs`. Removing the window check
+turned four tests red; the status test also fails on the code before this change, which answered `"ready": true`
+with the window expired.
 
 Each guard was removed from a copy of the code to check that a test notices:
 

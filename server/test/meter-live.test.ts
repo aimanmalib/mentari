@@ -133,7 +133,7 @@ describe("nativeSend", () => {
       address: "qor1fixture",
       call: async (call) => {
         calls.push(call);
-        return { cosmosTx: "ABC", status, height: 5, gasUsed: 1 };
+        return { cosmosTx: "ABC", status, height: 5, gasUsed: 1, code: status === "success" ? 0 : 14, codespace: status === "success" ? "" : "crossvm" };
       },
     };
     return { calls, c };

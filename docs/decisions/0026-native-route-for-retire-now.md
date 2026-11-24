@@ -1,6 +1,6 @@
 # 0026. Send "Retire now" from the Native lane, with a switch per job
 
-Date: 2026-11-23. Status: accepted. Follows decision 0025 (case H) and 0017 (the live demo sender).
+Date: 2026-11-23. Status: accepted. Follows decision 0025 (case H) and 0017 (the live demo sender). Extended by decision 0030: the failure buttons and the grant now have their own Native route switches.
 
 ## Context
 

@@ -1,6 +1,6 @@
 import type { MeterConfig } from "../../scripts/src/meter.js";
 import type { DemoLimits, ServerConfig } from "../src/config.js";
-import type { DemoAction, DemoChain, LedgerCounts, SendResult } from "../src/demo/chain.js";
+import type { ChainState, DemoAction, DemoChain, LedgerCounts, SendResult } from "../src/demo/chain.js";
 
 export const ORIGIN = "https://rest.example.test";
 export const BOOK = "qor1book";
@@ -45,9 +45,14 @@ export function testConfig(over: Partial<ServerConfig["lcd"]> = {}): ServerConfi
     nativeRoute: {
       lane: { chainId: "fixture-1", rest: ORIGIN, denom: "uqor", gasPriceUqor: "0.15", waitMs: 1000, pollMs: 10 },
       demoRetire: true,
+      demoCases: true,
+      grant: true,
       meter: false,
       retireGas: 1300000,
+      caseGas: 1500000,
+      grantGas: 800000,
       attestGas: 2000000,
+      revertCodespace: "crossvm",
     },
   };
 }
@@ -77,6 +82,7 @@ export function demoLimits(over: Partial<DemoLimits> = {}): DemoLimits {
     retireWh: 500,
     grantWh: 500,
     timeoutMs: 1000,
+    statusCacheMs: 15000,
     ...over,
   };
 }
@@ -88,6 +94,11 @@ export function demoLimits(over: Partial<DemoLimits> = {}): DemoLimits {
 export class FakeChain implements DemoChain {
   isReady = true;
   balance = 50;
+  certificatesWh = 100_000;
+  lanes: ChainState["lanes"] = { retire: "native", cases: "native", grant: "native" };
+  evmWindow: ChainState["evmWindow"] = { live: false, untilBlock: 10626639 };
+  /** How many times the chain state was read. */
+  stateReads = 0;
   ledgers: LedgerCounts = { receipts: 10, retirements: 4 };
   sends: { action: DemoAction; retireWh: number }[] = [];
   grants: { to: string; wh: number }[] = [];
@@ -105,8 +116,9 @@ export class FakeChain implements DemoChain {
     return this.isReady;
   }
 
-  async senderBalanceQor(): Promise<number> {
-    return this.balance;
+  async state(): Promise<ChainState> {
+    this.stateReads += 1;
+    return { lanes: { ...this.lanes }, senderBalanceQor: this.balance, certificatesWh: this.certificatesWh, evmWindow: this.evmWindow };
   }
 
   async counts(): Promise<LedgerCounts> {

@@ -140,6 +140,15 @@ describe("Try it", () => {
     expect(html).toContain("8E15D319");
   });
 
+  it("says a failure case sent from the Native lane kept nothing, without naming Mentari.retire", () => {
+    const tx = { lane: "native" as const, hash: "9837A24B".padEnd(64, "B") };
+    const outcome: DemoOutcome = { ...sent, action: "case-b", expect: "revert", tx, txStatus: "reverted", asExpected: true };
+    const html = text(render(<DemoResult outcome={outcome} recorded={null} recheck={null} />));
+    expect(html).toContain("Native transaction reverted:");
+    expect(html).toContain("The EVM call inside it reverted");
+    expect(html).not.toContain("Mentari.retire");
+  });
+
   it("shows the change on a successful retirement", () => {
     expect(text(render(<CountsBoard retirements={{ before: 3, after: 4 }} receipts={{ before: 6, after: 7 }} />))).toContain("Changed by +1");
   });

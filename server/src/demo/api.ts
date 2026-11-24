@@ -1,6 +1,7 @@
 import type { DemoLimits } from "../config.js";
 import { json, methodNotAllowed, notFound, type Reply } from "../http.js";
-import { txField, type DemoAction, type DemoChain, type LedgerCounts, type SendResult } from "./chain.js";
+import { jobOf, txField, type ChainState, type DemoAction, type DemoChain, type DemoJob, type LedgerCounts, type SendResult } from "./chain.js";
+import { allJobs, jobStatus } from "./lanes.js";
 import { DemoLimiter, type Refusal } from "./limits.js";
 
 export const DEMO_MOUNT = "/api/demo";
@@ -26,7 +27,7 @@ export interface DemoRequest {
   contentType?: string | undefined;
 }
 
-type FallbackReason = Refusal | "unavailable" | "low-funds" | "timeout" | "send-failed" | "not-quantum-ready";
+type FallbackReason = Refusal | "unavailable" | "low-funds" | "window-closed" | "no-certificates" | "timeout" | "send-failed" | "not-quantum-ready";
 
 // Cloudflare sits in front of the site and replaces the body of a 502 or 504 answer with its own text, so the page
 // would lose the reason and the transaction hash. Failed and timed-out sends answer 503, which it passes through.
@@ -34,6 +35,8 @@ const STATUS: Record<FallbackReason, number> = {
   disabled: 503,
   unavailable: 503,
   "low-funds": 503,
+  "window-closed": 503,
+  "no-certificates": 503,
   busy: 429,
   "daily-limit": 429,
   "ip-limit": 429,
@@ -81,11 +84,15 @@ export class DemoApi {
   readonly #limits: DemoLimits;
   readonly #chain: DemoChain;
   readonly #limiter: DemoLimiter;
+  readonly #now: () => number;
+  /** The last chain read for the status route, reused for `statusCacheMs`. */
+  #cached: { at: number; state: Promise<ChainState | null> } | undefined;
 
-  constructor(limits: DemoLimits, chain: DemoChain, limiter: DemoLimiter = new DemoLimiter(limits)) {
+  constructor(limits: DemoLimits, chain: DemoChain, limiter: DemoLimiter = new DemoLimiter(limits), now: () => number = Date.now) {
     this.#limits = limits;
     this.#chain = chain;
     this.#limiter = limiter;
+    this.#now = now;
   }
 
   async handle(req: DemoRequest): Promise<Reply> {
@@ -103,15 +110,29 @@ export class DemoApi {
     return route ? this.#send(req.ip, route) : this.#grant(req.ip, grantTo!);
   }
 
-  /** One demo transaction: a ledger send (`route`) or a grant. Shares the limits, the funds check and the deadline. */
-  async #run(ip: string, evidenceCase: string | undefined, work: (commit: () => void, sent: (tx: SendResult) => void) => Promise<Reply>): Promise<Reply> {
+  /** The chain read, or null when it is not configured or does not answer. */
+  #readState(): Promise<ChainState | null> {
+    return this.#chain.ready() ? this.#chain.state().catch(() => null) : Promise.resolve(null);
+  }
+
+  /**
+   * One demo transaction: a ledger send (`route`) or a grant. Shares the limits, the deadline and a fresh check that
+   * the job can be sent now (funds, certificates, and the EVM window when the job is on the EVM lane).
+   */
+  async #run(
+    ip: string,
+    job: DemoJob,
+    evidenceCase: string | undefined,
+    work: (commit: () => void, sent: (tx: SendResult) => void) => Promise<Reply>,
+  ): Promise<Reply> {
     if (!this.#chain.ready()) return refuse("unavailable", {}, evidenceCase);
     const start = this.#limiter.tryStart(ip);
     if (!start.ok) return refuse(start.reason, { retryAfterSeconds: start.retryAfterSeconds }, evidenceCase);
     const { ticket } = start;
     let sentTx: SendResult | undefined;
     const running = (async (): Promise<Reply> => {
-      if ((await this.#chain.senderBalanceQor()) < this.#limits.minSenderBalanceQor) return refuse("low-funds", {}, evidenceCase);
+      const now = jobStatus(job, this.#limits, await this.#chain.state());
+      if (!now.ready) return refuse(now.reason ?? "unavailable", {}, evidenceCase);
       return work(
         () => ticket.commit(),
         (tx) => {
@@ -136,7 +157,7 @@ export class DemoApi {
   }
 
   #send(ip: string, route: Route): Promise<Reply> {
-    return this.#run(ip, route.evidenceCase, async (commit, sentTx) => {
+    return this.#run(ip, jobOf(route.action), route.evidenceCase, async (commit, sentTx) => {
       const before = await this.#chain.counts();
       commit();
       const sent = await this.#chain.send(route.action, { retireWh: this.#limits.retireWh });
@@ -161,7 +182,7 @@ export class DemoApi {
    * visitor can retire from it. The contract only pays quantum-ready accounts; that is checked before any quota is used.
    */
   #grant(ip: string, to: string): Promise<Reply> {
-    return this.#run(ip, undefined, async (commit, sentTx) => {
+    return this.#run(ip, "grant", undefined, async (commit, sentTx) => {
       if (!(await this.#chain.isQuantumReady(to))) return refuse("not-quantum-ready");
       commit();
       const sent = await this.#chain.grant(to, this.#limits.grantWh);
@@ -171,14 +192,25 @@ export class DemoApi {
     });
   }
 
-  #status(ip: string): Reply {
+  /**
+   * `GET /api/demo/status`: per job, whether it can be sent now, on which lane, and why not. `ready` is true when at
+   * least one of the four buttons can send. The chain read is shared for `statusCacheMs`.
+   */
+  async #status(ip: string): Promise<Reply> {
+    const t = this.#now();
+    if (!this.#cached || t - this.#cached.at >= this.#limits.statusCacheMs) this.#cached = { at: t, state: this.#readState() };
+    const state = await this.#cached.state;
+    const jobs = allJobs(this.#limits, state);
     const left = this.#limiter.remaining(ip);
     return json(200, {
       enabled: this.#limits.enabled,
-      ready: this.#chain.ready(),
+      ready: jobs.retire.ready || jobs.cases.ready,
       busy: this.#limiter.busy,
       remainingToday: left.today,
       remainingForYou: left.forYou,
+      ...jobs,
+      senderBalanceQor: state?.senderBalanceQor ?? null,
+      evmWindow: state?.evmWindow ?? null,
     });
   }
 }

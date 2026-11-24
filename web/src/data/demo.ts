@@ -10,12 +10,23 @@ export const DEMO_ACTIONS: readonly { action: DemoAction; path: string; expect: 
   { action: "case-d", path: "/case/d", expect: "revert", evidenceCase: "D" },
 ];
 
+/** Whether one job can send now, and on which lane, as the server reads it from the chain. */
+export interface JobReady {
+  ready: boolean;
+  lane: "native" | "evm-window" | null;
+}
+
+export type DemoJob = "retire" | "cases" | "grant";
+
 export interface DemoStatus {
   enabled: boolean;
+  /** At least one of the four buttons can send. */
   ready: boolean;
   busy: boolean;
   remainingToday: number;
   remainingForYou: number;
+  /** Per job, when the server reports it. */
+  jobs?: Partial<Record<DemoJob, JobReady>> | undefined;
 }
 
 export interface Counts {
@@ -70,6 +81,16 @@ function sentTx(body: Record<string, unknown>): { lane: "evm" | "native"; hash: 
   return null;
 }
 
+function readJobs(b: Record<string, unknown>): Partial<Record<DemoJob, JobReady>> | undefined {
+  const jobs: Partial<Record<DemoJob, JobReady>> = {};
+  for (const j of ["retire", "cases", "grant"] as const) {
+    const v = b[j];
+    if (!isObj(v) || typeof v.ready !== "boolean") continue;
+    jobs[j] = { ready: v.ready, lane: v.lane === "native" || v.lane === "evm-window" ? v.lane : null };
+  }
+  return Object.keys(jobs).length > 0 ? jobs : undefined;
+}
+
 /** Demo status, or null when the server cannot be reached or answers something else. */
 export async function readStatus(fetchFn: DemoFetch, base: string): Promise<DemoStatus | null> {
   try {
@@ -82,6 +103,7 @@ export async function readStatus(fetchFn: DemoFetch, base: string): Promise<Demo
       busy: b.busy === true,
       remainingToday: isNum(b.remainingToday) ? b.remainingToday : 0,
       remainingForYou: isNum(b.remainingForYou) ? b.remainingForYou : 0,
+      jobs: readJobs(b),
     };
   } catch {
     return null;
@@ -133,11 +155,14 @@ export async function runDemo(fetchFn: DemoFetch, base: string, action: DemoActi
 
 /**
  * When the last status already says live sends cannot run, the page shows the recorded case without asking the
- * server again. Returns null when a send should be tried.
+ * server again. Returns null when a send should be tried. A button whose own job cannot send (its EVM window has
+ * expired, say) falls back even while another button is live.
  */
 export function knownFallback(status: DemoStatus | null | "loading", action: DemoAction): DemoOutcome | null {
   if (status === null || status === "loading") return null;
-  const reason: FallbackReason | null = !status.enabled ? "disabled" : !status.ready ? "unavailable" : null;
+  const job: DemoJob = action === "retire" ? "retire" : "cases";
+  const jobDown = status.jobs?.[job]?.ready === false;
+  const reason: FallbackReason | null = !status.enabled ? "disabled" : !status.ready || jobDown ? "unavailable" : null;
   if (!reason) return null;
   return { kind: "fallback", action, reason, evidenceCase: DEMO_ACTIONS.find((a) => a.action === action)!.evidenceCase };
 }

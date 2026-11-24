@@ -51,6 +51,9 @@ export interface NativeCallResult {
   status: "success" | "reverted";
   height: number;
   gasUsed: number | null;
+  /** The chain's result code (0 = success) and codespace, so a caller can tell an EVM revert from other failures. */
+  code: number;
+  codespace: string;
 }
 
 export interface NativeCaller {
@@ -139,6 +142,8 @@ export function nativeCaller(
         status: r.code === 0 ? "success" : "reverted",
         height: r.height!,
         gasUsed: r.gasUsed,
+        code: r.code,
+        codespace: r.codespace,
       };
     },
   };

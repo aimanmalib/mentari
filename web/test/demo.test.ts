@@ -112,7 +112,24 @@ describe("readStatus", () => {
     expect(s).toEqual({ enabled: true, ready: true, busy: false, remainingToday: 30, remainingForYou: 4 });
   });
 
-  it("returns null when the server is down or answers something else", async () => {
+  it("reads each job's readiness and lane when the server reports them", async () => {
+    const s = await readStatus(
+      fakeFetch(200, {
+        enabled: true,
+        ready: true,
+        busy: false,
+        remainingToday: 30,
+        remainingForYou: 4,
+        retire: { ready: true, lane: "native", reason: null },
+        cases: { ready: false, lane: "evm-window", reason: "window-closed" },
+        grant: "nonsense",
+      }),
+      "/api/demo",
+    );
+    expect(s?.jobs).toEqual({ retire: { ready: true, lane: "native" }, cases: { ready: false, lane: "evm-window" } });
+  });
+
+    it("returns null when the server is down or answers something else", async () => {
     expect(await readStatus(fakeFetch(404, { enabled: true, ready: true }), "/api/demo")).toBeNull();
     expect(await readStatus(fakeFetch(200, "<html>"), "/api/demo")).toBeNull();
     expect(
@@ -135,7 +152,14 @@ describe("knownFallback", () => {
     expect(knownFallback({ ...base, enabled: true, ready: false }, "retire")).toMatchObject({ reason: "unavailable", evidenceCase: "A" });
   });
 
-  it("tries the send when sends are open or the status is unknown", () => {
+  it("shows the recorded case for a button whose own job cannot send, while another button is live", () => {
+    const jobs = { retire: { ready: true, lane: "native" as const }, cases: { ready: false, lane: "evm-window" as const } };
+    const status = { ...base, enabled: true, ready: true, jobs };
+    expect(knownFallback(status, "case-b")).toMatchObject({ reason: "unavailable", evidenceCase: "B" });
+    expect(knownFallback(status, "retire")).toBeNull();
+  });
+
+    it("tries the send when sends are open or the status is unknown", () => {
     expect(knownFallback({ ...base, enabled: true, ready: true }, "retire")).toBeNull();
     expect(knownFallback(null, "retire")).toBeNull();
     expect(knownFallback("loading", "retire")).toBeNull();

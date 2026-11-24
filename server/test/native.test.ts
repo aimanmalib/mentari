@@ -136,6 +136,8 @@ describe("nativeCaller", () => {
       status: "success",
       height: 10613003,
       gasUsed: 1009253,
+      code: 0,
+      codespace: "",
     });
 
     expect(n.posted).toHaveLength(1);

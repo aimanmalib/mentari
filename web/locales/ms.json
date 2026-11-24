@@ -207,6 +207,7 @@
       "native": "Transaksi Native berbalik:"
     },
     "nativeRoute": "Dihantar dari lejar Native sebagai satu transaksi, ditandatangani dengan secp256k1 dan ML-DSA-87. Ia menjalankan Mentari.retire di EVM, yang menulis resit kembali di lejar Native. Tiada tetingkap akses EVM diperlukan.",
+    "nativeRouteRevert": "Dihantar dari lejar Native sebagai satu transaksi, ditandatangani dengan secp256k1 dan ML-DSA-87. Panggilan EVM di dalamnya berbalik, jadi rantai tidak menyimpan apa-apa yang cuba ditulisnya pada kedua-dua lejar. Tiada tetingkap akses EVM diperlukan.",
     "seeRetirements": "Lihat dalam Persaraan",
     "reason": {
       "disabled": "Hantaran langsung dimatikan.",

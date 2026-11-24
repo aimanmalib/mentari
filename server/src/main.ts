@@ -20,7 +20,15 @@ const native = cfg.nativeRoute;
 const demoChain = liveDemoChain({
   chain: cfg.demoChain,
   keysDir: process.env.MENTARI_SECRETS_DIR,
-  native: { lane: native.lane, enabled: native.demoRetire, gas: native.retireGas },
+  native: {
+    lane: native.lane,
+    jobs: {
+      retire: { enabled: native.demoRetire, gas: native.retireGas },
+      cases: { enabled: native.demoCases, gas: native.caseGas },
+      grant: { enabled: native.grant, gas: native.grantGas },
+    },
+    revertCodespace: native.revertCodespace,
+  },
 });
 const demo = new DemoApi(cfg.demo, demoChain);
 const server = createServer(createHandler({ cfg, lcd: new LcdProxy(cfg), demo, site: new StaticSite(webDist) }));

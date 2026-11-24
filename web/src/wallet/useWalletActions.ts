@@ -7,7 +7,7 @@ import { requestGrant, type GrantRefusal } from "../data/grant.js";
 import { classifyWalletError, type WalletProblem } from "./errors.js";
 
 export type WalletResult =
-  | { kind: "granted"; hash: Hash; wh: number }
+  | { kind: "granted"; hash: string; wh: number }
   | { kind: "grant-refused"; reason: GrantRefusal; retryAfterSeconds?: number }
   | { kind: "retired"; hash: Hash; n: number | null }
   | { kind: "problem"; problem: WalletProblem; hash?: Hash };
@@ -55,8 +55,9 @@ export function useWalletActions() {
     run("grant", async () => {
       const out = await requestGrant(browserFetch, siteConfig.demoApi, address!);
       if (out.kind === "refused") return { ...out, kind: "grant-refused" };
-      await client!.waitForTransactionReceipt({ hash: out.evmTx as Hash });
-      return { kind: "granted", hash: out.evmTx as Hash, wh: out.wh };
+      // A Native grant is already in a block when the server answers; an EVM one is waited for here.
+      if (out.lane === "evm") await client!.waitForTransactionReceipt({ hash: out.hash as Hash });
+      return { kind: "granted", hash: out.hash, wh: out.wh };
     });
 
   const retire = () =>

@@ -207,6 +207,7 @@
       "native": "Native transaction reverted:"
     },
     "nativeRoute": "Sent from the Native ledger as one transaction, signed with both secp256k1 and ML-DSA-87. It ran Mentari.retire on the EVM, which wrote the receipt back on the Native ledger. No EVM access window was needed.",
+    "nativeRouteRevert": "Sent from the Native ledger as one transaction, signed with both secp256k1 and ML-DSA-87. The EVM call inside it reverted, so the chain kept nothing it tried to write on either ledger. No EVM access window was needed.",
     "seeRetirements": "See it in Retirements",
     "reason": {
       "disabled": "Live sends are switched off.",

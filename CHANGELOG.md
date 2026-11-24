@@ -8,6 +8,10 @@ contract is a new deployment, listed here with its new address.
 
 ### Added
 
+- The failure buttons (cases B, C, D) and the wallet grant are sent from the Native lane too, each as one
+  hybrid-signed `MsgCrossVMCall`, so no demo button needs the EVM window. `/api/demo/status` reports each job's lane,
+  whether it can send now and why not, the sender balance and the EVM window; it no longer says ready when the window
+  has expired. Switches and gas limits in `config/app.json` `nativeRoute` (decision 0030).
 - Cover image `brand/mentari-cover.png` (1920 × 1080) for the project page: the name, the tagline and a shot of the
   live registry page, drawn by `pnpm --filter @mentari/web cover` from the site's own colours and fonts. Size, page and
   texts come from `config/app.json` `web.cover` and the locale files (decision 0028).

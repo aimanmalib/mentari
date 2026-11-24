@@ -207,7 +207,99 @@ describe("DemoApi status", () => {
     await api.handle(req("/api/demo/retire"));
     const s = await api.handle(req("/api/demo/status", { method: "GET" }));
     expect(s.status).toBe(200);
-    expect(body(s)).toEqual({ enabled: true, ready: true, busy: false, remainingToday: 2, remainingForYou: 1 });
+    const native = { ready: true, lane: "native", reason: null };
+    expect(body(s)).toEqual({
+      enabled: true,
+      ready: true,
+      busy: false,
+      remainingToday: 2,
+      remainingForYou: 1,
+      retire: native,
+      cases: native,
+      grant: native,
+      senderBalanceQor: 50,
+      evmWindow: { live: false, untilBlock: 10626639 },
+    });
+  });
+
+  it("does not say ready for jobs on the EVM lane once the demo account's window has expired", async () => {
+    const { api, chain } = setup();
+    chain.lanes = { retire: "native", cases: "evm-window", grant: "evm-window" };
+    const s = body(await api.handle(req("/api/demo/status", { method: "GET" })));
+    expect(s.retire).toEqual({ ready: true, lane: "native", reason: null });
+    expect(s.cases).toEqual({ ready: false, lane: "evm-window", reason: "window-closed" });
+    expect(s.grant).toEqual({ ready: false, lane: "evm-window", reason: "window-closed" });
+    expect(s.evmWindow).toEqual({ live: false, untilBlock: 10626639 });
+    // "Retire now" can still send, so the page stays live; the failure buttons show their recorded cases.
+    expect(s.ready).toBe(true);
+  });
+
+  it("is not ready at all when no button can send, and says the chain is unavailable when it cannot be read", async () => {
+    const { api, chain } = setup();
+    chain.lanes = { retire: "evm-window", cases: "evm-window", grant: "evm-window" };
+    chain.evmWindow = null;
+    const s = body(await api.handle(req("/api/demo/status", { method: "GET" })));
+    expect(s.ready).toBe(false);
+    expect(s.retire).toEqual({ ready: false, lane: "evm-window", reason: "unavailable" });
+
+    const off = body(await new DemoApi(demoLimits(), unconfiguredChain).handle(req("/api/demo/status", { method: "GET" })));
+    expect(off).toMatchObject({ ready: false, senderBalanceQor: null, evmWindow: null, cases: { ready: false, lane: null, reason: "unavailable" } });
+  });
+
+  it("names low funds and missing certificates per job", async () => {
+    const { api, chain } = setup(demoLimits({ retireWh: 500, grantWh: 700 }));
+    chain.certificatesWh = 600;
+    let s = body(await api.handle(req("/api/demo/status", { method: "GET" })));
+    expect([s.retire.ready, s.cases.ready, s.grant.reason]).toEqual([true, true, "no-certificates"]);
+    const fresh = setup();
+    fresh.chain.balance = 1;
+    s = body(await fresh.api.handle(req("/api/demo/status", { method: "GET" })));
+    expect([s.retire.reason, s.cases.reason, s.grant.reason]).toEqual(["low-funds", "low-funds", "low-funds"]);
+  });
+
+  it("reuses one chain read for statusCacheMs", async () => {
+    let t = 1_000;
+    const chain = new FakeChain();
+    const api = new DemoApi(demoLimits({ statusCacheMs: 15_000 }), chain, undefined, () => t);
+    const get = () => api.handle(req("/api/demo/status", { method: "GET" }));
+    await get();
+    t += 14_999;
+    await get();
+    expect(chain.stateReads).toBe(1);
+    t += 1;
+    await get();
+    expect(chain.stateReads).toBe(2);
+  });
+});
+
+describe("DemoApi sends check the lane first", () => {
+  it.each(["b", "c", "d"])("refuses case %s while its EVM window is closed, sends nothing and keeps the quota", async (c) => {
+    const { api, chain } = setup(demoLimits({ perIpPerHour: 1, perDay: 1 }));
+    chain.lanes = { retire: "native", cases: "evm-window", grant: "native" };
+    const r = await api.handle(req(`/api/demo/case/${c}`));
+    expect(r.status).toBe(503);
+    expect(body(r)).toEqual({ ok: false, reason: "window-closed", fallback: { evidenceCase: c.toUpperCase() } });
+    expect(chain.sends).toEqual([]);
+    chain.evmWindow = { live: true, untilBlock: 10700000 };
+    expect((await api.handle(req(`/api/demo/case/${c}`))).status).toBe(200);
+  });
+
+  it("sends the failure cases on the Native lane with no window open", async () => {
+    const { api, chain } = setup();
+    chain.onSend = async () => ({ cosmosTx: "9837A24B".padEnd(64, "B"), status: "reverted" });
+    const out = body(await api.handle(req("/api/demo/case/b")));
+    expect(out).toMatchObject({ ok: true, cosmosTx: "9837A24B".padEnd(64, "B"), txStatus: "reverted", asExpected: true });
+    expect(chain.evmWindow?.live).toBe(false);
+  });
+
+  it("refuses a retirement or a grant when the demo account lacks the certificates", async () => {
+    const { api, chain } = setup();
+    chain.certificatesWh = 499;
+    chain.quantumReady.add("0x" + "ab".repeat(20));
+    expect(body(await api.handle(req("/api/demo/retire")))).toMatchObject({ reason: "no-certificates", fallback: { evidenceCase: "A" } });
+    expect(body(await api.handle(req(`/api/demo/grant/0x${"ab".repeat(20)}`)))).toEqual({ ok: false, reason: "no-certificates" });
+    expect(chain.sends).toEqual([]);
+    expect(chain.grants).toEqual([]);
   });
 });
 

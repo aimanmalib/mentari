@@ -1,6 +1,32 @@
 /** What a visitor can ask the demo sender to do. Each maps to one recorded case in `evidence/testnet.json`. */
 export type DemoAction = "retire" | "case-b" | "case-c" | "case-d";
 
+/** The three jobs the demo account does, each with its own route switch in `config/app.json nativeRoute`. */
+export type DemoJob = "retire" | "cases" | "grant";
+
+/** How a job reaches the contracts: one hybrid-signed Native `MsgCrossVMCall`, or an EVM transaction through the scoped window. */
+export type DemoLane = "native" | "evm-window";
+
+export function jobOf(action: DemoAction): Exclude<DemoJob, "grant"> {
+  return action === "retire" ? "retire" : "cases";
+}
+
+/** The demo account's EVM window as the chain reports it. `untilBlock` is null when no window is stored. */
+export interface EvmWindowState {
+  live: boolean;
+  untilBlock: number | null;
+}
+
+/** What the demo account can send right now, read from the chain in one go. */
+export interface ChainState {
+  lanes: Record<DemoJob, DemoLane>;
+  senderBalanceQor: number;
+  /** Certificates (Wh) the demo account holds in `Mentari`. */
+  certificatesWh: number;
+  /** The demo account's EVM window, or null when it could not be read. */
+  evmWindow: EvmWindowState | null;
+}
+
 /**
  * One sent transaction: an EVM transaction, or a Native one (`MsgCrossVMCall`, decision 0026) that ran the EVM
  * call inside it. `status` is the mined status; a failure case is expected to come back `reverted`.
@@ -26,7 +52,8 @@ export interface LedgerCounts {
 export interface DemoChain {
   /** False until the contract addresses and the sender key are configured. */
   ready(): boolean;
-  senderBalanceQor(): Promise<number>;
+  /** Balance, certificates, EVM window and the lane of each job, so a send that cannot work is never tried. */
+  state(): Promise<ChainState>;
   counts(): Promise<LedgerCounts>;
   send(action: DemoAction, opts: { retireWh: number }): Promise<SendResult>;
   /** Whether `account` may receive certificates (`Mentari.isQuantumReady`: a registered ML-DSA-87 key). */
@@ -44,7 +71,7 @@ class NotConfigured extends Error {
 /** Used until the contracts are deployed: every request falls back to the recorded evidence. */
 export const unconfiguredChain: DemoChain = {
   ready: () => false,
-  senderBalanceQor: () => Promise.reject(new NotConfigured()),
+  state: () => Promise.reject(new NotConfigured()),
   counts: () => Promise.reject(new NotConfigured()),
   send: () => Promise.reject(new NotConfigured()),
   isQuantumReady: () => Promise.reject(new NotConfigured()),

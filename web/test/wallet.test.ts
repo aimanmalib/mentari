@@ -49,7 +49,10 @@ const HASH = `0x${"c".repeat(64)}`;
 describe("requestGrant", () => {
   it("posts JSON to the grant route for the wallet and returns the hash", async () => {
     const f = fakeFetch(200, { ok: true, action: "grant", to: WALLET, wh: 500, evmTx: HASH });
-    expect(await requestGrant(f.fn, "/api/demo", WALLET)).toEqual({ kind: "sent", evmTx: HASH, wh: 500 });
+    expect(await requestGrant(f.fn, "/api/demo", WALLET)).toEqual({ kind: "sent", lane: "evm", hash: HASH, wh: 500 });
+    const cosmosTx = "E405CBAB".padEnd(64, "C");
+    const n = fakeFetch(200, { ok: true, action: "grant", to: WALLET, wh: 500, cosmosTx });
+    expect(await requestGrant(n.fn, "/api/demo", WALLET)).toEqual({ kind: "sent", lane: "native", hash: cosmosTx, wh: 500 });
     expect(f.calls).toEqual([
       { url: `/api/demo/grant/${WALLET}`, init: { method: "POST", headers: { "content-type": "application/json" }, body: "{}" } },
     ]);
@@ -68,6 +71,7 @@ describe("requestGrant", () => {
   it.each([
     ["an unknown reason", { ok: false, reason: "teapot" }],
     ["a success without a hash", { ok: true, wh: 500, evmTx: "0x12" }],
+    ["a success with both hashes", { ok: true, wh: 500, evmTx: `0x${"a".repeat(64)}`, cosmosTx: "A".repeat(64) }],
     ["a non-object", "nope"],
   ])("treats %s as unavailable", async (_what, body) => {
     expect(await requestGrant(fakeFetch(200, body).fn, "/api/demo", WALLET)).toEqual({ kind: "refused", reason: "unavailable" });

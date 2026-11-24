@@ -73,7 +73,9 @@ export function DemoResult({
             {shorten(outcome.tx.hash, 8, 6)}
           </ChainLink>
         </p>
-        {outcome.tx.lane === "native" && <p className="demo-route">{t("tryit.nativeRoute")}</p>}
+        {outcome.tx.lane === "native" && (
+          <p className="demo-route">{t(outcome.expect === "revert" ? "tryit.nativeRouteRevert" : "tryit.nativeRoute")}</p>
+        )}
         {outcome.action === "retire" && (
           <Link className="button" href={routes.retirements}>
             {t("tryit.seeRetirements")}

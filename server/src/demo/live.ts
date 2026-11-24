@@ -1,16 +1,26 @@
-import { formatEther, getAddress, isAddress, type Address, type Hash, type PublicClient } from "viem";
+import { addressesFrom20, fetchEvmWindow } from "@qorechain/sdk";
+import { formatEther, getAddress, hexToBytes, isAddress, type Abi, type Address, type Hash, type PublicClient } from "viem";
 import type { Wallet } from "../../../scripts/src/chain.js";
 import { mentariDemoAbi, probeDemoAbi } from "../abi.js";
 import { evmClients } from "../evm.js";
-import { nativeCaller, type NativeCaller, type NativeLaneConfig } from "../native.js";
-import { unconfiguredChain, type DemoAction, type DemoChain, type SendResult } from "./chain.js";
+import { nativeCaller, type NativeCaller, type NativeCallResult, type NativeLaneConfig } from "../native.js";
+import {
+  jobOf,
+  unconfiguredChain,
+  type DemoAction,
+  type DemoChain,
+  type DemoJob,
+  type DemoLane,
+  type EvmWindowState,
+  type SendResult,
+} from "./chain.js";
 import { readDemoKey } from "./keys.js";
 
 /**
  * The live demo sender (decision 0017): the account 7 key from the read-only key folder sends each button's
- * transaction and waits for it to be mined. "Retire now" goes from the Native lane as one hybrid-signed
- * `MsgCrossVMCall` when that route is on (decision 0026); the failure buttons and grants are EVM transactions sent
- * with viem. The HTTP rules around it (limits, deadline, fallback) are in `api.ts` and do not change.
+ * transaction and waits for it to be mined. Each job ("Retire now", the failure buttons, the wallet grant) goes from
+ * the Native lane as one hybrid-signed `MsgCrossVMCall` when its route is on (decisions 0026, 0030), and otherwise as
+ * an EVM transaction sent with viem through the scoped window. The HTTP rules around it are in `api.ts`.
  */
 
 /** What the buttons send (`demo` block of `config/limits.json`, `native.notAllowlistedTarget` of `config/app.json`). */
@@ -59,6 +69,20 @@ export function restReceiptsCount(opts: { rest: string; book: string; timeoutMs:
   };
 }
 
+/** A job sent from the Native lane: the caller (same account as the EVM key) and the gas limit. */
+export interface NativeJob {
+  caller: NativeCaller;
+  gas: number;
+}
+
+/** One contract call, before it is sent on either lane. */
+interface Call {
+  address: Address;
+  abi: Abi;
+  functionName: string;
+  args: readonly unknown[];
+}
+
 /** The demo over a ready chain connection. `receipts` reads the Native book's count. */
 export function chainDemo(opts: {
   pub: PublicClient;
@@ -67,10 +91,15 @@ export function chainDemo(opts: {
   probe: Address;
   receipts: () => Promise<number>;
   send: DemoSendConfig;
-  /** Send "Retire now" from the Native lane with this caller (same account) and gas limit. */
-  nativeRetire?: { caller: NativeCaller; gas: number } | undefined;
+  /** The jobs sent from the Native lane. A job not listed is an EVM transaction through the window. */
+  native?: Partial<Record<DemoJob, NativeJob>> | undefined;
+  /** Codespace of an EVM revert inside a Native call; a failure in any other codespace is an error, not a revert. */
+  revertCodespace?: string | undefined;
+  /** Reads the demo account's EVM window. Without it the window counts as unreadable. */
+  window?: (() => Promise<EvmWindowState>) | undefined;
 }): DemoChain {
   const { pub, wallet, mentari, probe, send } = opts;
+  const native = opts.native ?? {};
   const me = wallet.account.address;
   const base = { account: wallet.account, chain: wallet.chain };
   const mined = async (hash: Hash): Promise<SendResult> => {
@@ -82,32 +111,49 @@ export function chainDemo(opts: {
     const have = await certificates();
     if (have < BigInt(wh)) throw new Error(`the demo account holds ${have} Wh of certificates, needs ${wh}`);
   };
-  const revertCase = { ...base, address: probe, abi: probeDemoAbi, gas: BigInt(send.revertCaseGas) } as const;
-
-  const sendAction = async (action: DemoAction, retireWh: number): Promise<Hash> => {
+  const callFor = (action: DemoAction, retireWh: number): Call => {
     switch (action) {
       case "retire":
-        await needCertificates(retireWh);
-        return wallet.writeContract({
-          ...base,
-          address: mentari,
-          abi: mentariDemoAbi,
-          functionName: "retire",
-          args: [BigInt(retireWh), send.retireMemo],
-        });
+        return { address: mentari, abi: mentariDemoAbi, functionName: "retire", args: [BigInt(retireWh), send.retireMemo] };
       case "case-b":
-        return wallet.writeContract({ ...revertCase, functionName: "recordThenRevert", args: [send.probeNote] });
+        return { address: probe, abi: probeDemoAbi, functionName: "recordThenRevert", args: [send.probeNote] };
       case "case-c":
-        return wallet.writeContract({ ...revertCase, functionName: "nativeRefuses" });
+        return { address: probe, abi: probeDemoAbi, functionName: "nativeRefuses", args: [] };
       case "case-d":
         if (!send.caseDTarget) throw new Error("case D has no target yet");
-        return wallet.writeContract({ ...revertCase, functionName: "callTarget", args: [send.caseDTarget, send.probeNote] });
+        return { address: probe, abi: probeDemoAbi, functionName: "callTarget", args: [send.caseDTarget, send.probeNote] };
     }
   };
+  const evmSend = async (call: Call, gas?: number): Promise<SendResult> =>
+    mined(await wallet.writeContract({ ...base, ...call, ...(gas === undefined ? {} : { gas: BigInt(gas) }) } as never));
+  const nativeSend = async (job: NativeJob, call: Call): Promise<SendResult> => {
+    const r: NativeCallResult = await job.caller.call({ contract: call.address, abi: call.abi, functionName: call.functionName, args: call.args, gas: job.gas });
+    if (r.status === "reverted" && opts.revertCodespace !== undefined && r.codespace !== opts.revertCodespace) {
+      throw new Error(`${call.functionName} failed outside the EVM call (${r.codespace} code ${r.code}) in ${r.cosmosTx}`);
+    }
+    return { cosmosTx: r.cosmosTx, status: r.status };
+  };
+  const windowState = async (): Promise<EvmWindowState | null> => {
+    if (!opts.window) return null;
+    try {
+      return await opts.window();
+    } catch {
+      return null;
+    }
+  };
+  const laneOf = (job: DemoJob): DemoLane => (native[job] ? "native" : "evm-window");
 
   return {
     ready: () => true,
-    senderBalanceQor: async () => Number(formatEther(await pub.getBalance({ address: me }))),
+    state: async () => {
+      const [balance, certificatesWh, evmWindow] = await Promise.all([pub.getBalance({ address: me }), certificates(), windowState()]);
+      return {
+        lanes: { retire: laneOf("retire"), cases: laneOf("cases"), grant: laneOf("grant") },
+        senderBalanceQor: Number(formatEther(balance)),
+        certificatesWh: Number(certificatesWh),
+        evmWindow,
+      };
+    },
     counts: async () => {
       const [receipts, retirements] = await Promise.all([
         opts.receipts(),
@@ -116,30 +162,19 @@ export function chainDemo(opts: {
       return { receipts, retirements: Number(retirements) };
     },
     send: async (action, { retireWh }) => {
-      const native = opts.nativeRetire;
-      if (action !== "retire" || !native) return mined(await sendAction(action, retireWh));
-      await needCertificates(retireWh);
-      const r = await native.caller.call({
-        contract: mentari,
-        abi: mentariDemoAbi,
-        functionName: "retire",
-        args: [BigInt(retireWh), send.retireMemo],
-        gas: native.gas,
-      });
-      return { cosmosTx: r.cosmosTx, status: r.status };
+      const call = callFor(action, retireWh);
+      if (action === "retire") await needCertificates(retireWh);
+      const job = native[jobOf(action)];
+      if (job) return nativeSend(job, call);
+      // The failure cases go without a gas estimate, because estimating a call that reverts fails.
+      return evmSend(call, action === "retire" ? undefined : send.revertCaseGas);
     },
     isQuantumReady: (account) =>
       pub.readContract({ address: mentari, abi: mentariDemoAbi, functionName: "isQuantumReady", args: [getAddress(account)] }),
     grant: async (to, wh) => {
       await needCertificates(wh);
-      const hash = await wallet.writeContract({
-        ...base,
-        address: mentari,
-        abi: mentariDemoAbi,
-        functionName: "transfer",
-        args: [getAddress(to), BigInt(wh)],
-      });
-      return mined(hash);
+      const call: Call = { address: mentari, abi: mentariDemoAbi, functionName: "transfer", args: [getAddress(to), BigInt(wh)] };
+      return native.grant ? nativeSend(native.grant, call) : evmSend(call);
     },
   };
 }
@@ -152,8 +187,8 @@ export function chainDemo(opts: {
 export function liveDemoChain(opts: {
   chain: DemoChainConfig;
   keysDir: string | undefined;
-  /** The Native route for "Retire now" (`nativeRoute` of config/app.json). Off or no ML-DSA-87 key = EVM route. */
-  native?: { lane: NativeLaneConfig; enabled: boolean; gas: number } | undefined;
+  /** The Native route per job (`nativeRoute` of config/app.json). Off, or no ML-DSA-87 key, = EVM route. */
+  native?: { lane: NativeLaneConfig; jobs: Record<DemoJob, { enabled: boolean; gas: number }>; revertCodespace: string } | undefined;
   log?: ((line: string) => void) | undefined;
 }): DemoChain {
   const log = opts.log ?? ((line: string) => console.log(line));
@@ -168,16 +203,28 @@ export function liveDemoChain(opts: {
   }
   if (!key) return unconfiguredChain;
   const n = opts.native;
-  if (n?.enabled && !key.pqc) log("demo sender key: no ML-DSA-87 key, so Retire now stays on the EVM route");
-  const nativeRetire =
-    n?.enabled && key.pqc ? { caller: nativeCaller(n.lane, { privateKey: key.privateKey, pqc: key.pqc }), gas: n.gas } : undefined;
+  const on = n ? (Object.keys(n.jobs) as DemoJob[]).filter((j) => n.jobs[j].enabled) : [];
+  if (on.length > 0 && !key.pqc) log("demo sender key: no ML-DSA-87 key, so every demo job stays on the EVM route");
+  const native: Partial<Record<DemoJob, NativeJob>> = {};
+  if (n && key.pqc && on.length > 0) {
+    const caller = nativeCaller(n.lane, { privateKey: key.privateKey, pqc: key.pqc });
+    for (const j of on) native[j] = { caller, gas: n.jobs[j].gas };
+  }
+  const clients = evmClients(c.evmRpc, c.evmChainId, key.privateKey);
+  const cosmos = addressesFrom20(hexToBytes(clients.wallet.account.address)).cosmos;
+  const restFetch = (url: string) => fetch(url, { headers: { accept: "application/json" }, signal: AbortSignal.timeout(c.restTimeoutMs) });
 
   return chainDemo({
-    ...evmClients(c.evmRpc, c.evmChainId, key.privateKey),
+    ...clients,
     mentari: getAddress(c.mentari),
     probe: getAddress(c.atomicityProbe),
     receipts: restReceiptsCount({ rest: c.rest, book: c.receiptsBook, timeoutMs: c.restTimeoutMs }),
     send: c,
-    nativeRetire,
+    native,
+    revertCodespace: n?.revertCodespace,
+    window: async () => {
+      const w = await fetchEvmWindow({ rest: c.rest, address: cosmos, fetch: restFetch as never });
+      return { live: w.live, untilBlock: w.found ? Number(w.expiryHeight) : null };
+    },
   });
 }

@@ -37,12 +37,20 @@ export interface ServerConfig {
 
 export interface NativeRoute {
   lane: NativeLaneConfig;
-  /** "Retire now" is sent as a `MsgCrossVMCall`. The failure buttons stay EVM transactions. */
+  /** "Retire now" is sent as a `MsgCrossVMCall`. */
   demoRetire: boolean;
+  /** The three failure buttons (cases B, C, D) are sent as `MsgCrossVMCall`s (decision 0030). */
+  demoCases: boolean;
+  /** The wallet grant (`Mentari.transfer`) is sent as a `MsgCrossVMCall` (decision 0030). */
+  grant: boolean;
   /** The daily meter job's `attest` calls are sent as `MsgCrossVMCall`s. */
   meter: boolean;
   retireGas: number;
+  caseGas: number;
+  grantGas: number;
   attestGas: number;
+  /** Codespace of an EVM revert inside a Native call. A failure in any other codespace is not the expected revert. */
+  revertCodespace: string;
 }
 
 /** Limits and switches for `/api/demo` (block `demo` of `config/limits.json`). */
@@ -61,6 +69,8 @@ export interface DemoLimits {
   grantWh: number;
   /** Longest a visitor waits for one send; the slot stays taken until the chain call settles. */
   timeoutMs: number;
+  /** How long `/api/demo/status` reuses one read of the chain (balance, certificates, EVM window). */
+  statusCacheMs: number;
 }
 
 export const CONFIG_DIR = fileURLToPath(new URL("../../config/", import.meta.url));
@@ -101,6 +111,7 @@ function demoLimits(v: unknown): DemoLimits {
     retireWh: n("retireWh"),
     grantWh: n("grantWh"),
     timeoutMs: n("timeoutMs"),
+    statusCacheMs: n("statusCacheSeconds") * 1000,
   };
 }
 
@@ -191,9 +202,14 @@ function nativeRoute(app: Record<string, unknown>, network: Record<string, unkno
       pollMs: posInt(lane.pollSeconds, "nativeLane.pollSeconds") * 1000,
     },
     demoRetire: bool(r.demoRetire, "nativeRoute.demoRetire"),
+    demoCases: bool(r.demoCases, "nativeRoute.demoCases"),
+    grant: bool(r.grant, "nativeRoute.grant"),
     meter: bool(r.meter, "nativeRoute.meter"),
     retireGas: posInt(r.retireGas, "nativeRoute.retireGas"),
+    caseGas: posInt(r.caseGas, "nativeRoute.caseGas"),
+    grantGas: posInt(r.grantGas, "nativeRoute.grantGas"),
     attestGas: posInt(r.attestGas, "nativeRoute.attestGas"),
+    revertCodespace: str(r.revertCodespace, "config/app.json nativeRoute.revertCodespace"),
   };
 }
 

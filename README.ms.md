@@ -5,7 +5,7 @@
 <p align="center"><a href="https://github.com/aimanmalib/mentari/actions/workflows/ci.yml"><img src="https://github.com/aimanmalib/mentari/actions/workflows/ci.yml/badge.svg" alt="CI"></a> <a href="https://github.com/aimanmalib/mentari/blob/main/LICENSE"><img src="https://img.shields.io/github/license/aimanmalib/mentari" alt="Lesen: Apache-2.0"></a> <img src="https://img.shields.io/badge/QoreChain-Diana%20testnet-22357e" alt="Testnet QoreChain Diana"></p>
 
 <p align="center"><b>Sijil solar yang hanya boleh dibersarakan sekali: bakar dan resit awam berlaku bersama, atau tidak langsung.</b> · <i>Solar certificates you can retire only once: burn and public receipt land together, or not at all.</i><br>
-<a href="https://mentari.sasateguh.com"><b>demo langsung</b></a> · <a href="#semak-dalam-3-langkah">semak dalam 3 langkah</a> · <a href="#jalankan">jalankan</a> · <a href="#had">had</a> · <a href="AI_USAGE.md">penggunaan AI</a> · <a href="docs/deck.pdf">slaid (PDF)</a> · <a href="README.md">English</a><br>
+<a href="https://mentari.sasateguh.com"><b>demo langsung</b></a> · <a href="#nilai-dalam-3-minit">nilai dalam 3 minit</a> · <a href="#bukti-di-testnet">bukti di testnet</a> · <a href="#lima-kriteria-penjurian">kriteria penjurian</a> · <a href="#jalankan">jalankan</a> · <a href="#had">had</a> · <a href="AI_USAGE.md">penggunaan AI</a> · <a href="docs/deck.pdf">slaid (PDF)</a> · <a href="README.md">English</a><br>
 Dibina di Malaysia oleh <a href="https://aimanmalib.com">Aiman Malib</a> · <a href="https://sasateguh.com">Sasa Teguh</a></p>
 
 <p align="center"><img src="docs/images/screenshot-desktop.png" width="640" alt="Halaman daftar Mentari di desktop: lejar EVM di kiri, buku resit Native di kanan, dan lencana di tengah yang menyatakan kedua-dua lejar sepakat"> <img src="docs/images/screenshot-mobile.png" width="180" alt="Halaman daftar yang sama di iPhone, dengan label meter simulasi"></p>
@@ -23,25 +23,75 @@ Dibina untuk **Build Before Q-Day: The QoreChain Developer Fest**, trek Cross-VM
 pertama ialah [`6012d2b`](https://github.com/aimanmalib/mentari/commit/6012d2b) pada 21 November 2026.
 
 > **Keadaan hari ini** (dibaca dari [`evidence/`](evidence/)):
-> - Kontrak testnet: `Mentari` di `0xf5cb2c6048a7ce8c5a7accc66eb8efc33942a448`, `AtomicityProbe` di `0x7438df055f0d96e6ba1b9ac8e7334a1be56130e4`.
-> - 449,963 Wh dicetak daripada bacaan meter, setiap satu disemak di rantai dengan ML-DSA-87: 9 semasa deploy ([`deploy.json`](evidence/deploy.json)), 1 dalam kes H, dan bacaan meter harian yang dihantar dari lorong Native sejak 24 November ([keputusan 0031](docs/decisions/0031-daily-meter-attest-gas.md), dalam bahasa Inggeris).
-> - 22 persaraan, 11,000 Wh dibersarakan, setiap satu sepadan dengan resit Native; `pnpm verify` lulus 97 daripada 97 semakan ([`verify.json`](evidence/verify.json)).
-> - Kes A hingga I direkod bersama transaksinya ([`testnet.json`](evidence/testnet.json)); kes H ialah attest dan persaraan yang dihantar dari lorong Native tanpa EVM window, dan dalam kes I rantai menolak persaraan yang ditandatangani dengan kunci secp256k1 sahaja ([`docs/findings.md`](docs/findings.md), dalam bahasa Inggeris).
-> - "Retire now" di laman awam: 7 tekanan berturut-turut, setiap satu menaikkan kedua-dua lejar satu; setiap butang kegagalan tidak mengubah mana-mana lejar, dan sejak 24 November setiap satu ialah transaksi Native yang dibatalkan rantai dengan kod 14 ([`live.json`](evidence/live.json)).
+> - 449,963 Wh dicetak daripada bacaan meter, setiap tandatangan ML-DSA-87 disemak di rantai ([`deploy.json`](evidence/deploy.json), [keputusan 0031](docs/decisions/0031-daily-meter-attest-gas.md), dalam bahasa Inggeris).
+> - 22 persaraan dan 11,000 Wh dibersarakan, setiap satu sepadan dengan resit Native-nya.
+> - `pnpm verify` lulus 97 daripada 97 semakan ([`verify.json`](evidence/verify.json)).
+> - Kes A hingga I direkod di testnet bersama transaksinya ([`testnet.json`](evidence/testnet.json)).
+> - 13 tekanan direkod di laman awam, 7 daripadanya "Retire now" berturut-turut, setiap satu menaikkan kedua-dua lejar satu ([`live.json`](evidence/live.json)).
 
-## Semak dalam 3 langkah
+## Nilai dalam 3 minit
 
-1. Buka <https://mentari.sasateguh.com>. Halaman daftar menunjukkan lejar EVM dan buku resit Native bersebelahan, dan
-   lencana yang menyemak persaraan terkini dengan resitnya.
-2. Pergi ke **Try it**. "Retire now" membersarakan 500 Wh (jumlahnya dalam
-   [`config/limits.json`](config/limits.json)) dalam satu transaksi Native bertandatangan hibrid yang menjalankan
-   kontrak EVM, dan tiga butang kegagalan masing-masing menghantar transaksi EVM dengan panggilan cross-VM yang mesti
-   gagal. Halaman menunjukkan kiraan resit di kedua-dua lejar sebelum dan selepas. Butang ini menghantar transaksi testnet sebenar.
-3. Jalankan `pnpm demo` dalam klon baharu (Node 22, pnpm). Ia tidak perlukan kunci: ia membaca titik hujung EVM dan
-   REST awam, menyemak setiap persaraan dengan resit Native-nya (pengirim, nota, jumlah), menyemak dicetak - dibersara =
-   bekalan, dan menyemak setiap kes yang direkod berakhir seperti yang direkod. Ia keluar 0 hanya bila tiada semakan
-   gagal. Bukti dalam kod ada di `contracts/test/`: 115 ujian Foundry yang lulus, dan
-   [`docs/TESTING.md`](docs/TESTING.md) menunjukkan setiap invarian menjadi merah bila kontrak sengaja dirosakkan.
+1. **Tekan.** Buka <https://mentari.sasateguh.com/try> dan tekan "Retire now". Satu transaksi Native bertandatangan
+   hibrid menjalankan kontrak EVM, dan kiraan resit di kedua-dua lejar naik satu. Kemudian tekan butang kegagalan:
+   kedua-dua lejar tidak berubah. Butang ini menghantar transaksi testnet sebenar, 5 sejam bagi setiap pelawat
+   ([`config/limits.json`](config/limits.json)).
+2. **Semak.** Buka pautan transaksi yang halaman tunjukkan. Penjelajah dibuka pada Mainnet: klik Testnet sekali.
+   Tekanan kegagalan menunjukkan "failed (code 14)", dan setiap tekanan Native menunjukkan "quantum-safe · verified
+   on-chain · ML-DSA-87". Di [Verify](https://mentari.sasateguh.com/verify), pelayar anda menyemak semula tandatangan
+   ML-DSA-87 meter yang dibaca dari rantai.
+3. **Jalankan semula.** Dalam klon baharu (Node 22, pnpm), jalankan `pnpm install --frozen-lockfile && pnpm demo`. Ia
+   tidak perlukan kunci: ia membaca titik hujung EVM dan REST awam, memadankan setiap persaraan dengan resit Native-nya
+   (pengirim, nota, jumlah), menyemak dicetak - dibersara = bekalan dan setiap kes yang direkod, dan keluar 0 hanya bila
+   tiada semakan gagal.
+
+## Bukti di testnet
+
+Setiap pautan membuka penjelajah pada Mainnet. Klik Testnet sekali, dan transaksi itu dipaparkan.
+
+| Kes | Apa yang dicuba | Apa berlaku | Transaksi |
+| --- | --- | --- | --- |
+| A | Bersarakan 500 Wh melalui lorong EVM | Dibakar, resit 7 → 8 | [`5654336F…`](https://explore.qore.network/tx/5654336FDCC86E817D25DE3391FE76FFDAAC8CE92785C785E0AA276369E8A618) |
+| B | Tulis resit Native, kemudian berbalik di sisi EVM | Berbalik, resit 8 → 8 | [`9837A24B…`](https://explore.qore.network/tx/9837A24B4D575651DB50875540C94CC58A3F1D7C6734B05F0A82846D3F260CF8) |
+| C | Kontrak Native menolak mesej | Berbalik, resit 8 → 8 | [`A6D4F275…`](https://explore.qore.network/tx/A6D4F2754F99ADE9A2BD35CA2F2668620D5799A7B7342876556E8C34F6B66CA3) |
+| D | Panggil kontrak Native yang tiada dalam senarai dibenarkan | Berbalik, resit 8 → 8 | [`55F936A6…`](https://explore.qore.network/tx/55F936A67ACE5226F2EF1BF24CA212C7C994D2D565BC92C6D047CB6CA6B0E635) |
+| E | Bacaan ditandatangani dengan kunci akaun lain | `BadSignature`, resit 25 → 25 | [`5B7A5856…`](https://explore.qore.network/tx/5B7A5856013C83DDAD15258DC6C87FFBA9B185A2EA8AB6D927A2B18ACB41900D) |
+| E2 | Bacaan kedua untuk hari yang sama | `AlreadyAttested`, resit 8 → 8 | [`C4589E9A…`](https://explore.qore.network/tx/C4589E9AB637B431AD13FB2CF3E4E90F6C3F1520F4845A4709C11EE6EDFC47D3) |
+| F | Bacaan melebihi kapasiti sistem | `WhOutOfRange(40001, 40000)`, resit 25 → 25 | [`CD9DDAE7…`](https://explore.qore.network/tx/CD9DDAE7155E6692C84E9038A8CB2D6DD196FEA3C394F79049814EFEBBFA9C34) |
+| G | Pindah ke akaun tanpa kunci ML-DSA-87 | `NotQuantumReady`, resit 8 → 8 | [`E405CBAB…`](https://explore.qore.network/tx/E405CBAB79FAC6335F5982E1396B65249AEC93BCF56484A0540D91B83C9A8F34) |
+| H, langkah 1 | `attest` dari lorong Native, tanpa EVM window | Bacaan dicetak: 344,115 → 393,197 Wh | [`FC13A895…`](https://explore.qore.network/tx/FC13A89597E46C3128D351B25C351461D2EC8B30A2D053017DFC6D7175AB2A3E) |
+| H, langkah 2 | `retire` dari lorong Native, tanpa EVM window | Dibakar, resit 13 → 14 | [`8E15D319…`](https://explore.qore.network/tx/8E15D319B2971FC5102C027BA8E3C8A8AAF1FDD72AD8E2172CEE2303B453B40A) |
+| I, langkah 1 | `retire` ditandatangani dengan kunci secp256k1 sahaja, tanpa EVM window | Ditolak sebelum sampai ke blok: nonce 6 → 6, persaraan 21 → 21 | tiada: rantai tidak menerimanya |
+| I, langkah 2 | `retire` yang sama dari lorong Native | Dibakar, resit 30 → 31 | [`97A5C807…`](https://explore.qore.network/tx/97A5C80786442EC1C3866D0A890FE0E21915DB22B227F675A92F9873AE4CEA38) |
+| Retire now, laman | Satu tekanan di laman awam | Resit 27 → 28, persaraan 18 → 19 | [`922C6AF2…`](https://explore.qore.network/tx/922C6AF21D20019EB82E332396DA3EC9E696B3BFFF0B6011BA2BFE0415D3F946) |
+| Write-then-revert, laman | Kes B sebagai transaksi Native | Gagal (kod 14), resit 28 → 28 | [`4F9B5F8D…`](https://explore.qore.network/tx/4F9B5F8D45472307558019A22A72DCF2BEB79B3599E572E8BAE6EA8D11396703) |
+| Native refuses, laman | Kes C sebagai transaksi Native | Gagal (kod 14), resit 28 → 28 | [`7D69CA4F…`](https://explore.qore.network/tx/7D69CA4FCB6A3D21639E8A703E050D76E39E29348D7A7D151CCDD73F164FF89A) |
+| Not allowlisted, laman | Kes D sebagai transaksi Native | Gagal (kod 14), resit 28 → 28 | [`C003B67F…`](https://explore.qore.network/tx/C003B67FFB655EB48A19965F0B7FD6E3A8C49A3C63FB2B2C85FCC0308DC4E07B) |
+
+Kes A hingga G melalui lorong EVM. Untuk kes itu, penjelajah menunjukkan transaksi yang membawa panggilan EVM, dan
+sebab berbalik ada dalam resit EVM, yang `pnpm verify` baca. Butang di laman ialah transaksi Native, jadi penjelajah
+menunjukkan yang gagal sebagai gagal. Ralat nod asal untuk kes I ada dalam [`testnet.json`](evidence/testnet.json).
+
+## Lima kriteria penjurian
+
+| Kriteria (kata rasmi) | Berat | Di mana menyemaknya |
+| --- | --- | --- |
+| Works as described | 25 % | [Try it](https://mentari.sasateguh.com/try) di laman hidup; [`pnpm demo`](#nilai-dalam-3-minit) dan [`verify.json`](evidence/verify.json) (97 daripada 97); tekanan dalam [`live.json`](evidence/live.json); [jadual bukti](#bukti-di-testnet) |
+| QoreChain tech usage, verified in the repo and on chain | 25 % | [Kit dan ciri rangkaian](README.md#kits-and-network-features) (dalam bahasa Inggeris): jambatan, `pqcVerify`, `pqcKeyStatus`, `MsgCrossVMCall`, `@qorechain/sdk`, QoreX; alamat qor1 dalam [jadual trek](#keperluan-trek-cross-vm-dan-di-mana-ia-dipenuhi) |
+| Post-quantum correctness and security | 20 % | [Apa ditandatangani, dan di mana](#pasca-kuantum-apa-ditandatangani-dan-di-mana); kes I; [Verify](https://mentari.sasateguh.com/verify) menyemak semula ML-DSA-87 dalam pelayar anda; [`docs/threat-model.md`](docs/threat-model.md) |
+| Originality | 15 % | [Apa yang saya temui](#apa-yang-saya-temui-akaun-native-boleh-menjalankan-kontrak-evm); [`docs/findings.md`](docs/findings.md) |
+| Clarity, UX and documentation | 15 % | Fail ini dan [README.md](README.md); laman dalam bahasa Inggeris dan Melayu; [`docs/architecture.md`](docs/architecture.md); 38 [rekod keputusan](docs/decisions/), setiap satu dengan cara mengundurnya; [`AI_USAGE.md`](AI_USAGE.md) |
+
+## Apa yang saya temui: akaun Native boleh menjalankan kontrak EVM
+
+Rujukan Cross-VM QoreChain menyenaraikan arah "Native account to EVM contract" sebagai "Not yet tested against the live
+network: this direction was not run for this page."
+([dokumen](https://docs.qorechain.io/developer-guide/cross-vm-reference#native-to-evm)). Saya menjalankannya. Satu
+transaksi Native, ditandatangani dengan secp256k1 dan ML-DSA-87, memanggil `Mentari.retire` tanpa EVM window terbuka.
+Kontrak membakar sijil dan jambatan menulis resit di lejar Native, dalam transaksi yang sama: kes H,
+[`8E15D319…`](https://explore.qore.network/tx/8E15D319B2971FC5102C027BA8E3C8A8AAF1FDD72AD8E2172CEE2303B453B40A).
+Setiap "Retire now" di laman kini melalui jalan ini, contohnya
+[`922C6AF2…`](https://explore.qore.network/tx/922C6AF21D20019EB82E332396DA3EC9E696B3BFFF0B6011BA2BFE0415D3F946).
+Butiran dan apa yang tidak saya uji: [`docs/findings.md`](docs/findings.md) (dalam bahasa Inggeris).
 
 ## Cara ia berfungsi
 

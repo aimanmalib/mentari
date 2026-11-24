@@ -5,7 +5,7 @@
 <p align="center"><a href="https://github.com/aimanmalib/mentari/actions/workflows/ci.yml"><img src="https://github.com/aimanmalib/mentari/actions/workflows/ci.yml/badge.svg" alt="CI"></a> <a href="https://github.com/aimanmalib/mentari/blob/main/LICENSE"><img src="https://img.shields.io/github/license/aimanmalib/mentari" alt="Licence: Apache-2.0"></a> <img src="https://img.shields.io/badge/QoreChain-Diana%20testnet-22357e" alt="QoreChain Diana testnet"></p>
 
 <p align="center"><b>Solar certificates you can retire only once: burn and public receipt land together, or not at all.</b> · <i>Sijil solar yang hanya boleh dibersarakan sekali: bakar dan resit awam berlaku bersama, atau tidak langsung.</i><br>
-<a href="https://mentari.sasateguh.com"><b>live demo</b></a> · <a href="#check-it-in-3-steps">check it in 3 steps</a> · <a href="#run-it">run it</a> · <a href="#limits">limits</a> · <a href="AI_USAGE.md">AI usage</a> · <a href="docs/deck.pdf">slides (PDF)</a> · <a href="README.ms.md">Bahasa Melayu</a><br>
+<a href="https://mentari.sasateguh.com"><b>live demo</b></a> · <a href="#judge-it-in-3-minutes">judge it in 3 minutes</a> · <a href="#proof-on-testnet">proof on testnet</a> · <a href="#the-five-judging-criteria">judging criteria</a> · <a href="#run-it">run it</a> · <a href="#limits">limits</a> · <a href="AI_USAGE.md">AI usage</a> · <a href="docs/deck.pdf">slides (PDF)</a> · <a href="README.ms.md">Bahasa Melayu</a><br>
 Built in Malaysia by <a href="https://aimanmalib.com">Aiman Malib</a> · <a href="https://sasateguh.com">Sasa Teguh</a></p>
 
 <p align="center"><img src="docs/images/screenshot-desktop.png" width="640" alt="The Mentari registry page on desktop: the EVM ledger on the left, the Native receipts book on the right, and a badge in the middle that says both ledgers agree"> <img src="docs/images/screenshot-mobile.png" width="180" alt="The same registry page on an iPhone, with the simulated meter label"></p>
@@ -22,25 +22,73 @@ Built for **Build Before Q-Day: The QoreChain Developer Fest**, Cross-VM track. 
 commit is [`6012d2b`](https://github.com/aimanmalib/mentari/commit/6012d2b) on 21 November 2026.
 
 > **Where it stands today** (read from [`evidence/`](evidence/)):
-> - Testnet contracts: `Mentari` at `0xf5cb2c6048a7ce8c5a7accc66eb8efc33942a448`, `AtomicityProbe` at `0x7438df055f0d96e6ba1b9ac8e7334a1be56130e4`.
-> - 449,963 Wh minted from meter readings, each checked on chain with ML-DSA-87: 9 at deployment ([`deploy.json`](evidence/deploy.json)), 1 in case H, and the daily meter's readings sent from the Native lane since 24 November ([decision 0031](docs/decisions/0031-daily-meter-attest-gas.md)).
-> - 22 retirements, 11,000 Wh retired, each matched to its Native receipt; `pnpm verify` passed 97 of 97 checks ([`verify.json`](evidence/verify.json)).
-> - Cases A to I recorded with their transactions ([`testnet.json`](evidence/testnet.json)); case H is an attest and a retire sent from the Native lane with no EVM window, and in case I the chain refused a retire signed with the secp256k1 key alone ([`docs/findings.md`](docs/findings.md)).
-> - "Retire now" on the public site: 7 presses in a row, each moved both ledgers by one; each failure button moved neither, and since 24 November each one is a Native transaction that the chain reverts with code 14 ([`live.json`](evidence/live.json)).
+> - 449,963 Wh minted from meter readings, each ML-DSA-87 signature checked on chain ([`deploy.json`](evidence/deploy.json), [decision 0031](docs/decisions/0031-daily-meter-attest-gas.md)).
+> - 22 retirements and 11,000 Wh retired, each matched to its Native receipt.
+> - `pnpm verify` passed 97 of 97 checks ([`verify.json`](evidence/verify.json)).
+> - Cases A to I recorded on testnet with their transactions ([`testnet.json`](evidence/testnet.json)).
+> - 13 recorded presses on the public site, 7 of them "Retire now" in a row, each moving both ledgers by one ([`live.json`](evidence/live.json)).
 
-## Check it in 3 steps
+## Judge it in 3 minutes
 
-1. Open <https://mentari.sasateguh.com>. The registry shows the EVM ledger and the Native receipts book side by side,
-   and a badge that checks the latest retirements against their receipts.
-2. Go to **Try it**. "Retire now" retires 500 Wh (the amount is in [`config/limits.json`](config/limits.json)) in one
-   hybrid-signed Native transaction that runs the EVM contract, and the three failure buttons each send an EVM
-   transaction with a cross-VM call that must fail.
-   The page shows the receipt count on both ledgers before and after. The buttons send real testnet transactions.
-3. Run `pnpm demo` in a fresh clone (Node 22, pnpm). It needs no key: it reads the public EVM and REST endpoints,
-   checks every retirement against its Native receipt (sender, note, amount), checks minted - retired = supply, and
-   checks that each recorded case ended as recorded. It exits 0 only when no check fails. The proof in code is in
-   `contracts/test/`: 115 passing Foundry tests, and [`docs/TESTING.md`](docs/TESTING.md) shows that each invariant
-   goes red when the contract is broken on purpose.
+1. **Press.** Open <https://mentari.sasateguh.com/try> and press "Retire now". One hybrid-signed Native transaction runs
+   the EVM contract, and the receipt count on both ledgers goes up by one. Then press a failure button: neither ledger
+   moves. The buttons send real testnet transactions, 5 an hour for each visitor ([`config/limits.json`](config/limits.json)).
+2. **Check.** Open the transaction link the page shows. The explorer opens on Mainnet: click Testnet once. A failure
+   press shows "failed (code 14)", and each Native press shows "quantum-safe · verified on-chain · ML-DSA-87". On
+   [Verify](https://mentari.sasateguh.com/verify), your browser re-checks the meters' ML-DSA-87 signatures read from the chain.
+3. **Re-run.** In a fresh clone (Node 22, pnpm), run `pnpm install --frozen-lockfile && pnpm demo`. It needs no key: it
+   reads the public EVM and REST endpoints, matches every retirement to its Native receipt (sender, note, amount),
+   checks minted - retired = supply and each recorded case, and exits 0 only when no check fails.
+
+## Proof on testnet
+
+Every link opens the explorer on Mainnet. Click Testnet once, and the transaction shows.
+
+| Case | What it tries | What happened | Transaction |
+| --- | --- | --- | --- |
+| A | Retire 500 Wh through the EVM lane | Burned, and receipts went 7 → 8 | [`5654336F…`](https://explore.qore.network/tx/5654336FDCC86E817D25DE3391FE76FFDAAC8CE92785C785E0AA276369E8A618) |
+| B | Write a Native receipt, then revert on the EVM side | Reverted, receipts 8 → 8 | [`9837A24B…`](https://explore.qore.network/tx/9837A24B4D575651DB50875540C94CC58A3F1D7C6734B05F0A82846D3F260CF8) |
+| C | The Native contract refuses the message | Reverted, receipts 8 → 8 | [`A6D4F275…`](https://explore.qore.network/tx/A6D4F2754F99ADE9A2BD35CA2F2668620D5799A7B7342876556E8C34F6B66CA3) |
+| D | Call a Native contract that is not on the allowlist | Reverted, receipts 8 → 8 | [`55F936A6…`](https://explore.qore.network/tx/55F936A67ACE5226F2EF1BF24CA212C7C994D2D565BC92C6D047CB6CA6B0E635) |
+| E | A reading signed with another account's key | `BadSignature`, receipts 25 → 25 | [`5B7A5856…`](https://explore.qore.network/tx/5B7A5856013C83DDAD15258DC6C87FFBA9B185A2EA8AB6D927A2B18ACB41900D) |
+| E2 | A second reading for the same day | `AlreadyAttested`, receipts 8 → 8 | [`C4589E9A…`](https://explore.qore.network/tx/C4589E9AB637B431AD13FB2CF3E4E90F6C3F1520F4845A4709C11EE6EDFC47D3) |
+| F | A reading over the system's capacity | `WhOutOfRange(40001, 40000)`, receipts 25 → 25 | [`CD9DDAE7…`](https://explore.qore.network/tx/CD9DDAE7155E6692C84E9038A8CB2D6DD196FEA3C394F79049814EFEBBFA9C34) |
+| G | Transfer to an account without an ML-DSA-87 key | `NotQuantumReady`, receipts 8 → 8 | [`E405CBAB…`](https://explore.qore.network/tx/E405CBAB79FAC6335F5982E1396B65249AEC93BCF56484A0540D91B83C9A8F34) |
+| H, step 1 | `attest` from the Native lane, no EVM window | Reading minted: 344,115 → 393,197 Wh | [`FC13A895…`](https://explore.qore.network/tx/FC13A89597E46C3128D351B25C351461D2EC8B30A2D053017DFC6D7175AB2A3E) |
+| H, step 2 | `retire` from the Native lane, no EVM window | Burned, receipts 13 → 14 | [`8E15D319…`](https://explore.qore.network/tx/8E15D319B2971FC5102C027BA8E3C8A8AAF1FDD72AD8E2172CEE2303B453B40A) |
+| I, step 1 | `retire` signed with the secp256k1 key alone, no EVM window | Refused before it reached a block: nonce 6 → 6, retirements 21 → 21 | none: the chain never took it |
+| I, step 2 | The same `retire` from the Native lane | Burned, receipts 30 → 31 | [`97A5C807…`](https://explore.qore.network/tx/97A5C80786442EC1C3866D0A890FE0E21915DB22B227F675A92F9873AE4CEA38) |
+| Retire now, site | One press on the public site | Receipts 27 → 28, retirements 18 → 19 | [`922C6AF2…`](https://explore.qore.network/tx/922C6AF21D20019EB82E332396DA3EC9E696B3BFFF0B6011BA2BFE0415D3F946) |
+| Write-then-revert, site | Case B as a Native transaction | Failed (code 14), receipts 28 → 28 | [`4F9B5F8D…`](https://explore.qore.network/tx/4F9B5F8D45472307558019A22A72DCF2BEB79B3599E572E8BAE6EA8D11396703) |
+| Native refuses, site | Case C as a Native transaction | Failed (code 14), receipts 28 → 28 | [`7D69CA4F…`](https://explore.qore.network/tx/7D69CA4FCB6A3D21639E8A703E050D76E39E29348D7A7D151CCDD73F164FF89A) |
+| Not allowlisted, site | Case D as a Native transaction | Failed (code 14), receipts 28 → 28 | [`C003B67F…`](https://explore.qore.network/tx/C003B67FFB655EB48A19965F0B7FD6E3A8C49A3C63FB2B2C85FCC0308DC4E07B) |
+
+Cases A to G went through the EVM lane. For those, the explorer shows the transaction that carried the EVM call, and
+the revert reason is in the EVM receipt, which `pnpm verify` reads. The site's buttons are Native transactions, so the
+explorer shows a failed one as failed. The verbatim node error for case I is in
+[`testnet.json`](evidence/testnet.json).
+
+## The five judging criteria
+
+| Criterion (official wording) | Weight | Where to check it |
+| --- | --- | --- |
+| Works as described | 25 % | [Try it](https://mentari.sasateguh.com/try) on the live site; [`pnpm demo`](#judge-it-in-3-minutes) and [`verify.json`](evidence/verify.json) (97 of 97); the presses in [`live.json`](evidence/live.json); the [proof table](#proof-on-testnet) |
+| QoreChain tech usage, verified in the repo and on chain | 25 % | [Kits and network features](#kits-and-network-features): the bridge, `pqcVerify`, `pqcKeyStatus`, `MsgCrossVMCall`, `@qorechain/sdk`, QoreX; the qor1 addresses in the [track table](#cross-vm-track-requirements-and-where-they-are-met) |
+| Post-quantum correctness and security | 20 % | [What is signed, and where](#post-quantum-what-is-signed-and-where); case I; [Verify](https://mentari.sasateguh.com/verify) re-checks ML-DSA-87 in your browser; [`docs/threat-model.md`](docs/threat-model.md) |
+| Originality | 15 % | [What I found](#what-i-found-a-native-account-can-run-the-evm-contract); [`docs/findings.md`](docs/findings.md) |
+| Clarity, UX and documentation | 15 % | This file and [README.ms.md](README.ms.md); the site in English and Malay; [`docs/architecture.md`](docs/architecture.md); 38 [decision records](docs/decisions/), each with how to undo it; [`AI_USAGE.md`](AI_USAGE.md) |
+
+## What I found: a Native account can run the EVM contract
+
+The QoreChain Cross-VM reference lists the direction "Native account to EVM contract" as "Not yet tested against the
+live network: this direction was not run for this page."
+([docs](https://docs.qorechain.io/developer-guide/cross-vm-reference#native-to-evm)). I ran it. One Native transaction,
+signed with secp256k1 plus ML-DSA-87, called `Mentari.retire` with no EVM window open. The contract burned the
+certificates and the bridge wrote the receipt on the Native ledger, in the same transaction: case H,
+[`8E15D319…`](https://explore.qore.network/tx/8E15D319B2971FC5102C027BA8E3C8A8AAF1FDD72AD8E2172CEE2303B453B40A).
+Every "Retire now" on the site now goes this way, for example
+[`922C6AF2…`](https://explore.qore.network/tx/922C6AF21D20019EB82E332396DA3EC9E696B3BFFF0B6011BA2BFE0415D3F946).
+Details and what I did not test: [`docs/findings.md`](docs/findings.md).
 
 ## How it works
 

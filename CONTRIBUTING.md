@@ -12,7 +12,7 @@ git clone --recurse-submodules https://github.com/aimanmalib/mentari.git
 cd mentari
 pnpm install --frozen-lockfile
 bash scripts/gerbang-ujian.sh   # forge build, test, fmt and coverage, vitest, web build, secret scan
-pnpm build && pnpm start        # the site on http://localhost:8080, sample data
+pnpm build && pnpm start        # the site on http://localhost:8080, reading the testnet
 ```
 
 ## Before you open a pull request

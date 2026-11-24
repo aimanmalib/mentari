@@ -16,7 +16,7 @@
         "https://mentari.sasateguh.com · https://github.com/aimanmalib/mentari"
       ],
       "gambar": "img/registry.png",
-      "kapsyen": "The registry, over sample data"
+      "kapsyen": "The registry, read from the testnet"
     },
     {
       "jenis": "biasa",
@@ -45,9 +45,9 @@
         "Each case must leave the receipt count the same before and after."
       ],
       "gambar": "img/try-it.png",
-      "kapsyen": "The Try it page, over sample data",
+      "kapsyen": "The Try it page on the public site",
       "kaki": [
-        "Tested against the bridge mock today. Testnet transaction hashes for each case come with the deployment.",
+        "Recorded on testnet in blocks 10609364, 10609366 and 10609368: the receipt count stayed at 8 each time. evidence/testnet.json",
         "contracts/src/AtomicityProbe.sol"
       ]
     },
@@ -79,7 +79,7 @@
         "@qorechain/qorex-wallet-mock 0.1.0: QoreX in the browser tests."
       ],
       "kaki": [
-        "The project page on the fest site is not created yet, so nothing is declared or verified there yet.",
+        "The fest project page declares the same list.",
         "README.md: Kits and network features"
       ]
     },

@@ -8,7 +8,7 @@
 <a href="https://mentari.sasateguh.com"><b>live demo</b></a> · <a href="#check-it-in-3-steps">check it in 3 steps</a> · <a href="#run-it">run it</a> · <a href="#limits">limits</a> · <a href="AI_USAGE.md">AI usage</a> · <a href="docs/deck.pdf">slides (PDF)</a> · <a href="README.ms.md">Bahasa Melayu</a><br>
 Built in Malaysia by <a href="https://aimanmalib.com">Aiman Malib</a> · <a href="https://sasateguh.com">Sasa Teguh</a></p>
 
-<p align="center"><img src="docs/images/screenshot-desktop.png" width="640" alt="The Mentari registry page on desktop: the EVM ledger on the left, the Native receipts book on the right, and a badge in the middle that says both ledgers agree, over sample data"> <img src="docs/images/screenshot-mobile.png" width="180" alt="The same registry page on an iPhone, with the simulated meter label and the sample data note"></p>
+<p align="center"><img src="docs/images/screenshot-desktop.png" width="640" alt="The Mentari registry page on desktop: the EVM ledger on the left, the Native receipts book on the right, and a badge in the middle that says both ledgers agree"> <img src="docs/images/screenshot-mobile.png" width="180" alt="The same registry page on an iPhone, with the simulated meter label"></p>
 
 An energy certificate is only worth something if it can be retired once. Most registries keep the burn in one system and
 the public record in another, and the two can drift apart.
@@ -21,20 +21,12 @@ happens. Every certificate starts as a solar meter reading signed with ML-DSA-87
 Built for **Build Before Q-Day: The QoreChain Developer Fest**, Cross-VM track. I built it during the fest: the first
 commit is [`6012d2b`](https://github.com/aimanmalib/mentari/commit/6012d2b) on 21 November 2026.
 
-> **Where it stands today.** The contracts are on the Diana testnet: `Mentari` at
-> `0xf5cb2c6048a7ce8c5a7accc66eb8efc33942a448` and `AtomicityProbe` at `0x7438df055f0d96e6ba1b9ac8e7334a1be56130e4`.
-> Three simulated meters are registered and nine backfilled daily readings, each checked on chain with ML-DSA-87,
-> minted 344,115 Wh ([`evidence/deploy.json`](evidence/deploy.json)). The eight test accounts are funded and keyed
-> ([`evidence/accounts.json`](evidence/accounts.json)). Cases A, B, C, D, E2 and G are recorded with their
-> transactions ([`evidence/testnet.json`](evidence/testnet.json)); E and F need a finished day without a reading.
-> The first `pnpm verify` run passed 28 of 28 checks ([`evidence/verify.json`](evidence/verify.json)).
-> Case H: one hybrid-signed Native transaction, sent with no EVM window open, ran `Mentari.retire`, which wrote its
-> receipt back in the Native book ([`docs/findings.md`](docs/findings.md)). "Retire now" on the site now uses the same
-> route: one Native transaction from the demo account, with no EVM window ([ADR 0026](docs/decisions/0026-native-route-for-retire-now.md)).
-> On the public site I pressed "Retire now" 5 times in a row and each failure button once, in Chromium and in WebKit
-> as an iPhone 13, in English and Malay. Every retirement moved both ledgers by one; every failure moved neither, and
-> no page logged an error ([`evidence/live.json`](evidence/live.json)). `pnpm verify` reads each of those 8
-> transactions back from the testnet.
+> **Where it stands today** (read from [`evidence/`](evidence/)):
+> - Testnet contracts: `Mentari` at `0xf5cb2c6048a7ce8c5a7accc66eb8efc33942a448`, `AtomicityProbe` at `0x7438df055f0d96e6ba1b9ac8e7334a1be56130e4`.
+> - 344,115 Wh minted from 9 meter readings, each checked on chain with ML-DSA-87 ([`deploy.json`](evidence/deploy.json)).
+> - 16 retirements, 8,000 Wh retired, each matched to its Native receipt; `pnpm verify` passed 67 of 67 checks ([`verify.json`](evidence/verify.json)).
+> - Cases A, B, C, D, E2, G and H recorded with their transactions ([`testnet.json`](evidence/testnet.json)); case H is a retire sent from the Native lane with no EVM window ([`docs/findings.md`](docs/findings.md)).
+> - "Retire now" on the public site: 5 presses in a row, each moved both ledgers by one; each failure button moved neither ([`live.json`](evidence/live.json)).
 
 ## Check it in 3 steps
 
@@ -91,17 +83,16 @@ More detail: [`docs/architecture.md`](docs/architecture.md). Each design decisio
 
 | Requirement (official wording) | Where it is met | Status |
 | --- | --- | --- |
-| "Build an application where an EVM contract atomically calls an approved Native contract." | [`Mentari.retire`](contracts/src/Mentari.sol) calls the bridge with a `record` message for `qday-receipts`, which is on the testnet allowlist (governance proposal 40, code id 865) | In code and tests; testnet case A after deployment |
-| "A working EVM-to-Native call to an approved Native contract" | Case A: one retirement that adds one receipt whose sender is the contract's `qor1…` address | Recorded in `evidence/` after deployment |
-| "with atomic execution shown on testnet" | Cases B, C, D through [`AtomicityProbe`](contracts/src/AtomicityProbe.sol): the receipt count is the same before and after each | Tested against the bridge mock; testnet after deployment |
+| "Build an application where an EVM contract atomically calls an approved Native contract." | [`Mentari.retire`](contracts/src/Mentari.sol) calls the bridge with a `record` message for `qday-receipts`, which is on the testnet allowlist (governance proposal 40, code id 865) | Case A on testnet, block 10609362: receipts 7 → 8 ([`evidence/testnet.json`](evidence/testnet.json)) |
+| "A working EVM-to-Native call to an approved Native contract" | Case A: one retirement that adds one receipt whose sender is the contract's `qor1…` address | Recorded: EVM tx `0x08e96e38…`, receipt 8 |
+| "with atomic execution shown on testnet" | Cases B, C, D through [`AtomicityProbe`](contracts/src/AtomicityProbe.sol): the receipt count is the same before and after each | Recorded on testnet, blocks 10609364, 10609366, 10609368: receipts 8 → 8 each time |
 | Public repository, licence, README | This repository, [Apache-2.0](LICENSE), this file | Done |
-| Testnet addresses | Receipts book `qor1xjayq5ev55tkzpml9klxwyshr7gdrha0nurha9jhm0f0gdckksgs3gltw8`; Mentari and AtomicityProbe addresses go into [`config/app.json`](config/app.json) | Contract addresses after deployment |
+| Testnet addresses | Receipts book `qor1xjayq5ev55tkzpml9klxwyshr7gdrha0nurha9jhm0f0gdckksgs3gltw8`; Mentari `qor17h9jcczg5l8gckn6enrxaw80cvu59fzg2335fw`; AtomicityProbe `qor1wsud7p2lpktwdwsmntywwv62r0jkzv8ymglm0l` ([`config/app.json`](config/app.json)) | Done |
 | "An AI_USAGE.md file documenting the workflow, the generated work and the human contribution" | [`AI_USAGE.md`](AI_USAGE.md) | Done |
 
 ## Kits and network features
 
-The project page on the fest site is not created yet, so nothing is declared or verified there yet. This is what the code
-uses today.
+This is what the code uses, and where. The fest project page declares the same list.
 
 | Kit or feature | Version or address | Where |
 | --- | --- | --- |
@@ -126,7 +117,7 @@ pnpm exec playwright install chromium webkit
 bash scripts/gerbang-ujian.sh   # what CI runs: forge build, test, fmt and coverage, vitest, web build, browser tests, secret scan
 ```
 
-The site on your machine, on sample data:
+The site on your machine. It reads the testnet; building with `VITE_MENTARI_DATA=sample` uses the local fixture instead:
 
 ```sh
 pnpm build
@@ -182,8 +173,6 @@ Full version with sources: [`docs/threat-model.md`](docs/threat-model.md).
   are real; the solar panels are not.
 - **Testnet only.** This is a demo on the Diana testnet. It is not a recognised certificate scheme, and the certificates
   have no value.
-- **No retirements yet.** At this commit the contracts are deployed and minting, but no certificate has been retired on
-  the testnet, so the retirement and failure case hashes are not here yet.
 - **The Native side records, it does not enforce.** `qday-receipts` is the shared receipt book from the workshop. Anyone
   can write to it; Mentari's receipts are the ones whose sender is the Mentari contract.
 - **The wallet path is tested with a mock only.** "Retire from your own wallet" connects QoreX, asks the demo account

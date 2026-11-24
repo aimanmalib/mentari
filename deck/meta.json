@@ -1,6 +1,6 @@
 [
  {
-  "text": "Mentari · Build Before Q-Day · Cross-VM track\nMentari\n\nSolar certificates you can retire only once: burn and public receipt land together, or not at all.\n\nThe registry, over sample data\n\nBuild Before Q-Day: The QoreChain Developer Fest. Built in Malaysia by Aiman Malib.\n\nhttps://mentari.sasateguh.com · https://github.com/aimanmalib/mentari",
+  "text": "Mentari · Build Before Q-Day · Cross-VM track\nMentari\n\nSolar certificates you can retire only once: burn and public receipt land together, or not at all.\n\nThe registry, read from the testnet\n\nBuild Before Q-Day: The QoreChain Developer Fest. Built in Malaysia by Aiman Malib.\n\nhttps://mentari.sasateguh.com · https://github.com/aimanmalib/mentari",
   "links": [
    {
     "href": "https://mentari.sasateguh.com/",
@@ -23,7 +23,7 @@
   "links": []
  },
  {
-  "text": "Mentari · Build Before Q-Day · Cross-VM track\natomic execution shown on testnet\nAtomic execution shown on testnet\n\nIf either side fails, neither happens. AtomicityProbe, a separate demo contract, fails on purpose.\n\nB: writes a receipt, then reverts.\nC: asks the Native contract to refuse.\nD: calls a Native contract governance has not approved.\nEach case must leave the receipt count the same before and after.\nThe Try it page, over sample data\n\nTested against the bridge mock today. Testnet transaction hashes for each case come with the deployment.\n\ncontracts/src/AtomicityProbe.sol",
+  "text": "Mentari · Build Before Q-Day · Cross-VM track\natomic execution shown on testnet\nAtomic execution shown on testnet\n\nIf either side fails, neither happens. AtomicityProbe, a separate demo contract, fails on purpose.\n\nB: writes a receipt, then reverts.\nC: asks the Native contract to refuse.\nD: calls a Native contract governance has not approved.\nEach case must leave the receipt count the same before and after.\nThe Try it page on the public site\n\nRecorded on testnet in blocks 10609364, 10609366 and 10609368: the receipt count stayed at 8 each time. evidence/testnet.json\n\ncontracts/src/AtomicityProbe.sol",
   "links": []
  },
  {
@@ -31,7 +31,7 @@
   "links": []
  },
  {
-  "text": "Mentari · Build Before Q-Day · Cross-VM track\nKits and network features: declared and verified\nVerified features\n\nWhat the code uses, and where. Each kit is pinned in package.json.\n\n@qorechain/sdk 0.14.0: deriving the test accounts.\nBridge, pqcVerify, pqcKeyStatus at 0x…0901 · 0x…0a01 · 0x…0a02: contracts/src/lib.\nqday-receipts, Native contract code id 865: the target of every retirement.\n@qorechain/qorex-rainbowkit 0.1.0: QoreX as the wallet on the Try it page.\n@qorechain/qorex-wallet-mock 0.1.0: QoreX in the browser tests.\n\nThe project page on the fest site is not created yet, so nothing is declared or verified there yet.\n\nREADME.md: Kits and network features",
+  "text": "Mentari · Build Before Q-Day · Cross-VM track\nKits and network features: declared and verified\nVerified features\n\nWhat the code uses, and where. Each kit is pinned in package.json.\n\n@qorechain/sdk 0.14.0: deriving the test accounts.\nBridge, pqcVerify, pqcKeyStatus at 0x…0901 · 0x…0a01 · 0x…0a02: contracts/src/lib.\nqday-receipts, Native contract code id 865: the target of every retirement.\n@qorechain/qorex-rainbowkit 0.1.0: QoreX as the wallet on the Try it page.\n@qorechain/qorex-wallet-mock 0.1.0: QoreX in the browser tests.\n\nThe fest project page declares the same list.\n\nREADME.md: Kits and network features",
   "links": []
  },
  {

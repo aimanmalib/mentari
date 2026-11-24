@@ -18,7 +18,8 @@ commit `deck/` and `docs/deck.pdf` together. Decision record 0019 has the detail
 Every number on the slides comes from the [README](../README.md) or [AI_USAGE.md](../AI_USAGE.md); the engine refuses
 to print a number it cannot find there. `JANA.json` records the SHA-256 of the PDF and of `kandungan.json`, and
 `web/test/deck.test.ts` fails when either no longer matches or when the test counts on slide 6 drift from the README.
-The two screenshots in `img/` were captured from the running site over sample data, and the slides say so.
+The two screenshots in `img/` are taken from the public site by `pnpm --filter @mentari/web shots`, so they show
+testnet data.
 
 ## Credits
 

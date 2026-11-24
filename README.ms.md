@@ -8,7 +8,7 @@
 <a href="https://mentari.sasateguh.com"><b>demo langsung</b></a> · <a href="#semak-dalam-3-langkah">semak dalam 3 langkah</a> · <a href="#jalankan">jalankan</a> · <a href="#had">had</a> · <a href="AI_USAGE.md">penggunaan AI</a> · <a href="docs/deck.pdf">slaid (PDF)</a> · <a href="README.md">English</a><br>
 Dibina di Malaysia oleh <a href="https://aimanmalib.com">Aiman Malib</a> · <a href="https://sasateguh.com">Sasa Teguh</a></p>
 
-<p align="center"><img src="docs/images/screenshot-desktop.png" width="640" alt="Halaman daftar Mentari di desktop: lejar EVM di kiri, buku resit Native di kanan, dan lencana di tengah yang menyatakan kedua-dua lejar sepakat, atas data sampel"> <img src="docs/images/screenshot-mobile.png" width="180" alt="Halaman daftar yang sama di iPhone, dengan label meter simulasi dan nota data sampel"></p>
+<p align="center"><img src="docs/images/screenshot-desktop.png" width="640" alt="Halaman daftar Mentari di desktop: lejar EVM di kiri, buku resit Native di kanan, dan lencana di tengah yang menyatakan kedua-dua lejar sepakat"> <img src="docs/images/screenshot-mobile.png" width="180" alt="Halaman daftar yang sama di iPhone, dengan label meter simulasi"></p>
 
 Sijil tenaga hanya bernilai jika ia boleh dibersarakan sekali. Kebanyakan daftar menyimpan pembakaran dalam satu sistem
 dan rekod awam dalam sistem lain, dan kedua-duanya boleh tersasar.
@@ -22,21 +22,12 @@ pasca-kuantum.
 Dibina untuk **Build Before Q-Day: The QoreChain Developer Fest**, trek Cross-VM. Saya membinanya semasa fest: komit
 pertama ialah [`6012d2b`](https://github.com/aimanmalib/mentari/commit/6012d2b) pada 21 November 2026.
 
-> **Keadaan hari ini.** Kontrak sudah berada di testnet Diana: `Mentari` di
-> `0xf5cb2c6048a7ce8c5a7accc66eb8efc33942a448` dan `AtomicityProbe` di `0x7438df055f0d96e6ba1b9ac8e7334a1be56130e4`.
-> Tiga meter simulasi sudah didaftar dan sembilan bacaan harian yang diisi semula, setiap satu disemak di rantai dengan
-> ML-DSA-87, mencetak 344,115 Wh ([`evidence/deploy.json`](evidence/deploy.json)). Lapan akaun ujian sudah diberi dana dan
-> berkunci ([`evidence/accounts.json`](evidence/accounts.json)). Kes A, B, C, D, E2 dan G sudah direkod bersama
-> transaksinya ([`evidence/testnet.json`](evidence/testnet.json)); E dan F perlukan hari yang selesai tanpa bacaan.
-> Larian `pnpm verify` pertama lulus 28 daripada 28 semakan ([`evidence/verify.json`](evidence/verify.json)).
-> Kes H: satu transaksi Native bertandatangan hibrid, dihantar tanpa EVM window terbuka, menjalankan `Mentari.retire`,
-> yang menulis resitnya kembali dalam buku Native ([`docs/findings.md`](docs/findings.md), dalam bahasa Inggeris).
-> "Retire now" di laman kini memakai laluan yang sama: satu transaksi Native dari akaun demo, tanpa EVM window
-> ([ADR 0026](docs/decisions/0026-native-route-for-retire-now.md)).
-> Di laman awam saya menekan "Retire now" 5 kali berturut-turut dan setiap butang kegagalan sekali, dalam Chromium dan
-> WebKit sebagai iPhone 13, dalam bahasa Inggeris dan Melayu. Setiap persaraan menaikkan kedua-dua lejar satu; setiap
-> kegagalan tidak mengubah mana-mana lejar, dan tiada halaman mencatat ralat ([`evidence/live.json`](evidence/live.json)).
-> `pnpm verify` membaca semula kesemua 8 transaksi itu dari testnet.
+> **Keadaan hari ini** (dibaca dari [`evidence/`](evidence/)):
+> - Kontrak testnet: `Mentari` di `0xf5cb2c6048a7ce8c5a7accc66eb8efc33942a448`, `AtomicityProbe` di `0x7438df055f0d96e6ba1b9ac8e7334a1be56130e4`.
+> - 344,115 Wh dicetak daripada 9 bacaan meter, setiap satu disemak di rantai dengan ML-DSA-87 ([`deploy.json`](evidence/deploy.json)).
+> - 16 persaraan, 8,000 Wh dibersarakan, setiap satu sepadan dengan resit Native; `pnpm verify` lulus 67 daripada 67 semakan ([`verify.json`](evidence/verify.json)).
+> - Kes A, B, C, D, E2, G dan H direkod bersama transaksinya ([`testnet.json`](evidence/testnet.json)); kes H ialah persaraan yang dihantar dari lorong Native tanpa EVM window ([`docs/findings.md`](docs/findings.md), dalam bahasa Inggeris).
+> - "Retire now" di laman awam: 5 tekanan berturut-turut, setiap satu menaikkan kedua-dua lejar satu; setiap butang kegagalan tidak mengubah mana-mana lejar ([`live.json`](evidence/live.json)).
 
 ## Semak dalam 3 langkah
 
@@ -75,11 +66,11 @@ dan rekod keputusan dalam [`docs/decisions/`](docs/decisions/).
 
 | Keperluan (teks rasmi) | Di mana ia dipenuhi | Status |
 | --- | --- | --- |
-| "Build an application where an EVM contract atomically calls an approved Native contract." | [`Mentari.retire`](contracts/src/Mentari.sol) memanggil jambatan dengan mesej `record` untuk `qday-receipts`, yang ada dalam senarai dibenarkan testnet (cadangan tadbir urus 40, id kod 865) | Dalam kod dan ujian; kes testnet A selepas deploy |
-| "A working EVM-to-Native call to an approved Native contract" | Kes A: satu persaraan yang menambah satu resit dengan pengirim alamat `qor1…` kontrak | Direkod dalam `evidence/` selepas deploy |
-| "with atomic execution shown on testnet" | Kes B, C, D melalui [`AtomicityProbe`](contracts/src/AtomicityProbe.sol): kiraan resit sama sebelum dan selepas setiap kes | Diuji dengan jambatan tiruan; testnet selepas deploy |
+| "Build an application where an EVM contract atomically calls an approved Native contract." | [`Mentari.retire`](contracts/src/Mentari.sol) memanggil jambatan dengan mesej `record` untuk `qday-receipts`, yang ada dalam senarai dibenarkan testnet (cadangan tadbir urus 40, id kod 865) | Kes A di testnet, blok 10609362: resit 7 → 8 ([`evidence/testnet.json`](evidence/testnet.json)) |
+| "A working EVM-to-Native call to an approved Native contract" | Kes A: satu persaraan yang menambah satu resit dengan pengirim alamat `qor1…` kontrak | Direkod: tx EVM `0x08e96e38…`, resit 8 |
+| "with atomic execution shown on testnet" | Kes B, C, D melalui [`AtomicityProbe`](contracts/src/AtomicityProbe.sol): kiraan resit sama sebelum dan selepas setiap kes | Direkod di testnet, blok 10609364, 10609366, 10609368: resit 8 → 8 setiap kali |
 | Repo awam, lesen, README | Repo ini, [Apache-2.0](LICENSE), fail ini | Siap |
-| Alamat testnet | Buku resit `qor1xjayq5ev55tkzpml9klxwyshr7gdrha0nurha9jhm0f0gdckksgs3gltw8`; alamat Mentari dan AtomicityProbe masuk ke [`config/app.json`](config/app.json) | Alamat kontrak selepas deploy |
+| Alamat testnet | Buku resit `qor1xjayq5ev55tkzpml9klxwyshr7gdrha0nurha9jhm0f0gdckksgs3gltw8`; Mentari `qor17h9jcczg5l8gckn6enrxaw80cvu59fzg2335fw`; AtomicityProbe `qor1wsud7p2lpktwdwsmntywwv62r0jkzv8ymglm0l` ([`config/app.json`](config/app.json)) | Siap |
 | "An AI_USAGE.md file documenting the workflow, the generated work and the human contribution" | [`AI_USAGE.md`](AI_USAGE.md) | Siap |
 
 ## Jalankan
@@ -92,7 +83,7 @@ cd mentari
 pnpm install --frozen-lockfile
 pnpm exec playwright install chromium webkit
 bash scripts/gerbang-ujian.sh   # sama seperti CI
-pnpm build && pnpm start        # laman di http://localhost:8080, data sampel
+pnpm build && pnpm start        # laman di http://localhost:8080, membaca testnet
 ```
 
 ## Ujian
@@ -130,8 +121,6 @@ Versi penuh dengan sumber (dalam bahasa Inggeris): [`docs/threat-model.md`](docs
 - **Meter disimulasi.** Bacaan datang daripada model jam matahari berbenih. Tandatangan, kontrak dan rantai adalah
   sebenar; panel solarnya tidak.
 - **Testnet sahaja.** Ini demo di testnet Diana, bukan skim sijil yang diiktiraf, dan sijilnya tiada nilai.
-- **Belum ada persaraan.** Pada komit ini kontrak sudah dideploy dan mencetak, tetapi belum ada sijil yang dibersarakan
-  di testnet, jadi cincangan persaraan dan kes kegagalan belum ada di sini.
 - **Pihak Native merekod, bukan menguatkuasa.** `qday-receipts` ialah buku resit kongsi dari bengkel. Sesiapa boleh
   menulis kepadanya; resit Mentari ialah yang pengirimnya kontrak Mentari.
 - **Laluan dompet diuji dengan dompet tiruan sahaja.** "Bersarakan dari dompet anda sendiri" menyambung QoreX, meminta

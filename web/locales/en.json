@@ -17,7 +17,7 @@
     "try": "Try it"
   },
   "data": {
-    "sample": "Sample data. The contracts are not on testnet yet, so these numbers are examples, not measurements.",
+    "sample": "Local fixture for development. These numbers are examples, not measurements from the testnet.",
     "live": "Read from QoreChain testnet at {time}.",
     "simulated": "Simulated meter"
   },
@@ -40,7 +40,7 @@
     "agreeDetail": "The latest {checked} of {total} retirements each have a matching receipt.",
     "disagree": "The ledgers disagree",
     "disagreeDetail": "{failed} of the latest {checked} retirements have no matching receipt.",
-    "empty": "No retirements yet",
+    "empty": "Nothing retired in this view",
     "emptyDetail": "The first retirement will show here with its receipt.",
     "checking": "Checking both ledgers",
     "error": "Could not read the ledgers",
@@ -118,7 +118,7 @@
   "retirements": {
     "title": "Every retirement, on both ledgers",
     "lede": "Each row is one transaction. The left side is what the Mentari contract stored on the EVM. The right side is the receipt the same transaction wrote on the Native ledger. The page reads both and compares them.",
-    "empty": "No retirements yet. The first one will show here with its receipt.",
+    "empty": "No retirement to list here. Each new one shows with its receipt.",
     "emptyAction": "Retire some watt-hours",
     "listLabel": "Retirements, newest first",
     "pagerLabel": "More retirements",
@@ -227,7 +227,7 @@
       "confirmed": "Checked again just now: testnet shows the same result.",
       "differs": "Checked again just now: testnet does not show the recorded result.",
       "unreadable": "Could not reach testnet to check it again.",
-      "sample": "Sample case. There is no testnet transaction to check yet."
+      "sample": "Fixture case from local development. It has no testnet transaction to check."
     },
     "noRecord": "No recorded case yet.",
     "idle": "Results appear here. To look up any past retirement, use"
@@ -251,7 +251,7 @@
     "balance": "Your certificates",
     "loading": "Reading…",
     "unknown": "Not known yet",
-    "notDeployed": "The contract is not on the testnet yet, so these steps are closed. Connecting works.",
+    "notDeployed": "This build has no contract address, so these steps are closed. Connecting works.",
     "grant": "Get {wh} Wh",
     "grantSending": "Asking the demo account…",
     "grantSent": "The demo account sent you {wh} Wh:",

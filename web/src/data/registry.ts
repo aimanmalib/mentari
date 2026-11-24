@@ -54,7 +54,7 @@ export async function readRegistry(
   };
 }
 
-/** Sample data in the shape of the testnet evidence, for development before the contracts are deployed. */
+/** Fixture data in the shape of the testnet evidence, for local development without the chain. */
 export interface SampleData {
   contract: string;
   totals: { minted: string; retired: string; supply: string };

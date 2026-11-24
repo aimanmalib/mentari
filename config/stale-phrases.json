@@ -1,0 +1,47 @@
+{
+  "_comment": "Phrases that were true before the contracts were on testnet and are false now. web/test/stale-phrases.test.ts fails when one of them is in a scanned file while evidence/ records a retirement. scan lists the files and folders read (relative to the repository root); skip lists folders and files left out: decision records and the changelog are history, and this file and its test name the phrases on purpose. Matching ignores case.",
+  "phrases": [
+    "No retirements yet",
+    "after deployment",
+    "not on testnet yet",
+    "not on the testnet yet",
+    "Tested against the bridge mock",
+    "over sample data",
+    "is not created yet",
+    "28 of 28",
+    "will be updated",
+    "205 vitest",
+    "Belum ada persaraan",
+    "selepas deploy",
+    "belum ada di testnet",
+    "belum berada di testnet",
+    "jambatan tiruan",
+    "28 daripada 28",
+    "atas data sampel"
+  ],
+  "scan": [
+    "README.md",
+    "README.ms.md",
+    "AI_USAGE.md",
+    "CONTRIBUTING.md",
+    "SECURITY.md",
+    "NOTICE",
+    "docs",
+    "deck/README.md",
+    "deck/kandungan.json",
+    "deck/meta.json",
+    "deck/index.html",
+    "web/locales",
+    "web/src",
+    "server/src",
+    "scripts/src",
+    "config"
+  ],
+  "skip": [
+    "docs/decisions",
+    "docs/hantar",
+    "CHANGELOG.md",
+    "config/stale-phrases.json"
+  ],
+  "extensions": [".md", ".json", ".html", ".ts", ".tsx", ".css", ""]
+}

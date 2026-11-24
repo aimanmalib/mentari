@@ -17,7 +17,7 @@
     "try": "Cuba"
   },
   "data": {
-    "sample": "Data contoh. Kontrak belum ada di testnet, jadi angka ini contoh, bukan ukuran.",
+    "sample": "Data tempatan untuk pembangunan. Angka ini contoh, bukan ukuran dari testnet.",
     "live": "Dibaca dari testnet QoreChain pada {time}.",
     "simulated": "Meter simulasi"
   },
@@ -40,7 +40,7 @@
     "agreeDetail": "{checked} daripada {total} persaraan terkini masing-masing ada resit yang sepadan.",
     "disagree": "Lejar tidak sepakat",
     "disagreeDetail": "{failed} daripada {checked} persaraan terkini tiada resit yang sepadan.",
-    "empty": "Belum ada persaraan",
+    "empty": "Tiada persaraan dalam paparan ini",
     "emptyDetail": "Persaraan pertama akan dipapar di sini bersama resitnya.",
     "checking": "Menyemak kedua-dua lejar",
     "error": "Lejar tidak dapat dibaca",
@@ -118,7 +118,7 @@
   "retirements": {
     "title": "Setiap persaraan, di kedua-dua lejar",
     "lede": "Setiap baris ialah satu transaksi. Sebelah kiri ialah apa yang kontrak Mentari simpan di EVM. Sebelah kanan ialah resit yang ditulis oleh transaksi yang sama di lejar Native. Laman ini membaca kedua-duanya dan membandingkannya.",
-    "empty": "Belum ada persaraan. Yang pertama akan muncul di sini bersama resitnya.",
+    "empty": "Tiada persaraan untuk disenaraikan di sini. Setiap yang baharu muncul bersama resitnya.",
     "emptyAction": "Persarakan beberapa watt-jam",
     "listLabel": "Persaraan, terbaharu dahulu",
     "pagerLabel": "Persaraan lain",
@@ -140,7 +140,7 @@
     "loading": "Membaca kedua-dua lejar",
     "askedN": "Persaraan #{n}",
     "askedReceipt": "Resit #{id}",
-    "noRetirement": "Kontrak belum ada persaraan dengan nombor ini.",
+    "noRetirement": "Kontrak tiada persaraan dengan nombor ini.",
     "noReceipt": "Lejar Native tiada resit dengan id ini.",
     "orphan": "Resit ini menyebut persaraan #{n}, tetapi kontrak tiada persaraan itu.",
     "notMentari": "Resit ini wujud, tetapi bukan ditulis oleh kontrak Mentari. Ia dihantar oleh {sender}.",
@@ -227,7 +227,7 @@
       "confirmed": "Disemak semula tadi: testnet menunjukkan hasil yang sama.",
       "differs": "Disemak semula tadi: testnet tidak menunjukkan hasil yang dirakam.",
       "unreadable": "Tidak dapat menghubungi testnet untuk menyemak semula.",
-      "sample": "Kes contoh. Belum ada transaksi testnet untuk disemak."
+      "sample": "Kes data tempatan dari pembangunan. Ia tiada transaksi testnet untuk disemak."
     },
     "noRecord": "Belum ada kes dirakam.",
     "idle": "Hasil muncul di sini. Untuk mencari persaraan lepas, guna"
@@ -251,7 +251,7 @@
     "balance": "Sijil anda",
     "loading": "Membaca…",
     "unknown": "Belum diketahui",
-    "notDeployed": "Kontrak belum berada di testnet, jadi langkah ini ditutup. Sambungan dompet berfungsi.",
+    "notDeployed": "Binaan ini tiada alamat kontrak, jadi langkah ini ditutup. Sambungan dompet berfungsi.",
     "grant": "Dapatkan {wh} Wh",
     "grantSending": "Meminta daripada akaun demo…",
     "grantSent": "Akaun demo menghantar {wh} Wh kepada anda:",

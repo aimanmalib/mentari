@@ -4,6 +4,7 @@ import { validateMeterConfig, type MeterConfig } from "../../scripts/src/meter.j
 import { parseRunAt, type DailySchedule } from "./meter/daily.js";
 import type { DemoChainConfig } from "./demo/live.js";
 import type { MeterChain } from "./meter/live.js";
+import { EXPLORER_MOUNT } from "./explorer.js";
 import type { NativeLaneConfig } from "./native.js";
 
 /** Everything the server reads from `config/`. Code never holds these values. */
@@ -33,6 +34,8 @@ export interface ServerConfig {
   meterJob: { model: MeterConfig; windowDays: number; chain: MeterChain };
   /** Which jobs send from the Native lane, and how (block `nativeRoute` of `config/app.json`, decision 0026). */
   nativeRoute: NativeRoute;
+  /** `/go/tx/<hash>` redirects (decision 0033): explorer page shape and how long a browser keeps one. */
+  explorer: { txTemplate: string; cacheSeconds: number };
 }
 
 export interface NativeRoute {
@@ -265,5 +268,21 @@ export function loadServerConfig(dir: string = CONFIG_DIR): ServerConfig {
     meter: dailySchedule(meter.daily),
     meterJob: job,
     nativeRoute: nativeRoute(app, network, rest.origin),
+    explorer: explorerLinks(app, limits),
   };
+}
+
+/** Explorer redirect settings. The site's `web.explorer.evmTx` must point at this server's `/go/tx/` route. */
+function explorerLinks(app: Record<string, unknown>, limits: Record<string, unknown>): ServerConfig["explorer"] {
+  const web = obj(obj(app.web, "config/app.json web").explorer, "config/app.json web.explorer");
+  const txTemplate = str(web.tx, "config/app.json web.explorer.tx");
+  if (!txTemplate.startsWith("https://") || !txTemplate.includes("{hash}")) {
+    throw new Error("config/app.json web.explorer.tx: must be an https URL with a {hash} placeholder");
+  }
+  const evmTx = str(web.evmTx, "config/app.json web.explorer.evmTx");
+  if (evmTx !== `${EXPLORER_MOUNT}/{hash}`) {
+    throw new Error(`config/app.json web.explorer.evmTx: must be "${EXPLORER_MOUNT}/{hash}" (the server route)`);
+  }
+  const lim = obj(limits.explorer, "config/limits.json explorer");
+  return { txTemplate, cacheSeconds: posInt(lim.redirectCacheSeconds, "explorer.redirectCacheSeconds") };
 }

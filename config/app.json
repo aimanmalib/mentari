@@ -115,6 +115,7 @@
     "demoApi": "/api/demo",
     "explorer": {
       "tx": "https://explore.qore.network/tx/{hash}",
+      "evmTx": "/go/tx/{hash}",
       "block": "https://explore.qore.network/block/{height}",
       "address": "https://explore.qore.network/address/{address}"
     },

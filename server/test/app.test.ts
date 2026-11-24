@@ -6,6 +6,7 @@ import { join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { createHandler } from "../src/app.js";
 import { DemoApi } from "../src/demo/api.js";
+import { ExplorerLinks } from "../src/explorer.js";
 import { LcdProxy } from "../src/lcd.js";
 import { StaticSite } from "../src/static.js";
 import { fakeFetch, FakeChain, ORIGIN, testConfig } from "./fixture.js";
@@ -24,7 +25,9 @@ beforeAll(async () => {
   writeFileSync(join(tmpdir(), "mentari-outside.txt"), "secret");
   const cfg = testConfig();
   const demo = new DemoApi(cfg.demo, new FakeChain());
-  server = createServer(createHandler({ cfg, lcd: new LcdProxy(cfg, upstream.fn), demo, site: new StaticSite(dir) }));
+  const lcd = new LcdProxy(cfg, upstream.fn);
+  const explorer = new ExplorerLinks({ ...cfg.explorer, restOrigin: cfg.restOrigin }, lcd);
+  server = createServer(createHandler({ cfg, lcd, explorer, demo, site: new StaticSite(dir) }));
   await new Promise<void>((ok) => server.listen(0, "127.0.0.1", ok));
   base = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
 });
@@ -49,6 +52,13 @@ describe("server", () => {
     expect(r.headers.get("cache-control")).toBe("no-cache, no-transform");
     expect(r.headers.get("content-type")).toMatch(/^text\/html/);
     expect(r.headers.get("x-content-type-options")).toBe("nosniff");
+  });
+
+  it("sends /go/tx/<hash> to the explorer instead of the page shell", async () => {
+    const hash = "ab".repeat(32);
+    const r = await fetch(`${base}/go/tx/${hash}`, { redirect: "manual" });
+    expect(r.status).toBe(302);
+    expect(r.headers.get("location")).toBe(`https://explorer.example.test/tx/${hash.toUpperCase()}`);
   });
 
   it("falls back to index.html for client routes but not for missing files", async () => {

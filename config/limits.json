@@ -33,5 +33,8 @@
     "probeNote": "Try it demo",
     "revertCaseGas": 1500000,
     "statusCacheSeconds": 15
+  },
+  "explorer": {
+    "redirectCacheSeconds": 86400
   }
 }

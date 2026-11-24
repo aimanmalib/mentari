@@ -1,6 +1,7 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
 import type { ServerConfig } from "./config.js";
 import { DEMO_MOUNT, type DemoApi } from "./demo/api.js";
+import { EXPLORER_MOUNT, type ExplorerLinks } from "./explorer.js";
 import { json, methodNotAllowed, notFound, type Reply } from "./http.js";
 import { CidrSet, clientIp, type ClientIpRules } from "./ip.js";
 import { LCD_MOUNT, type LcdProxy } from "./lcd.js";
@@ -15,6 +16,7 @@ const SECURITY_HEADERS: Record<string, string> = {
 export interface AppParts {
   cfg: ServerConfig;
   lcd: LcdProxy;
+  explorer: ExplorerLinks;
   demo: DemoApi;
   site: StaticSite;
 }
@@ -37,6 +39,7 @@ export async function route(info: RequestInfo, parts: AppParts): Promise<Reply> 
     return method === "GET" || method === "HEAD" ? json(200, { ok: true }) : methodNotAllowed("GET, HEAD");
   }
   if (isMount(url, LCD_MOUNT)) return parts.lcd.handle(method, url);
+  if (isMount(url, EXPLORER_MOUNT)) return parts.explorer.handle(method, url);
   if (isMount(url, DEMO_MOUNT)) return parts.demo.handle(info);
   if (isMount(url, "/api")) return notFound();
   return parts.site.handle(method, url);

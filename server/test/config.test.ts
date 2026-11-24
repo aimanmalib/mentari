@@ -26,6 +26,15 @@ function copy(
 }
 
 describe("loadServerConfig", () => {
+  it("reads the explorer redirect and ties the site's EVM link to the server route", () => {
+    const c = loadServerConfig();
+    expect(c.explorer.txTemplate).toMatch(/^https:\/\/.+\{hash\}/);
+    expect(c.explorer.cacheSeconds).toBeGreaterThan(0);
+    expect(() => loadServerConfig(copy((_l, app) => (app.web.explorer.evmTx = "/elsewhere/{hash}")))).toThrow(/evmTx/);
+    expect(() => loadServerConfig(copy((_l, app) => (app.web.explorer.tx = "http://x.test/tx/{hash}")))).toThrow(/explorer\.tx/);
+    expect(() => loadServerConfig(copy((l) => delete l.explorer))).toThrow(/limits\.json explorer/);
+  });
+
   it("loads the committed config into the expected shape", () => {
     const c = loadServerConfig();
     expect(c.restOrigin).toMatch(/^https:\/\/[^/]+$/);

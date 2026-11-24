@@ -5,7 +5,7 @@ export const LCD_MOUNT = "/lcd";
 
 type Fetch = (url: string, init: RequestInit) => Promise<Response>;
 
-interface Cached {
+export interface Cached {
   status: number;
   contentType: string;
   body: Buffer;
@@ -69,21 +69,12 @@ export class LcdProxy {
     if (method !== "GET") return methodNotAllowed("GET");
     const url = upstreamUrl(rawUrl.slice(LCD_MOUNT.length), this.#cfg.restOrigin, this.#cfg.lcd.allowedPrefixes);
     if (!url) return notFound();
-    const key = url.pathname + url.search;
-
-    let entry = this.#cache.get(key);
-    if (!entry || entry.expires <= this.#now()) {
-      let pending = this.#inflight.get(key);
-      if (!pending) {
-        pending = this.#load(url, key).finally(() => this.#inflight.delete(key));
-        this.#inflight.set(key, pending);
-      }
-      try {
-        entry = await pending;
-      } catch (err) {
-        const reason = err instanceof TooLarge ? "upstream reply too large" : "upstream unavailable";
-        return json(502, { error: reason });
-      }
+    let entry: Cached;
+    try {
+      entry = await this.get(url);
+    } catch (err) {
+      const reason = err instanceof TooLarge ? "upstream reply too large" : "upstream unavailable";
+      return json(502, { error: reason });
     }
     return {
       status: entry.status,
@@ -93,6 +84,22 @@ export class LcdProxy {
       },
       body: entry.body,
     };
+  }
+
+  /**
+   * Read one upstream URL through the cache. Callers build `url` from the fixed origin themselves; the allowlist check
+   * belongs to `handle`. Throws when the upstream fails or its reply is too large.
+   */
+  async get(url: URL): Promise<Cached> {
+    const key = url.pathname + url.search;
+    const entry = this.#cache.get(key);
+    if (entry && entry.expires > this.#now()) return entry;
+    let pending = this.#inflight.get(key);
+    if (!pending) {
+      pending = this.#load(url, key).finally(() => this.#inflight.delete(key));
+      this.#inflight.set(key, pending);
+    }
+    return pending;
   }
 
   async #load(url: URL, key: string): Promise<Cached> {

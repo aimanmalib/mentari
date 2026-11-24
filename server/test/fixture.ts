@@ -54,6 +54,7 @@ export function testConfig(over: Partial<ServerConfig["lcd"]> = {}): ServerConfi
       attestGas: 2000000,
       revertCodespace: "crossvm",
     },
+    explorer: { txTemplate: "https://explorer.example.test/tx/{hash}", cacheSeconds: 600 },
   };
 }
 

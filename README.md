@@ -198,6 +198,8 @@ and my contribution.
   [React](https://react.dev), [wagmi](https://wagmi.sh), [RainbowKit](https://rainbowkit.com),
   [vitest](https://vitest.dev), [Playwright](https://playwright.dev), TypeScript and tsx. Versions are pinned in `package.json`,
   `pnpm-lock.yaml` and `.gitmodules`.
+- The music in the demo video is by Sascha Ende, [ende.app](https://ende.app) (CC BY 4.0). The narration is an AI clone
+  of my own voice ([decision 0032](docs/decisions/0032-demo-video.md)).
 
 ## Contributing
 

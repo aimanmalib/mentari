@@ -71,4 +71,6 @@ I am a solo builder. These parts are mine and are not delegated to an agent:
 - **Judgement calls the agents escalate to me.** Anything about money, public wording about me, or access I have not
   given.
 
-The narration in the video will use a clone of my own voice, made with ElevenLabs, and the video will say so.
+The narration in the demo video is a clone of my own voice, made with ElevenLabs, and the end card says so. Agents
+wrote the narration lines, captured the live site with Playwright and built the film; I listen to it before I publish
+it. The music is by Sascha Ende, ende.app (CC BY 4.0). How the video is built: [decision 0032](docs/decisions/0032-demo-video.md).

@@ -15,6 +15,10 @@ contract is a new deployment, listed here with its new address.
 
 ### Added
 
+- A demo video of about 103 seconds, built from full-page captures of the live site with real clicks (one "Retire
+  now" and the three failure buttons), excerpts of `evidence/testnet.json` and one real `pnpm verify` run. The narration
+  is an AI clone of my own voice; the music is by Sascha Ende (CC BY 4.0). The workspace `video/` is not in git
+  (decision 0032).
 - Cases E (a reading signed with another account's key, `BadSignature`) and F (one watt-hour over the capacity,
   `WhOutOfRange`) are recorded in `evidence/testnet.json`; both reverted with the receipt count unchanged, so all of A
   to H are on the testnet. Case H step 1 was sent again for a day without a reading and was accepted: `attest` from

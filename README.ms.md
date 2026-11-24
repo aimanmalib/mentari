@@ -144,6 +144,8 @@ sebelum setiap komit diterima. [`AI_USAGE.md`](AI_USAGE.md) menerangkan aliran k
 - `@qorechain/sdk`, [Foundry](https://github.com/foundry-rs/foundry) dan forge-std, [Vite](https://vite.dev),
   [React](https://react.dev), [wagmi](https://wagmi.sh), [RainbowKit](https://rainbowkit.com),
   [vitest](https://vitest.dev), [Playwright](https://playwright.dev), TypeScript dan tsx.
+- Muzik dalam video demo oleh Sascha Ende, [ende.app](https://ende.app) (CC BY 4.0). Narasinya ialah klon AI suara saya
+  sendiri ([keputusan 0032](docs/decisions/0032-demo-video.md)).
 
 ## Lesen
 

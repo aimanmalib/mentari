@@ -8,6 +8,8 @@
 <a href="https://mentari.sasateguh.com"><b>demo langsung</b></a> · <a href="docs/video/mentari-demo.mp4"><b>video demo</b></a> · <a href="#nilai-dalam-3-minit">nilai dalam 3 minit</a> · <a href="#bukti-di-testnet">bukti di testnet</a> · <a href="#lima-kriteria-penjurian">kriteria penjurian</a> · <a href="#jalankan">jalankan</a> · <a href="#had">had</a> · <a href="AI_USAGE.md">penggunaan AI</a> · <a href="docs/deck.pdf">slaid (PDF)</a> · <a href="README.md">English</a><br>
 Dibina di Malaysia oleh <a href="https://aimanmalib.com">Aiman Malib</a> · <a href="https://sasateguh.com">Sasa Teguh</a></p>
 
+<p align="center"><a href="docs/video/mentari-demo.mp4"><img src="docs/images/video-poster.jpg" width="640" alt="Satu bingkai dari video demo: satu transaksi di penjelajah testnet, dan kedua-dua lejar naik satu"></a><br><a href="docs/video/mentari-demo.mp4"><b>Tonton video demo</b></a> (bersuara, sari kata Inggeris, kurang tiga minit)</p>
+
 <p align="center"><img src="docs/images/screenshot-desktop.png" width="640" alt="Halaman daftar Mentari di desktop: lejar EVM di kiri, buku resit Native di kanan, dan lencana di tengah yang menyatakan kedua-dua lejar sepakat"> <img src="docs/images/screenshot-mobile.png" width="180" alt="Halaman daftar yang sama di iPhone, dengan label meter simulasi"></p>
 
 Sijil tenaga hanya bernilai jika ia boleh dibersarakan sekali. Kebanyakan daftar menyimpan pembakaran dalam satu sistem

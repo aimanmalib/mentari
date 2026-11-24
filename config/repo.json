@@ -1,0 +1,7 @@
+{
+  "_comment": "GitHub About box for aimanmalib/mentari. scripts/repo-about.sh compares it with GitHub (default) or writes it (--apply). homepage must equal web.share.siteUrl in config/app.json.",
+  "repo": "aimanmalib/mentari",
+  "description": "Solar certificates you can retire only once: an EVM burn and a Native receipt on QoreChain land in one Cross-VM transaction, or not at all. ML-DSA-87 signed meter readings. Built for Build Before Q-Day.",
+  "homepage": "https://mentari.sasateguh.com",
+  "topics": ["cosmwasm", "cross-vm", "foundry", "hackathon", "ml-dsa", "post-quantum", "qorechain", "renewable-energy", "solidity"]
+}

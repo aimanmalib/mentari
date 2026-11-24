@@ -8,6 +8,8 @@
 <a href="https://mentari.sasateguh.com"><b>live demo</b></a> · <a href="docs/video/mentari-demo.mp4"><b>demo video</b></a> · <a href="#judge-it-in-3-minutes">judge it in 3 minutes</a> · <a href="#proof-on-testnet">proof on testnet</a> · <a href="#the-five-judging-criteria">judging criteria</a> · <a href="#run-it">run it</a> · <a href="#limits">limits</a> · <a href="AI_USAGE.md">AI usage</a> · <a href="docs/deck.pdf">slides (PDF)</a> · <a href="README.ms.md">Bahasa Melayu</a><br>
 Built in Malaysia by <a href="https://aimanmalib.com">Aiman Malib</a> · <a href="https://sasateguh.com">Sasa Teguh</a></p>
 
+<p align="center"><a href="docs/video/mentari-demo.mp4"><img src="docs/images/video-poster.jpg" width="640" alt="A frame from the demo video: one transaction on the testnet explorer, and both ledgers go up by one"></a><br><a href="docs/video/mentari-demo.mp4"><b>Watch the demo video</b></a> (narrated, English subtitles, under three minutes)</p>
+
 <p align="center"><img src="docs/images/screenshot-desktop.png" width="640" alt="The Mentari registry page on desktop: the EVM ledger on the left, the Native receipts book on the right, and a badge in the middle that says both ledgers agree"> <img src="docs/images/screenshot-mobile.png" width="180" alt="The same registry page on an iPhone, with the simulated meter label"></p>
 
 An energy certificate is only worth something if it can be retired once. Most registries keep the burn in one system and

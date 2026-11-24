@@ -17,6 +17,12 @@ export function ChainLink({ href, children, label }: { href: string; children: s
   );
 }
 
+/** The explorer picks its network from its own setting and opens on mainnet; a link cannot choose testnet for it. */
+export function ExplorerNote() {
+  const { t } = useI18n();
+  return <p className="explorer-note">{t("records.explorerNote")}</p>;
+}
+
 /** One retirement as a strip of the ledger seam: the EVM record on the left, its Native receipt on the right. */
 export function RecordPair({ record, showVerify = true }: { record: RetirementRecord; showVerify?: boolean }) {
   const { t, num, dateParts } = useI18n();

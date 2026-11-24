@@ -108,6 +108,7 @@
     "openAddress": "Open {address} in the explorer",
     "openTx": "Open transaction {hash} in the explorer",
     "openBlock": "Open block {height} in the explorer",
+    "explorerNote": "The explorer opens on mainnet. Press Testnet at the top of its page and the record shows.",
     "match": "Match",
     "mismatch": "No match",
     "receipt": "Receipt #{id}",

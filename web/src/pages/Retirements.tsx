@@ -1,5 +1,5 @@
 import { SourceNotice } from "../components/Chrome.js";
-import { RecordPair } from "../components/RecordPair.js";
+import { ExplorerNote, RecordPair } from "../components/RecordPair.js";
 import { siteConfig } from "../config.js";
 import { readRetirementsPage, type RetirementsPage } from "../data/records.js";
 import { useLoad, siteMode } from "../data/useReaders.js";
@@ -72,6 +72,7 @@ export function Retirements() {
       <div className="intro">
         <h1>{t("retirements.title")}</h1>
         <p className="lede">{t("retirements.lede")}</p>
+        <ExplorerNote />
         {state.status === "ready" && (
           <div className="intro-meta">
             <SourceNotice source={siteMode} readAt={state.value.readAt} />

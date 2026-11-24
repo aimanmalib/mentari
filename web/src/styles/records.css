@@ -173,6 +173,13 @@
   margin-right: auto;
 }
 
+.explorer-note {
+  margin: 0;
+  max-width: 62ch;
+  color: var(--muted);
+  font-size: var(--step--1);
+}
+
 .records-status,
 .records-empty {
   display: grid;

@@ -9,9 +9,13 @@ export interface Explorer {
 
 const fill = (template: string, name: string, value: string) => template.replace(`{${name}}`, encodeURIComponent(value));
 
+/**
+ * The explorer's transaction page takes the Cosmos hash only. An EVM hash (`0x…`) goes through this server's
+ * `/go/tx/` route, which looks up the Cosmos hash and redirects (decision 0033).
+ */
 export function explorer(templates: SiteConfig["explorer"]): Explorer {
   return {
-    tx: (hash) => fill(templates.tx, "hash", hash),
+    tx: (hash) => fill(/^0x/i.test(hash) ? templates.evmTx : templates.tx, "hash", hash),
     block: (height) => fill(templates.block, "height", String(height)),
     address: (address) => fill(templates.address, "address", address),
   };

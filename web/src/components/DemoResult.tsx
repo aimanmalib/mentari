@@ -6,7 +6,7 @@ import { explorer } from "../data/explorer.js";
 import { useI18n } from "../i18n/I18n.js";
 import { Link, routes } from "../router.js";
 import { Seal } from "./LedgerSeam.js";
-import { ChainLink } from "./RecordPair.js";
+import { ChainLink, ExplorerNote } from "./RecordPair.js";
 
 const links = explorer(siteConfig.explorer);
 
@@ -73,6 +73,7 @@ export function DemoResult({
             {shorten(outcome.tx.hash, 8, 6)}
           </ChainLink>
         </p>
+        <ExplorerNote />
         {outcome.tx.lane === "native" && (
           <p className="demo-route">{t(outcome.expect === "revert" ? "tryit.nativeRouteRevert" : "tryit.nativeRoute")}</p>
         )}
@@ -96,10 +97,14 @@ export function DemoResult({
           <CountsBoard retirements={recorded.retirements} receipts={recorded.receipts} />
           <p className="demo-tx">
             {t("tryit.recordedTx")}{" "}
-            <ChainLink href={links.tx(recorded.evm_tx)} label={t("records.openTx", { hash: recorded.evm_tx })}>
+            <ChainLink
+              href={links.tx(recorded.cosmos_tx ?? recorded.evm_tx)}
+              label={t("records.openTx", { hash: recorded.evm_tx })}
+            >
               {shorten(recorded.evm_tx, 8, 6)}
             </ChainLink>
           </p>
+          <ExplorerNote />
           {recheck && <p className={`recheck recheck-${recheck}`}>{t(`tryit.recheck.${recheck}`)}</p>}
         </>
       ) : (

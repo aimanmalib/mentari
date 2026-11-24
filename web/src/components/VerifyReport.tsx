@@ -2,7 +2,7 @@ import { shorten } from "../data/address.js";
 import type { VerifyCheck, VerifyReport } from "../data/records.js";
 import { useI18n } from "../i18n/I18n.js";
 import { Seal } from "./LedgerSeam.js";
-import { RecordPair } from "./RecordPair.js";
+import { ExplorerNote, RecordPair } from "./RecordPair.js";
 
 const CHECK_KEYS: Record<VerifyCheck, string> = {
   "receipt-exists": "verify.check.receiptExists",
@@ -58,6 +58,7 @@ export function VerifyResult({ report }: { report: VerifyReport }) {
         ))}
       </ul>
       <RecordPair record={report.record} showVerify={false} />
+      <ExplorerNote />
     </div>
   );
 }

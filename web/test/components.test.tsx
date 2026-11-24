@@ -23,6 +23,7 @@ const text = (html: string) =>
     .replace(/\s+/g, " ");
 
 const HASH = `0x${"cd".repeat(32)}`;
+const COSMOS = "EF".repeat(32);
 const HOLDER = "0x7d3c000000000000000000000000000000000007";
 const RECORD: RetirementRecord = {
   retirement: { n: 7, holder: HOLDER, wh: 500n, receiptId: 42, timestamp: 1795000000 },
@@ -35,7 +36,9 @@ const explorerOrigin = new URL(siteConfig.explorer.tx.replace("{hash}", "x")).or
 describe("RecordPair", () => {
   it("shows both sides with explorer links for the transaction, the holder and the receipt's block", () => {
     const html = render(<RecordPair record={RECORD} />);
-    expect(html).toContain(siteConfig.explorer.tx.replace("{hash}", HASH));
+    expect(html).toContain(`href="${siteConfig.explorer.evmTx.replace("{hash}", HASH)}"`);
+    expect(html).not.toContain(siteConfig.explorer.tx.replace("{hash}", HASH));
+    expect(text(html)).not.toContain("Press Testnet");
     expect(html).toContain(siteConfig.explorer.address.replace("{address}", HOLDER));
     expect(html).toContain(siteConfig.explorer.block.replace("{height}", "10501234"));
     expect(html).toContain(explorerOrigin);
@@ -154,15 +157,24 @@ describe("Try it", () => {
   });
 
   it("falls back to the recorded case with the reason, the wait and the re-check result", () => {
-    const html = text(
-      render(
-        <DemoResult
-          outcome={{ kind: "fallback", action: "retire", reason: "ip-limit", retryAfterSeconds: 90, evidenceCase: "A" }}
-          recorded={{ id: "A", expect: "success", evm_tx: HASH, height: 1, receipts: { before: 1, after: 2 }, retirements: { before: 0, after: 1 } }}
-          recheck="confirmed"
-        />,
-      ),
+    const raw = render(
+      <DemoResult
+        outcome={{ kind: "fallback", action: "retire", reason: "ip-limit", retryAfterSeconds: 90, evidenceCase: "A" }}
+        recorded={{
+          id: "A",
+          expect: "success",
+          evm_tx: HASH,
+          cosmos_tx: COSMOS,
+          height: 1,
+          receipts: { before: 1, after: 2 },
+          retirements: { before: 0, after: 1 },
+        }}
+        recheck="confirmed"
+      />,
     );
+    const html = text(raw);
+    expect(raw).toContain(`href="${siteConfig.explorer.tx.replace("{hash}", COSMOS)}"`);
+    expect(html).toContain("Press Testnet at the top of its page");
     expect(html).toContain("You have used this hour's live sends.");
     expect(html).toContain("Try again in about 2 min.");
     expect(html).toContain("recorded testnet case A");

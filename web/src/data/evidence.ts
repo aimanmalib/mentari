@@ -5,6 +5,8 @@ export interface EvidenceCase {
   id: string;
   expect: "success" | "revert";
   evm_tx: string;
+  /** Hash of the Native transaction that carried it; the explorer's transaction page takes this one. */
+  cosmos_tx: string | null;
   height: number | null;
   receipts: Counts | null;
   retirements: Counts | null;
@@ -25,6 +27,7 @@ export function parseEvidence(raw: unknown): EvidenceCase[] {
         id: c.id,
         expect: c.expect,
         evm_tx: c.evm_tx,
+        cosmos_tx: typeof c.cosmos_tx === "string" && c.cosmos_tx !== "" ? c.cosmos_tx : null,
         height: typeof c.height === "number" ? c.height : null,
         receipts: counts(c.receipts),
         retirements: counts(c.retirements),

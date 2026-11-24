@@ -4,20 +4,22 @@ import { parseEvidence, recheckCase, type EvidenceCase } from "../src/data/evide
 import { explorer } from "../src/data/explorer.js";
 import { evidenceCases } from "../src/data/evidenceSource.js";
 
-const CASE: EvidenceCase = { id: "B", expect: "revert", evm_tx: "0xabc", height: 7, receipts: { before: 1, after: 1 }, retirements: null };
+const CASE: EvidenceCase = { id: "B", expect: "revert", evm_tx: "0xabc", cosmos_tx: null, height: 7, receipts: { before: 1, after: 1 }, retirements: null };
 
 describe("parseEvidence", () => {
   it("reads `{ cases }` or a bare list and skips incomplete entries", () => {
     const raw = [
       { id: "A", expect: "success", evm_tx: "0x1", height: 3, receipts: { before: 1, after: 2 } },
+      { id: "E", expect: "revert", evm_tx: "0x5", cosmos_tx: "AB12", height: 4 },
       { id: "B", expect: "maybe", evm_tx: "0x2" },
       { id: "C", expect: "revert" },
       "junk",
     ];
     expect(parseEvidence({ cases: raw })).toEqual([
-      { id: "A", expect: "success", evm_tx: "0x1", height: 3, receipts: { before: 1, after: 2 }, retirements: null },
+      { id: "A", expect: "success", evm_tx: "0x1", cosmos_tx: null, height: 3, receipts: { before: 1, after: 2 }, retirements: null },
+      { id: "E", expect: "revert", evm_tx: "0x5", cosmos_tx: "AB12", height: 4, receipts: null, retirements: null },
     ]);
-    expect(parseEvidence(raw)).toHaveLength(1);
+    expect(parseEvidence(raw)).toHaveLength(2);
     expect(parseEvidence(null)).toEqual([]);
   });
 
@@ -50,8 +52,15 @@ describe("recheckCase", () => {
 
 describe("explorer", () => {
   it("fills the URL templates and encodes the values", () => {
-    const x = explorer({ tx: "https://x.test/tx/{hash}", block: "https://x.test/block/{height}", address: "https://x.test/a/{address}" });
-    expect(x.tx("0xab")).toBe("https://x.test/tx/0xab");
+    const x = explorer({
+      tx: "https://x.test/tx/{hash}",
+      evmTx: "/go/tx/{hash}",
+      block: "https://x.test/block/{height}",
+      address: "https://x.test/a/{address}",
+    });
+    expect(x.tx("AB12")).toBe("https://x.test/tx/AB12");
+    expect(x.tx("0xab")).toBe("/go/tx/0xab");
+    expect(x.tx("0XAB")).toBe("/go/tx/0XAB");
     expect(x.block(12)).toBe("https://x.test/block/12");
     expect(x.address("a/b?c")).toBe("https://x.test/a/a%2Fb%3Fc");
   });

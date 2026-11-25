@@ -226,7 +226,7 @@
       "_comment": "source and slides are footer links. video is the demo video page (YouTube); empty = the home page shows the poster without a play link.",
       "source": "https://github.com/aimanmalib/mentari",
       "slides": "https://github.com/aimanmalib/mentari/blob/main/docs/deck.pdf",
-      "video": ""
+      "video": "https://youtu.be/ziTuy14lV1g"
     },
     "home": {
       "_comment": "The home page (decision 0035). faq lists the questions in order; each id has home.faq.<id>.q and .a in web/locales. poster is web.cover.webCopy, bundled at build time.",

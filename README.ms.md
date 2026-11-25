@@ -5,7 +5,7 @@
 <p align="center"><a href="https://github.com/aimanmalib/mentari/actions/workflows/ci.yml"><img src="https://github.com/aimanmalib/mentari/actions/workflows/ci.yml/badge.svg" alt="CI"></a> <a href="https://github.com/aimanmalib/mentari/blob/main/LICENSE"><img src="https://img.shields.io/github/license/aimanmalib/mentari" alt="Lesen: Apache-2.0"></a> <img src="https://img.shields.io/badge/QoreChain-Diana%20testnet-22357e" alt="Testnet QoreChain Diana"></p>
 
 <p align="center"><b>Sijil solar yang hanya boleh dibersarakan sekali: bakar dan resit awam berlaku bersama, atau tidak langsung.</b> · <i>Solar certificates you can retire only once: burn and public receipt land together, or not at all.</i><br>
-<a href="https://mentari.sasateguh.com"><b>demo langsung</b></a> · <a href="https://youtu.be/ziTuy14lV1g"><b>video demo</b></a> · <a href="#nilai-dalam-3-minit">nilai dalam 3 minit</a> · <a href="#bukti-di-testnet">bukti di testnet</a> · <a href="#lima-kriteria-penjurian">kriteria penjurian</a> · <a href="#jalankan">jalankan</a> · <a href="#had">had</a> · <a href="AI_USAGE.md">penggunaan AI</a> · <a href="docs/deck.pdf">slaid (PDF)</a> · <a href="README.md">English</a><br>
+<a href="https://mentari.sasateguh.com"><b>demo langsung</b></a> · <a href="https://youtu.be/ziTuy14lV1g"><b>video demo</b></a> · <a href="#semak-dalam-3-langkah">semak dalam 3 langkah</a> · <a href="#bukti-di-testnet">bukti di testnet</a> · <a href="#lima-kriteria-penjurian">kriteria penjurian</a> · <a href="#jalankan">jalankan</a> · <a href="#had">had</a> · <a href="AI_USAGE.md">penggunaan AI</a> · <a href="docs/deck.pdf">slaid (PDF)</a> · <a href="README.md">English</a><br>
 Dibina di Malaysia oleh <a href="https://aimanmalib.com">Aiman Malib</a> · <a href="https://sasateguh.com">Sasa Teguh</a></p>
 
 <p align="center"><a href="https://youtu.be/ziTuy14lV1g"><img src="docs/images/video-poster.jpg" width="640" alt="Satu bingkai dari video demo: satu transaksi di penjelajah testnet, dan kedua-dua lejar naik satu"></a><br><a href="https://youtu.be/ziTuy14lV1g"><b>Tonton video demo</b></a> di YouTube (bersuara, sari kata Inggeris, kurang tiga minit) · <a href="docs/video/mentari-demo.mp4">salinan MP4 dalam repo ini</a></p>
@@ -31,7 +31,9 @@ pertama ialah [`6012d2b`](https://github.com/aimanmalib/mentari/commit/6012d2b) 
 > - Kes A hingga J2 direkod di testnet bersama transaksinya ([`testnet.json`](evidence/testnet.json)).
 > - 13 tekanan direkod di laman awam, 7 daripadanya "Retire now" berturut-turut, setiap satu menaikkan kedua-dua lejar satu ([`live.json`](evidence/live.json)).
 
-## Nilai dalam 3 minit
+## Semak dalam 3 langkah
+
+Ia mengambil kira-kira 3 minit.
 
 1. **Tekan.** Buka <https://mentari.sasateguh.com/try> dan tekan "Retire now". Satu transaksi Native bertandatangan
    hibrid menjalankan kontrak EVM, dan kiraan resit di kedua-dua lejar naik satu. Kemudian tekan butang kegagalan:
@@ -81,7 +83,7 @@ panggilan kontrak selepasnya berbalik ([keputusan 0041](docs/decisions/0041-bank
 
 | Kriteria (kata rasmi) | Berat | Di mana menyemaknya |
 | --- | --- | --- |
-| Works as described | 25 % | [Try it](https://mentari.sasateguh.com/try) di laman hidup; [`pnpm demo`](#nilai-dalam-3-minit) dan [`verify.json`](evidence/verify.json) (107 daripada 107); tekanan dalam [`live.json`](evidence/live.json); [jadual bukti](#bukti-di-testnet) |
+| Works as described | 25 % | [Try it](https://mentari.sasateguh.com/try) di laman hidup; [`pnpm demo`](#semak-dalam-3-langkah) dan [`verify.json`](evidence/verify.json) (107 daripada 107); tekanan dalam [`live.json`](evidence/live.json); [jadual bukti](#bukti-di-testnet) |
 | QoreChain tech usage, verified in the repo and on chain | 25 % | [Kit dan ciri rangkaian](README.md#kits-and-network-features) (dalam bahasa Inggeris): jambatan, `pqcVerify`, `pqcKeyStatus`, `MsgCrossVMCall`, `@qorechain/sdk`, QoreX; pindahan bank dan panggilan kontrak dalam satu transaksi (kes J); alamat qor1 dalam [jadual trek](#keperluan-trek-cross-vm-dan-di-mana-ia-dipenuhi) |
 | Post-quantum correctness and security | 20 % | [Apa ditandatangani, dan di mana](#pasca-kuantum-apa-ditandatangani-dan-di-mana); kes I; [Verify](https://mentari.sasateguh.com/verify) menyemak semula ML-DSA-87 dalam pelayar anda; [`docs/threat-model.md`](docs/threat-model.md) |
 | Originality | 15 % | [Apa yang saya temui](#apa-yang-saya-temui-akaun-native-boleh-menjalankan-kontrak-evm); [`docs/findings.md`](docs/findings.md) |

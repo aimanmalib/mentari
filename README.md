@@ -5,7 +5,7 @@
 <p align="center"><a href="https://github.com/aimanmalib/mentari/actions/workflows/ci.yml"><img src="https://github.com/aimanmalib/mentari/actions/workflows/ci.yml/badge.svg" alt="CI"></a> <a href="https://github.com/aimanmalib/mentari/blob/main/LICENSE"><img src="https://img.shields.io/github/license/aimanmalib/mentari" alt="Licence: Apache-2.0"></a> <img src="https://img.shields.io/badge/QoreChain-Diana%20testnet-22357e" alt="QoreChain Diana testnet"></p>
 
 <p align="center"><b>Solar certificates you can retire only once: burn and public receipt land together, or not at all.</b> · <i>Sijil solar yang hanya boleh dibersarakan sekali: bakar dan resit awam berlaku bersama, atau tidak langsung.</i><br>
-<a href="https://mentari.sasateguh.com"><b>live demo</b></a> · <a href="https://youtu.be/ziTuy14lV1g"><b>demo video</b></a> · <a href="#judge-it-in-3-minutes">judge it in 3 minutes</a> · <a href="#proof-on-testnet">proof on testnet</a> · <a href="#the-five-judging-criteria">judging criteria</a> · <a href="#run-it">run it</a> · <a href="#limits">limits</a> · <a href="AI_USAGE.md">AI usage</a> · <a href="docs/deck.pdf">slides (PDF)</a> · <a href="README.ms.md">Bahasa Melayu</a><br>
+<a href="https://mentari.sasateguh.com"><b>live demo</b></a> · <a href="https://youtu.be/ziTuy14lV1g"><b>demo video</b></a> · <a href="#check-it-in-3-steps">check it in 3 steps</a> · <a href="#proof-on-testnet">proof on testnet</a> · <a href="#the-five-judging-criteria">judging criteria</a> · <a href="#run-it">run it</a> · <a href="#limits">limits</a> · <a href="AI_USAGE.md">AI usage</a> · <a href="docs/deck.pdf">slides (PDF)</a> · <a href="README.ms.md">Bahasa Melayu</a><br>
 Built in Malaysia by <a href="https://aimanmalib.com">Aiman Malib</a> · <a href="https://sasateguh.com">Sasa Teguh</a></p>
 
 <p align="center"><a href="https://youtu.be/ziTuy14lV1g"><img src="docs/images/video-poster.jpg" width="640" alt="A frame from the demo video: one transaction on the testnet explorer, and both ledgers go up by one"></a><br><a href="https://youtu.be/ziTuy14lV1g"><b>Watch the demo video</b></a> on YouTube (narrated, English subtitles, under three minutes) · <a href="docs/video/mentari-demo.mp4">MP4 copy in this repo</a></p>
@@ -30,7 +30,9 @@ commit is [`6012d2b`](https://github.com/aimanmalib/mentari/commit/6012d2b) on 2
 > - Cases A to J2 recorded on testnet with their transactions ([`testnet.json`](evidence/testnet.json)).
 > - 13 recorded presses on the public site, 7 of them "Retire now" in a row, each moving both ledgers by one ([`live.json`](evidence/live.json)).
 
-## Judge it in 3 minutes
+## Check it in 3 steps
+
+It takes about 3 minutes.
 
 1. **Press.** Open <https://mentari.sasateguh.com/try> and press "Retire now". One hybrid-signed Native transaction runs
    the EVM contract, and the receipt count on both ledgers goes up by one. Then press a failure button: neither ledger
@@ -77,7 +79,7 @@ ran being undone when the contract call after it reverts ([decision 0041](docs/d
 
 | Criterion (official wording) | Weight | Where to check it |
 | --- | --- | --- |
-| Works as described | 25 % | [Try it](https://mentari.sasateguh.com/try) on the live site; [`pnpm demo`](#judge-it-in-3-minutes) and [`verify.json`](evidence/verify.json) (107 of 107); the presses in [`live.json`](evidence/live.json); the [proof table](#proof-on-testnet) |
+| Works as described | 25 % | [Try it](https://mentari.sasateguh.com/try) on the live site; [`pnpm demo`](#check-it-in-3-steps) and [`verify.json`](evidence/verify.json) (107 of 107); the presses in [`live.json`](evidence/live.json); the [proof table](#proof-on-testnet) |
 | QoreChain tech usage, verified in the repo and on chain | 25 % | [Kits and network features](#kits-and-network-features): the bridge, `pqcVerify`, `pqcKeyStatus`, `MsgCrossVMCall`, `@qorechain/sdk`, QoreX; a bank transfer and a contract call in one transaction (case J); the qor1 addresses in the [track table](#cross-vm-track-requirements-and-where-they-are-met) |
 | Post-quantum correctness and security | 20 % | [What is signed, and where](#post-quantum-what-is-signed-and-where); case I; [Verify](https://mentari.sasateguh.com/verify) re-checks ML-DSA-87 in your browser; [`docs/threat-model.md`](docs/threat-model.md) |
 | Originality | 15 % | [What I found](#what-i-found-a-native-account-can-run-the-evm-contract); [`docs/findings.md`](docs/findings.md) |

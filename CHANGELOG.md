@@ -6,6 +6,10 @@ contract is a new deployment, listed here with its new address.
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-11-25
+
+The version submitted to Build Before Q-Day.
+
 ### Fixed
 
 - Retirements and Verify show transaction links again. The public node refuses log searches over 10,000 blocks, so
@@ -18,6 +22,9 @@ contract is a new deployment, listed here with its new address.
 
 ### Changed
 
+- The home page poster and both READMEs open the demo video on YouTube (`config/app.json` `web.links.video`). The MP4
+  copy stays in `docs/video/` and is still linked from the README header.
+- The README credits and `NOTICE` name the three fonts and their licence (SIL Open Font License 1.1).
 - The slides follow the five official judging criteria. Slides 2 to 7 each name one criterion and its weight; a new
   slide shows the Native lane (cases H, J and J2), the post-quantum slide shows case I and the explorer label, and the
   screenshots were taken again from the public site. `web/test/deck.test.ts` fails when a criterion has no slide.
@@ -135,3 +142,6 @@ contract is a new deployment, listed here with its new address.
 ### Fixed
 
 - A failed or timed-out demo send answers 503 so Cloudflare keeps the reason and hash in the body (decision 0022).
+
+[Unreleased]: https://github.com/aimanmalib/mentari/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/aimanmalib/mentari/releases/tag/v1.0.0

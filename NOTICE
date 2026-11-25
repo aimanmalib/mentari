@@ -22,3 +22,7 @@ Third-party packages (for example the QoreChain kits under @qorechain/*,
 Foundry's forge-std, Vite, React, vitest and Playwright) keep their own
 licences. They are listed with their versions in package.json, pnpm-lock.yaml
 and .gitmodules, and credited in README.md.
+
+Fonts: Bricolage Grotesque, Instrument Sans and IBM Plex Mono, each under the
+SIL Open Font License 1.1. The site loads them from Fontsource packages; the
+slides embed them from deck/fonts/, next to their licence files.

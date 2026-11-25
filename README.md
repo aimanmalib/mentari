@@ -273,6 +273,9 @@ and my contribution.
   [React](https://react.dev), [wagmi](https://wagmi.sh), [RainbowKit](https://rainbowkit.com),
   [vitest](https://vitest.dev), [Playwright](https://playwright.dev), TypeScript and tsx. Versions are pinned in `package.json`,
   `pnpm-lock.yaml` and `.gitmodules`.
+- Fonts: [Bricolage Grotesque](https://github.com/ateliertriay/bricolage), [Instrument Sans](https://github.com/Instrument/instrument-sans)
+  and [IBM Plex Mono](https://github.com/IBM/plex), all under the SIL Open Font License 1.1, served from Fontsource
+  packages on the site and from `deck/fonts/` (licence files included) in the slides.
 - The music in the demo video is by Sascha Ende, [ende.app](https://ende.app) (CC BY 4.0). The narration is an AI clone
   of my own voice ([decision 0032](docs/decisions/0032-demo-video.md)).
 

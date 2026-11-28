@@ -7,6 +7,7 @@ import type { MeterChain } from "./meter/live.js";
 import { EXPLORER_MOUNT, RECEIPT_MOUNT } from "./explorer.js";
 import type { NativeLaneConfig } from "./native.js";
 import type { ReadingsConfig } from "./readings.js";
+import type { VideoCopyConfig } from "./video.js";
 
 /** Everything the server reads from `config/`. Code never holds these values. */
 export interface ServerConfig {
@@ -39,6 +40,8 @@ export interface ServerConfig {
   explorer: { txTemplate: string; cacheSeconds: number; receiptsBook: string };
   /** `/api/readings` (decision 0037): the contract whose `attest` calls are listed, and how many, how often. */
   readings: Omit<ReadingsConfig, "restOrigin">;
+  /** The demo video copy this server serves (`web.links.videoCopy` + `web.videoCopyFile` of `config/app.json`, decision 0032). */
+  videoCopy: VideoCopyConfig;
 }
 
 export interface NativeRoute {
@@ -273,7 +276,24 @@ export function loadServerConfig(dir: string = CONFIG_DIR): ServerConfig {
     nativeRoute: nativeRoute(app, network, rest.origin),
     explorer: explorerLinks(app, limits),
     readings: readingsConfig(app, limits),
+    videoCopy: videoCopy(app),
   };
+}
+
+/** The video copy route: an absolute `.mp4` path with one plain file name, its size and SHA-256. Empty path = none. */
+function videoCopy(app: Record<string, unknown>): VideoCopyConfig {
+  const web = obj(app.web, "config/app.json web");
+  const path = obj(web.links, "config/app.json web.links").videoCopy ?? "";
+  const v = obj(web.videoCopyFile, "config/app.json web.videoCopyFile");
+  const where = "config/app.json web.videoCopyFile";
+  const bytes = posInt(v.bytes, "web.videoCopyFile.bytes");
+  const sha256 = str(v.sha256, `${where}.sha256`);
+  const cacheSeconds = posInt(v.cacheSeconds, "web.videoCopyFile.cacheSeconds");
+  if (typeof path !== "string" || (path !== "" && !/^\/[a-z0-9-]+\/[a-z0-9-]+\.mp4$/.test(path))) {
+    throw new Error("config/app.json web.links.videoCopy: must be empty or look like /video/name.mp4 (lower case, no other folders)");
+  }
+  if (!/^[0-9a-f]{64}$/.test(sha256)) throw new Error(`${where}.sha256: expected 64 lower-case hex characters`);
+  return { path, bytes, sha256, cacheSeconds };
 }
 
 /** The `/api/readings` list: the Mentari contract (empty = no list) from config/app.json, sizes and cache time from config/limits.json. */

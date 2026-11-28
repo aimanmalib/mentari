@@ -10,6 +10,7 @@ import { Readings } from "./readings.js";
 import { DailyMeter } from "./meter/daily.js";
 import { liveMeterJob } from "./meter/live.js";
 import { StaticSite } from "./static.js";
+import { VideoCopy } from "./video.js";
 
 const cfg = loadServerConfig();
 const webDist = process.env.MENTARI_WEB_DIST ?? fileURLToPath(new URL("../../web/dist/", import.meta.url));
@@ -36,7 +37,9 @@ const demo = new DemoApi(cfg.demo, demoChain);
 const lcd = new LcdProxy(cfg);
 const explorer = new ExplorerLinks({ ...cfg.explorer, restOrigin: cfg.restOrigin }, lcd);
 const readings = new Readings({ ...cfg.readings, restOrigin: cfg.restOrigin }, lcd);
-const server = createServer(createHandler({ cfg, lcd, explorer, demo, readings, site: new StaticSite(webDist) }));
+// The demo video copy is read from a read-only folder outside the image (decision 0032).
+const video = new VideoCopy(cfg.videoCopy, process.env.MENTARI_VIDEO_DIR);
+const server = createServer(createHandler({ cfg, lcd, explorer, demo, readings, site: new StaticSite(webDist), video }));
 server.listen(port, host, () => {
   console.log(`mentari server on http://${host}:${port} (site ${webDist})`);
 });

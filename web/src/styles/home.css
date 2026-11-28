@@ -116,8 +116,24 @@
 }
 
 .poster figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-4);
   color: var(--muted);
   font-size: var(--step--1);
+}
+
+/* The MP4 from this site: a quiet second way to the film, never louder than the play button. */
+.poster-copy {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+.poster-copy:hover {
+  text-decoration-thickness: 2px;
 }
 
 /* Live proof. */

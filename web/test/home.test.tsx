@@ -43,10 +43,20 @@ describe("Home hero", () => {
   });
 
   it("links the poster to the video only when config has one", () => {
-    expect(render(<Poster video="" />)).not.toContain("<a ");
+    expect(render(<Poster video="" copy={{ path: "", bytes: 1 }} />)).not.toContain("<a ");
     const html = render(<Poster video="https://example.org/v" />);
     expect(html).toContain('href="https://example.org/v"');
     expect(html).toContain(en.home.watch);
+  });
+
+  it("offers the MP4 copy from this site under the poster, in both languages, sized from config", () => {
+    const copy = { path: "/video/x.mp4", bytes: 12_400_000 };
+    for (const [locale, text] of [["en", en], ["ms", ms]] as const) {
+      const html = render(<Poster video="" copy={copy} />, locale);
+      expect(html).toMatch(/<a class="poster-copy" href="\/video\/x.mp4" download="" type="video\/mp4">/);
+      expect(html).toContain(text.home.videoCopy.replace("{mb}", "12"));
+    }
+    expect(render(<Poster video="" copy={{ path: "", bytes: 1 }} />)).not.toContain("poster-copy");
   });
 });
 

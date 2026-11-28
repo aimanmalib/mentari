@@ -10,8 +10,11 @@ services:
       TZ: UTC
       # Folder for the demo sender key and the meter key file (written outside the repository). The server only reads it.
       MENTARI_SECRETS_DIR: /run/mentari
+      # Folder with the demo video copy (decision 0032), outside the image so the image stays small.
+      MENTARI_VIDEO_DIR: /srv/video
     volumes:
       - ${MENTARI_SECRETS_DIR:?set MENTARI_SECRETS_DIR in deploy/hos.env}:/run/mentari:ro
+      - ${MENTARI_VIDEO_DIR:?set MENTARI_VIDEO_DIR in deploy/hos.env}:/srv/video:ro
     read_only: true
     tmpfs: [/tmp]
     cpus: 0.5

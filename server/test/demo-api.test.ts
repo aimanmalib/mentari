@@ -9,7 +9,7 @@ function req(url: string, over: Partial<DemoRequest> = {}): DemoRequest {
   return { method: "POST", url, ip: "203.0.113.7", contentType: JSON_TYPE, ...over };
 }
 
-function body(r: { body: Buffer | string }): any {
+function body(r: { body: unknown }): any {
   return JSON.parse(String(r.body));
 }
 

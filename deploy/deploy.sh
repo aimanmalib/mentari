@@ -51,6 +51,18 @@ html_headers_ok() {
   grep -E '^cache-control:.*no-transform' <<<"$h" >/dev/null && grep -E '^content-encoding: *(br|gzip)' <<<"$h" >/dev/null
 }
 
+# The video copy (decision 0032): the file named by web.links.videoCopy must be in MENTARI_VIDEO_DIR with the SHA-256
+# in web.videoCopyFile before a deploy. An empty route means no copy, nothing to check.
+video_check() {
+  local want
+  want=$(python3 -c 'import json,os,sys; w=json.load(open("../config/app.json"))["web"]; p=w["links"].get("videoCopy", ""); print(p and os.path.basename(p) + " " + w["videoCopyFile"]["sha256"])') || return 1
+  [ -n "$want" ] || return 0
+  local name=${want% *} sha=${want#* }
+  [ -r "$MENTARI_VIDEO_DIR/$name" ] || { echo "video copy missing: $MENTARI_VIDEO_DIR/$name (config/app.json web.links.videoCopy)"; return 1; }
+  [ "$(sha256sum "$MENTARI_VIDEO_DIR/$name" | cut -d' ' -f1)" = "$sha" ] || { echo "video copy $name does not match web.videoCopyFile.sha256"; return 1; }
+  echo "video copy $name: sha256 ok"
+}
+
 hold_previous() {  # $1 = image ID the replaced container ran: keep it by ID in a stopped container
   local prev id=${1:-}
   prev=$(cat PREVIOUS_TAG 2>/dev/null) || { echo "note: first deploy, no rollback image yet"; return 0; }
@@ -81,6 +93,7 @@ case "${1:-}" in
     [ -z "$(git -C .. status --porcelain)" ] || { echo "working tree not clean: commit first (the image is built from HEAD)"; exit 1; }
     free=$(df -BG --output=avail / | tail -1 | tr -dc 0-9)
     [ "$free" -ge "$MIN_FREE_GB" ] || { echo "less than ${MIN_FREE_GB} GB free on /, stopping"; exit 1; }
+    video_check || exit 1
     TAG=$(git -C .. rev-parse --short HEAD)-$(date -u +%Y%m%d%H%M)
     ctx=$(mktemp -d); trap 'rm -rf "$ctx"' EXIT
     git -C .. archive HEAD | tar -x -C "$ctx"   # clean tree: untracked and ignored files never reach the image
@@ -93,6 +106,7 @@ old_id=$(docker inspect -f '{{.Image}}' mentari 2>/dev/null || true)
 
 # The key folder exists before the mount (an absent source would be created by Docker, owned by root).
 install -d -m 0700 "$MENTARI_SECRETS_DIR"
+install -d -m 0755 "$MENTARI_VIDEO_DIR"
 
 MENTARI_TAG=$TAG $DC up -d --force-recreate mentari
 echo "$TAG" > CURRENT_TAG

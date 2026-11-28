@@ -45,7 +45,10 @@ export interface SiteConfig {
    */
   nativeFinding: { docsUrl: string; caseTx: string; retireTx: string };
   /** Footer links (the public repository and the slides PDF) and the demo video page; an empty video means none yet. */
-  links: { source: string; slides: string; video: string };
+  /** videoCopy: route of the full-size MP4 on this site (decision 0032); empty = no download link. */
+  links: { source: string; slides: string; video: string; videoCopy: string };
+  /** The demo video copy on this site: its route and size (for the link text). */
+  videoCopy: { path: string; bytes: number };
   /** The home page: the FAQ question ids, in order (text in web/locales `home.faq.<id>`). */
   home: { faq: string[] };
   defaultLocale: string;
@@ -80,6 +83,7 @@ export const siteConfig: SiteConfig = {
   explorer: app.web.explorer,
   nativeFinding: app.web.nativeFinding,
   links: app.web.links,
+  videoCopy: { path: app.web.links.videoCopy, bytes: app.web.videoCopyFile.bytes },
   home: app.web.home,
   defaultLocale: app.web.defaultLocale,
   locales: app.web.locales,

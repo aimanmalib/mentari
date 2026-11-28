@@ -6,6 +6,9 @@ export const ORIGIN = "https://rest.example.test";
 export const BOOK = "qor1book";
 
 /** Frozen config for tests. It does not read `config/`, so changing the live values never breaks a test. */
+/** Stand-in for the demo film: 1000 bytes, each its own index mod 256, so any slice is checkable. */
+export const VIDEO_BYTES = Buffer.from(Array.from({ length: 1000 }, (_, i) => i % 256));
+
 export function testConfig(over: Partial<ServerConfig["lcd"]> = {}): ServerConfig {
   return {
     restOrigin: ORIGIN,
@@ -56,6 +59,7 @@ export function testConfig(over: Partial<ServerConfig["lcd"]> = {}): ServerConfi
     },
     explorer: { txTemplate: "https://explorer.example.test/tx/{hash}", cacheSeconds: 600, receiptsBook: "qor1booktest" },
     readings: { contract: "0xF5cb2c6048a7CE8c5A7ACcc66eB8efc33942a448", max: 2, pageSize: 2, maxPages: 3, cacheSeconds: 60 },
+    videoCopy: { path: "/video/demo.mp4", bytes: VIDEO_BYTES.length, sha256: "ab".repeat(32), cacheSeconds: 600 },
   };
 }
 

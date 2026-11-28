@@ -223,10 +223,17 @@
       "maxRedirectChecks": 40
     },
     "links": {
-      "_comment": "source and slides are footer links. video is the demo video page (YouTube); empty = the home page shows the poster without a play link.",
+      "_comment": "source and slides are footer links. video is the demo video page (YouTube); empty = the home page shows the poster without a play link. videoCopy is the route of the full-size MP4 this site serves (decision 0032, file facts in web.videoCopyFile); empty = no copy and no download link.",
       "source": "https://github.com/aimanmalib/mentari",
       "slides": "https://github.com/aimanmalib/mentari/blob/main/docs/deck.pdf",
-      "video": "https://youtu.be/ziTuy14lV1g"
+      "video": "https://youtu.be/ziTuy14lV1g",
+      "videoCopy": "/video/mentari.mp4"
+    },
+    "videoCopyFile": {
+      "_comment": "The file behind web.links.videoCopy, in case YouTube does not open (decision 0032). The server reads the file of the same name from MENTARI_VIDEO_DIR (deploy/hos.env, mounted read-only) and serves it only when its size is bytes. deploy/deploy.sh checks sha256 before a deploy. cacheSeconds: browser and edge cache time.",
+      "bytes": 20004451,
+      "sha256": "aca010dc68bb4eb1afd29003906054a40948d42632e8c0b30d49e003c07fa739",
+      "cacheSeconds": 86400
     },
     "home": {
       "_comment": "The home page (decision 0035). faq lists the questions in order; each id has home.faq.<id>.q and .a in web/locales. poster is web.cover.webCopy, bundled at build time.",

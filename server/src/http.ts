@@ -1,8 +1,10 @@
-/** A response the router writes in one go. Handlers return this instead of touching the socket. */
+import type { Readable } from "node:stream";
+
+/** A response the router writes. Handlers return this instead of touching the socket; a stream is piped (the video copy). */
 export interface Reply {
   status: number;
   headers: Record<string, string>;
-  body: Buffer | string;
+  body: Buffer | string | Readable;
 }
 
 export function json(status: number, value: unknown, headers: Record<string, string> = {}): Reply {

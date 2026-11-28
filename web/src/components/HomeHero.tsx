@@ -1,12 +1,15 @@
 import poster from "../assets/mentari-cover.png";
-import { siteConfig } from "../config.js";
+import { siteConfig, type SiteConfig } from "../config.js";
 import { pressRequest } from "../data/pressOnOpen.js";
 import { useI18n } from "../i18n/I18n.js";
 import { Link, navigate, routes } from "../router.js";
 
-/** The cover art in a panel frame. With a video link in config it opens the video; without one it is a still. */
-export function Poster({ video = siteConfig.links.video }: { video?: string }) {
-  const { t } = useI18n();
+/**
+ * The cover art in a panel frame. With a video link in config it opens the video; without one it is a still. With a
+ * video copy in config (decision 0032) the caption also offers the MP4 from this site, for when YouTube does not open.
+ */
+export function Poster({ video = siteConfig.links.video, copy = siteConfig.videoCopy }: { video?: string; copy?: SiteConfig["videoCopy"] }) {
+  const { t, num } = useI18n();
   const image = <img src={poster} width={1920} height={1080} alt={t("home.posterAlt")} decoding="async" />;
   return (
     <figure className="poster">
@@ -25,7 +28,14 @@ export function Poster({ video = siteConfig.links.video }: { video?: string }) {
           image
         )}
       </div>
-      <figcaption>{t("home.posterCaption")}</figcaption>
+      <figcaption>
+        <span>{t("home.posterCaption")}</span>
+        {copy.path ? (
+          <a className="poster-copy" href={copy.path} download type="video/mp4">
+            {t("home.videoCopy", { mb: num(Math.round(copy.bytes / 1_000_000)) })}
+          </a>
+        ) : null}
+      </figcaption>
     </figure>
   );
 }

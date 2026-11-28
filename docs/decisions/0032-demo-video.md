@@ -37,3 +37,38 @@ and the history cannot be rewritten after it is pushed.
 
 Delete the `/video/` line from `.gitignore` and commit the workspace without the rendered MP4, or replace the film with
 a plain screen recording of the same steps.
+
+## Addendum, 2026-11-28: the full-size copy on the demo site
+
+### Context
+
+The demo video is an unlisted YouTube video. A judge on a network that blocks YouTube, or a judge who wants the file,
+has only the smaller 1600 px copy in the repository (decision 0039). The decision above put a full-size copy on the demo
+site once I had watched the film. I have watched it and published it, so the copy can go up now.
+
+The film is 20 MB. Baking it into the image would add 20 MB to every image and to the rollback image held next to it,
+on a host disk shared with other projects. The static file handler reads a whole file into memory and has no byte
+ranges, so a player could not seek and a few parallel downloads would press on the 256 MB memory limit.
+
+### Decision
+
+- The MP4 lives on the host, outside the repository and the image, in `MENTARI_VIDEO_DIR` (`deploy/hos.env`). Compose
+  mounts it read-only at `/srv/video`.
+- `config/app.json web.links.videoCopy` holds the public route (`/video/mentari.mp4`), and `web.videoCopyFile` the
+  size in bytes, the SHA-256 and the cache time. The server serves the file of that name only when its size matches, streams it, and answers single byte
+  ranges with 206 and ranges past the end with 416, so players can seek.
+- `deploy/deploy.sh` checks the SHA-256 of the host file against the config before it builds, and stops if the file is
+  missing or different.
+- The home page caption under the poster links to the copy, in English and Malay, with the size worked out from the
+  config. Both READMEs link to it next to the YouTube link.
+
+### Consequences
+
+- The image stays the same size. A new film means a new file in the folder and new values in `web.videoCopyFile`.
+- Cloudflare caches the file at the edge for the configured time, which keeps the 20 MB off the host for most visits.
+- If the folder is empty the route answers 404 and the rest of the site is unaffected.
+
+### How to undo
+
+Set `web.links.videoCopy` to `""` (the link goes and the route closes), or remove it and the `web.videoCopyFile` block, the mount
+in `deploy/compose.yaml`, `video_check` in `deploy/deploy.sh`, `server/src/video.ts` and its tests.

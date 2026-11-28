@@ -7,6 +7,7 @@ import { CidrSet, clientIp, type ClientIpRules } from "./ip.js";
 import { LCD_MOUNT, type LcdProxy } from "./lcd.js";
 import { READINGS_MOUNT, type Readings } from "./readings.js";
 import type { StaticSite } from "./static.js";
+import type { VideoCopy } from "./video.js";
 
 const SECURITY_HEADERS: Record<string, string> = {
   "x-content-type-options": "nosniff",
@@ -21,6 +22,7 @@ export interface AppParts {
   demo: DemoApi;
   readings: Readings;
   site: StaticSite;
+  video: VideoCopy;
 }
 
 /** Request facts every handler may use. `ip` is the rate-limit identity (see `clientIp`). */
@@ -29,6 +31,8 @@ export interface RequestInfo {
   url: string;
   ip: string;
   contentType?: string | undefined;
+  /** `Range` header; only the video copy reads it. */
+  range?: string | undefined;
 }
 
 function isMount(url: string, mount: string): boolean {
@@ -46,6 +50,7 @@ export async function route(info: RequestInfo, parts: AppParts): Promise<Reply> 
   if (isMount(url, DEMO_MOUNT)) return parts.demo.handle(info);
   if (url === READINGS_MOUNT || url.startsWith(`${READINGS_MOUNT}?`)) return parts.readings.handle(method);
   if (isMount(url, "/api")) return notFound();
+  if (parts.video.matches(url)) return parts.video.handle(method, info.range);
   return parts.site.handle(method, url);
 }
 
@@ -62,12 +67,20 @@ export function createHandler(parts: AppParts): (req: IncomingMessage, res: Serv
       url: req.url ?? "/",
       ip: clientIp(req.socket.remoteAddress, req.headers, rules),
       contentType: req.headers["content-type"],
+      range: req.headers.range,
     };
     route(info, parts)
       .catch(() => json(500, { error: "internal error" }))
       .then((reply) => {
         res.writeHead(reply.status, { ...SECURITY_HEADERS, ...reply.headers });
-        res.end(info.method === "HEAD" ? undefined : reply.body);
+        const body = reply.body;
+        if (typeof body === "string" || Buffer.isBuffer(body)) {
+          res.end(info.method === "HEAD" ? undefined : body);
+          return;
+        }
+        body.on("error", () => res.destroy());
+        res.on("close", () => body.destroy());
+        body.pipe(res);
       })
       .catch(() => res.destroy());
   };

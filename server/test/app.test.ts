@@ -10,7 +10,8 @@ import { ExplorerLinks } from "../src/explorer.js";
 import { LcdProxy } from "../src/lcd.js";
 import { Readings } from "../src/readings.js";
 import { StaticSite } from "../src/static.js";
-import { fakeFetch, FakeChain, ORIGIN, testConfig } from "./fixture.js";
+import { VideoCopy } from "../src/video.js";
+import { fakeFetch, FakeChain, ORIGIN, testConfig, VIDEO_BYTES } from "./fixture.js";
 
 let dir: string;
 let server: Server;
@@ -23,13 +24,15 @@ beforeAll(async () => {
   writeFileSync(join(dir, "index.html"), "<!doctype html><title>t</title>");
   writeFileSync(join(dir, "assets", "app-abc123.js"), "console.log(1)");
   writeFileSync(join(dir, "robots.txt"), "User-agent: *");
+  mkdirSync(join(dir, "film"));
+  writeFileSync(join(dir, "film", "demo.mp4"), VIDEO_BYTES);
   writeFileSync(join(tmpdir(), "mentari-outside.txt"), "secret");
   const cfg = testConfig();
   const demo = new DemoApi(cfg.demo, new FakeChain());
   const lcd = new LcdProxy(cfg, upstream.fn);
   const explorer = new ExplorerLinks({ ...cfg.explorer, restOrigin: cfg.restOrigin }, lcd);
   const readings = new Readings({ ...cfg.readings, restOrigin: cfg.restOrigin }, lcd);
-  server = createServer(createHandler({ cfg, lcd, explorer, demo, readings, site: new StaticSite(dir) }));
+  server = createServer(createHandler({ cfg, lcd, explorer, demo, readings, site: new StaticSite(dir), video: new VideoCopy(cfg.videoCopy, join(dir, "film")) }));
   await new Promise<void>((ok) => server.listen(0, "127.0.0.1", ok));
   base = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
 });
@@ -93,6 +96,32 @@ describe("server", () => {
     expect(head.status).toBe(200);
     expect(await head.text()).toBe("");
     expect((await fetch(`${base}/`, { method: "DELETE" })).status).toBe(405);
+  });
+
+  it("serves the video copy whole, as a byte range, and 416 past the end, through the real socket", async () => {
+    const whole = await fetch(`${base}/video/demo.mp4`);
+    expect(whole.status).toBe(200);
+    expect(whole.headers.get("content-type")).toBe("video/mp4");
+    expect(whole.headers.get("accept-ranges")).toBe("bytes");
+    expect(whole.headers.get("content-length")).toBe(String(VIDEO_BYTES.length));
+    expect(Buffer.from(await whole.arrayBuffer()).equals(VIDEO_BYTES)).toBe(true);
+
+    const part = await fetch(`${base}/video/demo.mp4`, { headers: { range: "bytes=0-99" } });
+    expect(part.status).toBe(206);
+    expect(part.headers.get("content-range")).toBe(`bytes 0-99/${VIDEO_BYTES.length}`);
+    expect(Buffer.from(await part.arrayBuffer()).equals(VIDEO_BYTES.subarray(0, 100))).toBe(true);
+
+    const tail = await fetch(`${base}/video/demo.mp4`, { headers: { range: "bytes=-10" } });
+    expect(Buffer.from(await tail.arrayBuffer()).equals(VIDEO_BYTES.subarray(990))).toBe(true);
+
+    const past = await fetch(`${base}/video/demo.mp4`, { headers: { range: "bytes=5000-" } });
+    expect(past.status).toBe(416);
+    expect(past.headers.get("content-range")).toBe(`bytes */${VIDEO_BYTES.length}`);
+
+    const head = await fetch(`${base}/video/demo.mp4`, { method: "HEAD" });
+    expect(head.status).toBe(200);
+    expect(head.headers.get("content-length")).toBe(String(VIDEO_BYTES.length));
+    expect((await fetch(`${base}/video/demo.mp4`, { method: "POST" })).status).toBe(405);
   });
 
   it("routes /lcd to the proxy: allowed path proxied, others 404, other methods 405", async () => {

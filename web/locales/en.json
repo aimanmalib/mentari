@@ -59,6 +59,7 @@
     "posterAlt": "The Mentari cover: the registry page with both ledgers and the check that they agree.",
     "posterCaption": "Mentari on the QoreChain testnet",
     "watch": "Watch the demo video",
+    "videoCopy": "Download the video (MP4, {mb} MB)",
     "proofTitle": "Live on the testnet now",
     "proofLede": "These numbers are read from the chain each time the page loads. Every retirement has a receipt on the other ledger, and the page checks each pair.",
     "latest": "Latest retirement #{n} wrote receipt #{id}.",

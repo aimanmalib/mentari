@@ -6,6 +6,11 @@ contract is a new deployment, listed here with its new address.
 
 ## [Unreleased]
 
+### Added
+
+- A full-size copy of the demo video on the demo site, linked under the home page poster and from both READMEs
+  (decision 0032).
+
 ## [1.0.0] - 2026-11-25
 
 The version submitted to Build Before Q-Day.

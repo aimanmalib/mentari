@@ -2,6 +2,7 @@
 # deploy/hos.env and copies the result into the proxy's dynamic configuration folder.
 # HTML is sent with `Cache-Control: no-transform`, so a CDN in front does not compress it: the `compress`
 # middleware here does, and its default 1024-byte floor would skip the small index page, so the floor is lowered.
+# The demo video copy is never compressed: gzip would drop its length and byte ranges, and players could not seek.
 # Plain http redirects to https.
 http:
   routers:
@@ -23,7 +24,7 @@ http:
     mentari-compress:
       compress:
         minResponseBodyBytes: 256
-        excludedContentTypes: [image/png, image/jpeg, image/webp, font/woff2]
+        excludedContentTypes: [image/png, image/jpeg, image/webp, font/woff2, video/mp4, video/webm]
     mentari-https:
       redirectScheme:
         scheme: https

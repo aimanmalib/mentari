@@ -57,6 +57,8 @@ ranges, so a player could not seek and a few parallel downloads would press on t
 - `config/app.json web.links.videoCopy` holds the public route (`/video/mentari.mp4`), and `web.videoCopyFile` the
   size in bytes, the SHA-256 and the cache time. The server serves the file of that name only when its size matches, streams it, and answers single byte
   ranges with 206 and ranges past the end with 416, so players can seek.
+- The proxy route does not compress `video/mp4`. Compressed, the reply lost its length and byte ranges, and
+  Cloudflare cached that copy until it was purged.
 - `deploy/deploy.sh` checks the SHA-256 of the host file against the config before it builds, and stops if the file is
   missing or different.
 - The home page caption under the poster links to the copy, in English and Malay, with the size worked out from the
